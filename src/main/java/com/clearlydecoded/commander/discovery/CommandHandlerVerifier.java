@@ -23,7 +23,7 @@ public class CommandHandlerVerifier {
    * that is implemented with the exact same string command type identifier as the handler type safe
    * concrete {@link Command} implementation.
    * <p>
-   * If incompatibility is found {@link IllegalStateException} is thrown.
+   * If incompatibility is found, {@link IllegalStateException} is thrown.
    * </p>
    * <p>
    * Calling this method prevents {@link CommandHandler}/{@link Command} pair that are liked by
