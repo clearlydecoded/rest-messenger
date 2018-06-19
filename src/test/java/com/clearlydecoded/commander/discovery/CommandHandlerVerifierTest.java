@@ -1,0 +1,14 @@
+package com.clearlydecoded.commander.discovery;
+
+import org.junit.Test;
+
+/**
+ * {@link CommandHandlerVerifierTest} class is a test class for {@link CommandHandlerVerifier}.
+ */
+public class CommandHandlerVerifierTest {
+
+  @Test
+  public void testVerifyCommandHandlerCompatibility() {
+    CommandHandlerVerifier.verifyCommandHandlerCompatibility(new MockCommandHandler());
+  }
+}
