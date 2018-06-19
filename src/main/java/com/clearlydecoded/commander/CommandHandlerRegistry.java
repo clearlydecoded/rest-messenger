@@ -28,21 +28,21 @@ public interface CommandHandlerRegistry {
    * Retrieves concrete {@link CommandHandler} for the type of the command. If not found, returns
    * <code>null</code>.
    *
-   * @param commandClassType Command type.
+   * @param commandType Command type identifier that is unique system-wide.
    * @return An instance of a concrete implementation of {@link CommandHandler} based
-   * on the <code>commandClassType</code>. If no handler is found for the command type,
+   * on the <code>commandType</code>. If no handler is found for the command type,
    * returns <code>null</code>.
    */
   CommandHandler
       <? extends Command<? extends CommandResponse>, ? extends CommandResponse>
-  getHandlerFor(Class<?> commandClassType);
+  getHandlerFor(String commandType);
 
   /**
-   * Removes command handler which handles <code>commandClassType</code> type of {@link Command}
+   * Removes command handler which handles <code>commandtype</code> type of {@link Command}
    * from the handler registry.
    *
-   * @param commandClassType Command type.
+   * @param commandType Command type identifier that is unique system-wide.
    */
-  void removeHandler(Class<?> commandClassType);
+  void removeHandler(String commandType);
 
 }

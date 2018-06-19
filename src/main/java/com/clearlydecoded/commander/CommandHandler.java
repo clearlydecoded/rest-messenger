@@ -31,9 +31,17 @@ public interface CommandHandler
   CommandResponseT execute(CommandT command) throws CommandHandlerException;
 
   /**
-   * Retrieves type that this handler is able to process.
+   * Retrieves command type that this handler is able to process. The type is system-wide unique.
    *
-   * @return Concrete class type that implements {@link Command} interface.
+   * @return Command type identifier that is unique system-wide which is associated with a concrete
+   * class that implements {@link Command} interface.
    */
-  Class<CommandT> getCompatibleCommandType();
+  String getCompatibleCommandType();
+
+  /**
+   * Retrieves class type of the command this handler is to able to process.
+   *
+   * @return Class type of the command this handler is able to process.
+   */
+  Class<CommandT> getCompatibleCommandClassType();
 }
