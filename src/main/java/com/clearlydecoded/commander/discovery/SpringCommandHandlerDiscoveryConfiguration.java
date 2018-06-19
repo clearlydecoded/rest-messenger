@@ -7,8 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * {@link SpringCommandHandlerDiscoveryConfiguration} class is a spring {@link Configuration} that
+ * can be used to trigger automatic discovery of {@link com.clearlydecoded.commander.CommandHandler}
+ * concrete implementations in the Spring context.
+ */
 @Configuration
-public class SpringDiscoveryConfiguration {
+public class SpringCommandHandlerDiscoveryConfiguration {
 
   /**
    * Spring-based discoverer of handler instances in Spring context.
