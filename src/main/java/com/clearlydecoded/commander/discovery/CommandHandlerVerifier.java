@@ -50,9 +50,11 @@ public class CommandHandlerVerifier {
       //  Compare command's string-based type with handler's string-based type
       if (handlerCommandStringType == null || !handlerCommandStringType.equals(command.getType())) {
 
-        String messageTemplate = "Can not register handler of type [{0}]. It declares to handle " +
-            "commands of type [{1}]. Handler's String-based compatible command type is [{3}], " +
-            "yes the String-based command type of [{1}] is [{4}]. These must be identically named.";
+        String messageTemplate =
+            "Command handler of type [{0}] is NOT valid! It declares to handle " +
+                "commands of type [{1}]. Handler''s getCompatibleCommandType() returns " +
+                "[{2}], but command''s getType() returns [{3}]. These must return identical " +
+                "string types.";
         String message = MessageFormat
             .format(messageTemplate, handler.getClass(), handlerCommandClassType,
                 handlerCommandStringType, command.getType());
@@ -63,8 +65,13 @@ public class CommandHandlerVerifier {
 
     } catch (InstantiationException | IllegalAccessException e) {
 
+      String messageTemplate = "Error trying to verify command handler [{0}]. Did not find " +
+          "public no-argument constructor on the command class of type [{1}]. Command " +
+          "implementations must have public no-argument constructor.";
+      String message = MessageFormat
+          .format(messageTemplate, handler.getClass(), handlerCommandClassType);
+
       // Rethrow as IllegalStateException
-      String message = "Error trying to verify command handler '" + handler.getClass() + "'";
       log.severe(message);
       throw new IllegalStateException(message, e);
     }

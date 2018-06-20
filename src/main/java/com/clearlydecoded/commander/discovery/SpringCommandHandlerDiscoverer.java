@@ -6,6 +6,7 @@ import com.clearlydecoded.commander.CommandResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -31,11 +32,23 @@ public class SpringCommandHandlerDiscoverer implements CommandHandlerDiscoverer 
       ? extends CommandResponse>> discoverHandlers() {
 
     // Retrieve all spring beans that implement CommandHandler interface
-    Map<String, CommandHandler> beansMap = springContext.getBeansOfType(CommandHandler.class);
+    Map<String, CommandHandler> beanMap = springContext.getBeansOfType(CommandHandler.class);
 
-    // Return list of command handlers
-    return new ArrayList<>(
-        (List<? extends CommandHandler<? extends Command<? extends CommandResponse>,
-            ? extends CommandResponse>>) beansMap.values());
+    // Build a list of CommandHandlers from the bean map
+    Set<String> beanNames = beanMap.keySet();
+    List<CommandHandler<? extends Command<? extends CommandResponse>,
+        ? extends CommandResponse>> commandHandlers;
+    commandHandlers = new ArrayList<>();
+
+    for (String beanName : beanNames) {
+      CommandHandler<? extends Command<? extends CommandResponse>,
+          ? extends CommandResponse> commandHandler;
+      commandHandler = (CommandHandler<? extends Command<? extends CommandResponse>,
+          ? extends CommandResponse>) beanMap.get(beanName);
+
+      commandHandlers.add(commandHandler);
+    }
+
+    return commandHandlers;
   }
 }

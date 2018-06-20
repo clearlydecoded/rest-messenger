@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MockCommand implements Command<MockCommandResponse> {
+public class BadMockCommand implements Command<MockCommandResponse> {
 
   public static final String TYPE = "MockCommand";
 
@@ -16,6 +16,6 @@ public class MockCommand implements Command<MockCommandResponse> {
 
   @Override
   public String getType() {
-    return MockCommand.TYPE;
+    return BadMockCommand.TYPE;
   }
 }
