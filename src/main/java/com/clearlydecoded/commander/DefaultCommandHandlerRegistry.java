@@ -3,6 +3,7 @@ package com.clearlydecoded.commander;
 import static com.clearlydecoded.commander.discovery.CommandHandlerVerifier.verifyCommandHandlerCompatibility;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,5 +74,11 @@ public class DefaultCommandHandlerRegistry implements CommandHandlerRegistry {
     log.info("Removing handler for Command type [" + commandType + "].");
 
     handlerMap.remove(commandType);
+  }
+
+  @Override
+  public List<CommandHandler<? extends Command<? extends CommandResponse>,
+      ? extends CommandResponse>> getHandlers() {
+    return new ArrayList<>(handlerMap.values());
   }
 }

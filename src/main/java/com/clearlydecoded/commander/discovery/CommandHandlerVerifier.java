@@ -54,7 +54,7 @@ public class CommandHandlerVerifier {
             "Command handler of type [{0}] is NOT valid! It declares to handle " +
                 "commands of type [{1}]. Handler''s getCompatibleCommandType() returns " +
                 "[{2}], but command''s getType() returns [{3}]. These must return identical " +
-                "string types.";
+                "string-based identifiers.";
         String message = MessageFormat
             .format(messageTemplate, handler.getClass(), handlerCommandClassType,
                 handlerCommandStringType, command.getType());

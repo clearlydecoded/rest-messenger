@@ -45,4 +45,12 @@ public interface CommandHandlerRegistry {
    */
   void removeHandler(String commandType);
 
+  /**
+   * Retrieve all handlers successfully registered in the command handler registry.
+   *
+   * @return List of successfully discovered and registered command handlers. If none are
+   * registered, returns an empty list.
+   */
+  List<CommandHandler<? extends Command<? extends CommandResponse>,
+      ? extends CommandResponse>> getHandlers();
 }

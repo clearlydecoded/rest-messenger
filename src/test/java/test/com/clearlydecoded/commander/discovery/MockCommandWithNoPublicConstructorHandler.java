@@ -1,4 +1,4 @@
-package com.clearlydecoded.commander.discovery;
+package test.com.clearlydecoded.commander.discovery;
 
 import com.clearlydecoded.commander.CommandHandler;
 import com.clearlydecoded.commander.CommandHandlerException;

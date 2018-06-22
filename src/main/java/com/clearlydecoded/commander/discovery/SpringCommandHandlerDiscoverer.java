@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -23,9 +22,17 @@ public class SpringCommandHandlerDiscoverer implements CommandHandlerDiscoverer 
   /**
    * Spring Framework application context.
    */
-  @Autowired
-  @Setter
   private ApplicationContext springContext;
+
+  /**
+   * Constructor.
+   *
+   * @param springContext Spring Framework application context.
+   */
+  @Autowired
+  public SpringCommandHandlerDiscoverer(ApplicationContext springContext) {
+    this.springContext = springContext;
+  }
 
   @Override
   public List<? extends CommandHandler<? extends Command<? extends CommandResponse>,

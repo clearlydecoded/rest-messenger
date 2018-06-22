@@ -1,4 +1,4 @@
-package com.clearlydecoded.commander.discovery;
+package test.com.clearlydecoded.commander.discovery;
 
 import com.clearlydecoded.commander.Command;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BadMockCommand implements Command<MockCommandResponse> {
+public class MockCommand implements Command<MockCommandResponse> {
 
   public static final String TYPE = "MockCommand";
 
@@ -16,6 +16,6 @@ public class BadMockCommand implements Command<MockCommandResponse> {
 
   @Override
   public String getType() {
-    return BadMockCommand.TYPE;
+    return MockCommand.TYPE;
   }
 }
