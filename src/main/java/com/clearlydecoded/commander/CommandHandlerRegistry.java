@@ -9,20 +9,20 @@ import java.util.List;
 public interface CommandHandlerRegistry {
 
   /**
-   * Adds <code>handler</code> to the handler registry.
+   * Adds <code>commandHandler</code> to the commandHandler registry.
    *
-   * @param handler Handler to add to the handler registry.
+   * @param commandHandler Handler to add to the commandHandler registry.
    */
   void addHandler(CommandHandler
-      <? extends Command<? extends CommandResponse>, ? extends CommandResponse> handler);
+      <? extends Command<? extends CommandResponse>, ? extends CommandResponse> commandHandler);
 
   /**
-   * Adds <code>handlers</code> to the handler registry.
+   * Adds <code>commandHandlers</code> to the handler registry.
    *
-   * @param handlers List of handlers to add to the handler registry.
+   * @param commandHandlers List of commandHandlers to add to the handler registry.
    */
   void addHandlers(List<? extends CommandHandler
-      <? extends Command<? extends CommandResponse>, ? extends CommandResponse>> handlers);
+      <? extends Command<? extends CommandResponse>, ? extends CommandResponse>> commandHandlers);
 
   /**
    * Retrieves concrete {@link CommandHandler} for the type of the command. If not found, returns

@@ -1,10 +1,8 @@
-package test.com.clearlydecoded.commander.discovery.goodhandlers;
+package test.com.clearlydecoded.commander.discovery;
 
 import com.clearlydecoded.commander.CommandHandler;
 import com.clearlydecoded.commander.CommandHandlerException;
 import org.springframework.stereotype.Service;
-import test.com.clearlydecoded.commander.discovery.MockCommand;
-import test.com.clearlydecoded.commander.discovery.MockCommandResponse;
 
 @Service
 public class MockCommandHandler implements CommandHandler<MockCommand, MockCommandResponse> {

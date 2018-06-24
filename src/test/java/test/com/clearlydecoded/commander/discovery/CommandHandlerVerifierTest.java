@@ -2,7 +2,6 @@ package test.com.clearlydecoded.commander.discovery;
 
 import com.clearlydecoded.commander.discovery.CommandHandlerVerifier;
 import org.junit.Test;
-import test.com.clearlydecoded.commander.discovery.goodhandlers.MockCommandHandler;
 
 /**
  * {@link CommandHandlerVerifierTest} class is a test class for {@link CommandHandlerVerifier}.

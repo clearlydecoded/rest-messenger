@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import lombok.extern.java.Log;
 
 /**
@@ -25,37 +26,49 @@ public class DefaultCommandHandlerRegistry implements CommandHandlerRegistry {
 
   @Override
   public void addHandler(CommandHandler
-      <? extends Command<? extends CommandResponse>, ? extends CommandResponse> handler) {
+      <? extends Command<? extends CommandResponse>, ? extends CommandResponse> commandHandler) {
 
-    // Verify string and Java-based types are compatible in the handler
-    verifyCommandHandlerCompatibility(handler);
+    // Verify string and Java-based types are compatible in the commandHandler
+    verifyCommandHandlerCompatibility(commandHandler);
 
-    // Place handler into map, keyed by string-based command type
-    String handlerStringCommandType = handler.getCompatibleCommandType();
-    handlerMap.put(handlerStringCommandType, handler);
+    // Place commandHandler into map, keyed by string-based command type identifier
+    String handlerCommandStringType = commandHandler.getCompatibleCommandType();
+    handlerMap.put(handlerCommandStringType, commandHandler);
 
     // Log registration
-    Class<?> handlerClassCommandType = handler.getCompatibleCommandClassType();
-    String messageTemplate = "Registered handler instance [{0}] for commands of type [{1}], " +
-        "which handle commands with string-based type of [{2}]";
-    String message = MessageFormat
-        .format(messageTemplate, handler.getClass(), handlerClassCommandType,
-            handlerStringCommandType);
-    log.info(message);
+    Class<?> handledCommand = commandHandler.getCompatibleCommandClassType();
+    String messageTemplate =
+        "Registered [{0}] to handle commands of type [{1}] identified by [{2}]";
+
+    if (log.isLoggable(Level.INFO)) {
+      String infoMessage = MessageFormat.format(
+          messageTemplate,
+          commandHandler.getClass().getSimpleName(),
+          handledCommand.getSimpleName(),
+          handlerCommandStringType);
+      log.info(infoMessage);
+    } else if (log.isLoggable(Level.FINE)) {
+      String debugMessage = MessageFormat.format(
+          messageTemplate,
+          commandHandler.getClass().getName(),
+          handledCommand.getName(),
+          handlerCommandStringType);
+      log.info(debugMessage);
+    }
   }
 
   @Override
   public void addHandlers(List<? extends CommandHandler
-      <? extends Command<? extends CommandResponse>, ? extends CommandResponse>> handlers) {
+      <? extends Command<? extends CommandResponse>, ? extends CommandResponse>> commandHandlers) {
 
     // If handlers is null, do nothing
-    if (handlers == null) {
+    if (commandHandlers == null) {
       log.info("No CommandHandlers provided. No CommandHandlers will be registered or available.");
       return;
     }
 
     // Add each handler to the map
-    handlers.forEach(this::addHandler);
+    commandHandlers.forEach(this::addHandler);
   }
 
   @Override
@@ -63,7 +76,7 @@ public class DefaultCommandHandlerRegistry implements CommandHandlerRegistry {
       <? extends Command<? extends CommandResponse>, ? extends CommandResponse> getHandlerFor
       (String commandType) {
 
-    log.info("Retrieving handler for Command type [" + commandType + "].");
+    log.info("Retrieving handler for Command identifier type [" + commandType + "].");
 
     return handlerMap.get(commandType);
   }
@@ -71,7 +84,7 @@ public class DefaultCommandHandlerRegistry implements CommandHandlerRegistry {
   @Override
   public void removeHandler(String commandType) {
 
-    log.info("Removing handler for Command type [" + commandType + "].");
+    log.info("Removing handler for Command identifier type [" + commandType + "].");
 
     handlerMap.remove(commandType);
   }

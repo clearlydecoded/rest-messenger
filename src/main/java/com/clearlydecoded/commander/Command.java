@@ -10,10 +10,10 @@ import java.io.Serializable;
 public interface Command<T extends CommandResponse> extends Serializable {
 
   /**
-   * Getter for string-based command type.
+   * Getter for string-based command type identifier.
    * <p>
-   * <b>Warning!</b> Command type should not be settable outside of this class. It should be
-   * read-only, i.e., immutable. It's recommended that its internal declaration be marked
+   * <b>Warning!</b> Command type identifier should not be settable outside of this class. It should
+   * be read-only, i.e., immutable. It's recommended that its internal declaration be marked
    * <code>final</code>.
    * </p>
    *

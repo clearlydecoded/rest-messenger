@@ -7,16 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
 
 /**
  * {@link SpringCommandHandlerDiscoverer} class is a Spring Framework implementation of the
  * {@link CommandHandlerDiscoverer} interface. It uses only the Spring context to look for
  * concrete implementations of {@link CommandHandler} interface.
  */
-@Component
 public class SpringCommandHandlerDiscoverer implements CommandHandlerDiscoverer {
 
   /**
@@ -29,7 +26,6 @@ public class SpringCommandHandlerDiscoverer implements CommandHandlerDiscoverer 
    *
    * @param springContext Spring Framework application context.
    */
-  @Autowired
   public SpringCommandHandlerDiscoverer(ApplicationContext springContext) {
     this.springContext = springContext;
   }
