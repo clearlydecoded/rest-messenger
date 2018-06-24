@@ -1,14 +1,12 @@
 package test.com.clearlydecoded.commander.discovery;
 
 import com.clearlydecoded.commander.CommandHandler;
-import com.clearlydecoded.commander.CommandHandlerException;
 
 public class MockCommandWithNoPublicConstructorHandler implements
     CommandHandler<MockCommandWithNoPublicConstructor, MockCommandResponse> {
 
   @Override
-  public MockCommandResponse execute(MockCommandWithNoPublicConstructor command)
-      throws CommandHandlerException {
+  public MockCommandResponse execute(MockCommandWithNoPublicConstructor command) {
     return null;
   }
 

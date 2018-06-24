@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.extern.java.Log;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -14,6 +15,7 @@ import org.springframework.context.ApplicationContext;
  * {@link CommandHandlerDiscoverer} interface. It uses only the Spring context to look for
  * concrete implementations of {@link CommandHandler} interface.
  */
+@Log
 public class SpringCommandHandlerDiscoverer implements CommandHandlerDiscoverer {
 
   /**
@@ -50,6 +52,17 @@ public class SpringCommandHandlerDiscoverer implements CommandHandlerDiscoverer 
           ? extends CommandResponse>) beanMap.get(beanName);
 
       commandHandlers.add(commandHandler);
+    }
+
+    // Check that at least 1 command handler is discovered; log warning if not
+    if (commandHandlers.size() == 0) {
+      String message = "No command handlers were discovered in Spring Context.";
+      message += " If you think you have CommandHandler classes implemented, check that your";
+      message += " command handler classes are injected into Spring Context either by manually";
+      message += " injecting them (in an @Configuration class) or by having the command handler";
+      message += " classes annotated with either @Service, @Component, etc.";
+
+      log.warning(message);
     }
 
     return commandHandlers;

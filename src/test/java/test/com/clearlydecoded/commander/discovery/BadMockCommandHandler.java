@@ -1,12 +1,11 @@
 package test.com.clearlydecoded.commander.discovery;
 
 import com.clearlydecoded.commander.CommandHandler;
-import com.clearlydecoded.commander.CommandHandlerException;
 
 public class BadMockCommandHandler implements CommandHandler<BadMockCommand, MockCommandResponse> {
 
   @Override
-  public MockCommandResponse execute(BadMockCommand command) throws CommandHandlerException {
+  public MockCommandResponse execute(BadMockCommand command) {
     return null;
   }
 

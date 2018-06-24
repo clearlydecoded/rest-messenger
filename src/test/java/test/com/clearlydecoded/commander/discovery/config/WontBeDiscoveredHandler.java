@@ -1,7 +1,6 @@
 package test.com.clearlydecoded.commander.discovery.config;
 
 import com.clearlydecoded.commander.CommandHandler;
-import com.clearlydecoded.commander.CommandHandlerException;
 
 /**
  * Won't be automatically discovered because it's not marked with @Service.
@@ -10,7 +9,7 @@ public class WontBeDiscoveredHandler implements CommandHandler<Command2, Command
 
 
   @Override
-  public Command2Response execute(Command2 command) throws CommandHandlerException {
+  public Command2Response execute(Command2 command) {
     return null;
   }
 

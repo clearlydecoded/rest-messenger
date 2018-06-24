@@ -26,9 +26,8 @@ public interface CommandHandler
    * @param command Command object containing data which is needed for execution this command.
    * @return Command response object that represents a processed response to the
    * <code>command</code>.
-   * @throws CommandHandlerException If anything goes wrong during the execution of the command.
    */
-  CommandResponseT execute(CommandT command) throws CommandHandlerException;
+  CommandResponseT execute(CommandT command);
 
   /**
    * Retrieves command type identifier that this handler is able to process. The type identifier is

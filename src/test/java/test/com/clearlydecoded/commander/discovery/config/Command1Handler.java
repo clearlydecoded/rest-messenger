@@ -1,14 +1,13 @@
 package test.com.clearlydecoded.commander.discovery.config;
 
 import com.clearlydecoded.commander.CommandHandler;
-import com.clearlydecoded.commander.CommandHandlerException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class Command1Handler implements CommandHandler<Command1, Command1Response> {
 
   @Override
-  public Command1Response execute(Command1 command) throws CommandHandlerException {
+  public Command1Response execute(Command1 command) {
     // do nothing. handler is just for wiring tests
     return null;
   }
