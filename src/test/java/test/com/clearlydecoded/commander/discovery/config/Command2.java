@@ -4,7 +4,9 @@ import com.clearlydecoded.commander.Command;
 
 public class Command2 implements Command<Command2Response> {
 
-  private final String type = "Command-2";
+  public static final String TYPE = "Command-2";
+
+  private final String type = TYPE;
 
   @Override
   public String getType() {

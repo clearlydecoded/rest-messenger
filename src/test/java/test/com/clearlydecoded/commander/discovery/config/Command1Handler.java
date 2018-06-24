@@ -14,7 +14,7 @@ public class Command1Handler implements CommandHandler<Command1, Command1Respons
 
   @Override
   public String getCompatibleCommandType() {
-    return new Command1().getType();
+    return Command1.TYPE;
   }
 
   @Override

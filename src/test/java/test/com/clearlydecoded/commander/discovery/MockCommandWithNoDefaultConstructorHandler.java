@@ -12,7 +12,7 @@ public class MockCommandWithNoDefaultConstructorHandler implements
 
   @Override
   public String getCompatibleCommandType() {
-    return new MockCommandWithNoDefaultConstructor("test").getType();
+    return MockCommandWithNoDefaultConstructor.TYPE;
   }
 
   @Override

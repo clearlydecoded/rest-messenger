@@ -9,12 +9,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Command3 implements Command<Command3Response> {
 
-  private final String type = "Command-3";
+  public static final String TYPE = "Command-3";
+
+  private final String type = TYPE;
 
   private String echoGreeting;
 
   @Override
   public String getType() {
-    return type;
+    return TYPE;
   }
 }

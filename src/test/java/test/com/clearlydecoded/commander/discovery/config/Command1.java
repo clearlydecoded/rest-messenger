@@ -8,7 +8,9 @@ import lombok.Data;
 @AllArgsConstructor
 public class Command1 implements Command<Command1Response> {
 
-  private final String type = "Command-1";
+  public static final String TYPE = "Command-1";
+
+  private final String type = TYPE;
 
   @Override
   public String getType() {

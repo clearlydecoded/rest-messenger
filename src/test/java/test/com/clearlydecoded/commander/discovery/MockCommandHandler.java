@@ -13,7 +13,7 @@ public class MockCommandHandler implements CommandHandler<MockCommand, MockComma
 
   @Override
   public String getCompatibleCommandType() {
-    return new MockCommand().getType();
+    return MockCommand.TYPE;
   }
 
   @Override

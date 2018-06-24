@@ -13,7 +13,7 @@ public class Command3Handler implements CommandHandler<Command3, Command3Respons
 
   @Override
   public String getCompatibleCommandType() {
-    return new Command3().getType();
+    return Command3.TYPE;
   }
 
   @Override

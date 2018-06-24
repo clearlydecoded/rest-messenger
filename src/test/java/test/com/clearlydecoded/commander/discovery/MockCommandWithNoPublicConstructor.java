@@ -11,7 +11,9 @@ import lombok.Data;
 @AllArgsConstructor
 public class MockCommandWithNoPublicConstructor implements Command<MockCommandResponse> {
 
-  private final String type = "MockCommandWithNoPublicConstructor";
+  public static final String TYPE = "MockCommandWithNoPublicConstructor";
+
+  private final String type = TYPE;
 
   private String someProp;
 
