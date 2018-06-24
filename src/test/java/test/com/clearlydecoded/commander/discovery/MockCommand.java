@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MockCommand implements Command<MockCommandResponse> {
 
-  public static final String TYPE = "MockCommand";
+  private final String type = "MockCommand";
 
   private String command;
 
   @Override
   public String getType() {
-    return MockCommand.TYPE;
+    return type;
   }
 }

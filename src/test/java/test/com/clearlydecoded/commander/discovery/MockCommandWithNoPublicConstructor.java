@@ -11,12 +11,12 @@ import lombok.Data;
 @AllArgsConstructor
 public class MockCommandWithNoPublicConstructor implements Command<MockCommandResponse> {
 
-  public static final String TYPE = "MockCommandWithNoPublicConstructor";
+  private final String type = "MockCommandWithNoPublicConstructor";
 
   private String someProp;
 
   @Override
   public String getType() {
-    return MockCommandWithNoPublicConstructor.TYPE;
+    return type;
   }
 }

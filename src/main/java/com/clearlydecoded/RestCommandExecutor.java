@@ -153,6 +153,8 @@ public class RestCommandExecutor {
       throw new IllegalArgumentException(message, e);
     }
 
+    log.fine("Command about to be executed: " + command);
+
     // Execute de-serialized command
     CommandResponseT commandResponse = commandHandler.execute(command);
 
@@ -166,7 +168,7 @@ public class RestCommandExecutor {
       throw new IllegalArgumentException(message, e);
     }
 
-    log.fine("Full command response string sent: " + response);
+    log.fine("Full command response string to be sent: " + response);
 
     return response;
   }

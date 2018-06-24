@@ -63,7 +63,8 @@ public class DefaultCommandHandlerRegistry implements CommandHandlerRegistry {
 
     // If handlers is null, do nothing
     if (commandHandlers == null) {
-      log.info("No CommandHandlers provided. No CommandHandlers will be registered or available.");
+      log.warning(
+          "No CommandHandlers provided. No CommandHandlers will be registered or available.");
       return;
     }
 
@@ -76,7 +77,7 @@ public class DefaultCommandHandlerRegistry implements CommandHandlerRegistry {
       <? extends Command<? extends CommandResponse>, ? extends CommandResponse> getHandlerFor
       (String commandType) {
 
-    log.info("Retrieving handler for Command identifier type [" + commandType + "].");
+    log.fine("Retrieving handler for Command identifier type [" + commandType + "].");
 
     return handlerMap.get(commandType);
   }
@@ -84,7 +85,7 @@ public class DefaultCommandHandlerRegistry implements CommandHandlerRegistry {
   @Override
   public void removeHandler(String commandType) {
 
-    log.info("Removing handler for Command identifier type [" + commandType + "].");
+    log.fine("Removing handler for Command identifier type [" + commandType + "].");
 
     handlerMap.remove(commandType);
   }
