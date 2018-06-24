@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.clearlydecoded</groupId>
-  <artifactId>commander</artifactId>
+  <artifactId>rest-commander</artifactId>
   <version>1.0-SNAPSHOT</version>
 
   <parent>
