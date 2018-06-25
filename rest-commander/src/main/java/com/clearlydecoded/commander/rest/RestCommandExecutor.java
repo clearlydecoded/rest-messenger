@@ -78,7 +78,7 @@ public class RestCommandExecutor {
   /**
    * Creates mapping for the executeCommand method with the <code>endpointUri</code>.
    *
-   * @throws Exception TODO: decide what to do here.
+   * @throws Exception If Java reflection can't find the appropriate method on the controller.
    */
   @PostConstruct
   private void createRequestMapping() throws Exception {
