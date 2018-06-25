@@ -9,7 +9,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class TestApplication {
+public class Application {
 
   @Autowired
   private ApplicationContext springContext;
@@ -25,6 +25,6 @@ public class TestApplication {
   }
 
   public static void main(String[] args) {
-    SpringApplication.run(TestApplication.class, args);
+    SpringApplication.run(Application.class, args);
   }
 }
