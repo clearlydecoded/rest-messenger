@@ -7,7 +7,8 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.0.2.RELEASE</version>
+    <version>2.0.0.RELEASE</version>
+    <relativePath></relativePath>
   </parent>
 
   <groupId>com.clearlydecoded</groupId>
@@ -51,14 +52,14 @@
     </dependency>
   </dependencies>
 
-  <!--<build>-->
-    <!--<plugins>-->
-      <!--<plugin>-->
-        <!--<groupId>org.springframework.boot</groupId>-->
-        <!--<artifactId>spring-boot-maven-plugin</artifactId>-->
-      <!--</plugin>-->
-    <!--</plugins>-->
-  <!--</build>-->
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
 
