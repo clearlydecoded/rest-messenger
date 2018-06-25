@@ -2,12 +2,17 @@ package test.com.clearlydecoded.commander.rest;
 
 import com.clearlydecoded.commander.rest.RestCommandExecutor;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
-@SpringBootApplication
-public class Application {
+@Configuration
+@ComponentScan
+@EnableAutoConfiguration
+public class ApplicationConfig {
 
   /**
    * Use the Spring-based command handler registry factory to create the registry with automatically
@@ -19,6 +24,6 @@ public class Application {
   }
 
   public static void main(String[] args) {
-    SpringApplication.run(Application.class, args);
+    SpringApplication.run(ApplicationConfig.class, args);
   }
 }

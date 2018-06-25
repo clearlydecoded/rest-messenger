@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.util.NestedServletException;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = ApplicationConfig.class)
 @AutoConfigureMockMvc
 public class RestCommandExecutorTest {
 

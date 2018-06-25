@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
-@SpringBootTest
+@SpringBootTest(classes = ApplicationConfig.class)
 @RunWith(SpringRunner.class)
 public class SpringCommandHandlerRegistryFactoryTest {
 
