@@ -16,6 +16,8 @@ public class Command4 implements Command<Command4Response> {
 
   private String greeting;
 
+  private Person person;
+
   @Override
   public String getType() {
     return type;

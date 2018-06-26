@@ -1,8 +1,9 @@
 package test.com.clearlydecoded.commander.rest;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
@@ -25,7 +26,7 @@ public class RestCommandExecutorTest {
 
   @Test
   public void testSendingCommand4() throws Exception {
-    Command4 command4 = new Command4("Hello");
+    Command4 command4 = new Command4("Hello", new Person("Yaakov", "Chaikin"));
     Command4Response expectedResponse = new Command4Response("Echo of Hello");
     ObjectMapper mapper = new ObjectMapper();
     String command4String = mapper.writeValueAsString(command4);
@@ -73,5 +74,14 @@ public class RestCommandExecutorTest {
     mvc.perform(
         post("/execute").accept(MediaType.APPLICATION_JSON).content(unsupportedCommandString)
             .contentType(MediaType.APPLICATION_JSON));
+  }
+
+  @Test
+  public void testGetAvailableCommands() throws Exception {
+    mvc.perform(get("/execute")).andDo(print());
+//        .contentType(MediaType.APPLICATION_JSON))
+//        .andExpect(status().isOk())
+//        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+//        .andExpect(content().string(expectedResponseString));
   }
 }

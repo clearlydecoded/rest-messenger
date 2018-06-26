@@ -7,7 +7,13 @@ import com.clearlydecoded.commander.CommandResponse;
 import com.clearlydecoded.commander.discovery.SpringCommandHandlerRegistryFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
+import com.fasterxml.jackson.module.jsonSchema.JsonSchemaGenerator;
+import com.fasterxml.jackson.module.jsonSchema.types.ObjectSchema;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import lombok.Setter;
 import lombok.extern.java.Log;
@@ -85,15 +91,24 @@ public class RestCommandExecutor {
 
     log.info("REST-COMMANDER endpoint configured for URI: /" + endpointUri);
 
-    // Wire up the request mapping
-    RequestMappingInfo requestMappingInfo = RequestMappingInfo
+    // Wire up request mapping for command execution
+    RequestMappingInfo commandExecutionRequestMappingInfo = RequestMappingInfo
         .paths(endpointUri)
         .methods(RequestMethod.POST)
         .consumes(MediaType.APPLICATION_JSON_VALUE)
         .produces(MediaType.APPLICATION_JSON_VALUE)
         .build();
-    requestMappingHandlerMapping.registerMapping(requestMappingInfo, this,
+    requestMappingHandlerMapping.registerMapping(commandExecutionRequestMappingInfo, this,
         RestCommandExecutor.class.getDeclaredMethod("executeCommand", String.class));
+
+    // Wire up request mapping for output of available commands in the system
+    RequestMappingInfo getAvailableCommandsRequestMappingInfo = RequestMappingInfo
+        .paths(endpointUri)
+        .methods(RequestMethod.GET)
+        .produces(MediaType.APPLICATION_JSON_VALUE)
+        .build();
+    requestMappingHandlerMapping.registerMapping(getAvailableCommandsRequestMappingInfo, this,
+        RestCommandExecutor.class.getDeclaredMethod("getAvailableCommands"));
   }
 
   /**
@@ -171,5 +186,43 @@ public class RestCommandExecutor {
     log.fine("Full command response string to be sent: " + response);
 
     return response;
+  }
+
+  /**
+   *
+   * @return TODO: not done yet.
+   */
+  private String getAvailableCommands() throws Exception {
+
+    // Retrieve all command handlers
+    List<CommandHandler<? extends Command<? extends CommandResponse>,
+        ? extends CommandResponse>> commandHandlers = commandHandlerRegistry.getHandlers();
+
+    // Retrieve all command handlers' command class types
+    List<Class<? extends Command<? extends CommandResponse>>> commandClassTypes = commandHandlers
+        .stream()
+        .map(CommandHandler::getCompatibleCommandClassType)
+        .collect(Collectors.toList());
+
+    ObjectMapper mapper = new ObjectMapper();
+    JsonSchemaGenerator schemaGenerator = new JsonSchemaGenerator(mapper);
+
+    // Instantiate each command so it can be serialized to JSON
+    List<Command<? extends CommandResponse>> commands = new ArrayList<>();
+    for (Class<? extends Command<? extends CommandResponse>> commandClass : commandClassTypes) {
+
+      System.out.println("************** " + commandClass + "**************");
+      ObjectSchema schema = schemaGenerator.generateSchema(commandClass).asObjectSchema();
+
+
+      String prettyPrint = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(schema);
+      System.out.println(prettyPrint);
+
+      Command<? extends CommandResponse> command = commandClass.newInstance();
+      commands.add(command);
+    }
+
+    String commandsJSON = mapper.writeValueAsString(commands);
+    return commands.toString();
   }
 }
