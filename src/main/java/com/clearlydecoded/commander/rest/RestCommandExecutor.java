@@ -223,6 +223,6 @@ public class RestCommandExecutor {
     }
 
     String commandsJSON = mapper.writeValueAsString(commands);
-    return commands.toString();
+    return commandsJSON;
   }
 }
