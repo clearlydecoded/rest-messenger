@@ -16,6 +16,31 @@
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
 
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>
+    Send REST-based commands which are automatically wired to command handlers
+  </description>
+  <url>https://github.com/clearlydecoded/rest-commander</url>
+  <licenses>
+    <license>
+      <name>The Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Yaakov Chaikin</name>
+      <email>yaakov@ClearlyDecoded.com</email>
+      <organization>ClearlyDecoded.com</organization>
+      <organizationUrl>https://ClearlyDecoded.com</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/clearlydecoded/rest-commander.git</connection>
+    <developerConnection>scm:git:ssh://github.com/clearlydecoded/rest-commander.git
+    </developerConnection>
+    <url>https://github.com/clearlydecoded/rest-commander/tree/master</url>
+  </scm>
 
   <properties>
     <java.version>1.8</java.version>
