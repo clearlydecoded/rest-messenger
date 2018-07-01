@@ -1,3 +1,11 @@
+/*
+ * Copyright 2018 Yaakov Chaikin (yaakov@ClearlyDecoded.com). Licensed under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in compliance with the License. You
+ * may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0. Unless required
+ * by applicable law or agreed to in writing, software distributed under the License is distributed
+ * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
+ * the License for the specific language governing permissions and limitations under the License.
+ */
 package com.clearlydecoded.commander.rest;
 
 import com.clearlydecoded.commander.Command;
@@ -7,13 +15,7 @@ import com.clearlydecoded.commander.CommandResponse;
 import com.clearlydecoded.commander.discovery.SpringCommandHandlerRegistryFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
-import com.fasterxml.jackson.module.jsonSchema.JsonSchemaGenerator;
-import com.fasterxml.jackson.module.jsonSchema.types.ObjectSchema;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import lombok.Setter;
 import lombok.extern.java.Log;
@@ -27,9 +29,19 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+/**
+ * {@link SpringRestCommander} class is a REST controller which wires itself to listen on
+ * <code>'/execute'</code> URI, or a custom configured URI (through
+ * <code>'com.clearlydecoded.commander.endpoint.uri'</code> property) and execute auto-discovered
+ * command handlers which implemente the {@link CommandHandler} interface and are injected into
+ * the Spring Context either manually or by using Spring annotations such as {@link
+ * org.springframework.stereotype.Service}, {@link org.springframework.stereotype.Component}, etc.
+ *
+ * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
+ */
 @RestController
 @Log
-public class RestCommandExecutor {
+public class SpringRestCommander {
 
   /**
    * URI of the endpoint. Defaults to '/execute' unless specified in Spring-based properties.
@@ -60,7 +72,7 @@ public class RestCommandExecutor {
    *
    * @param springContext Spring Application Context.
    */
-  public RestCommandExecutor(ApplicationContext springContext) {
+  public SpringRestCommander(ApplicationContext springContext) {
     this.commandHandlerRegistry = SpringCommandHandlerRegistryFactory
         .discoverCommandHandlersAndCreateRegistry(springContext);
   }
@@ -70,14 +82,14 @@ public class RestCommandExecutor {
    * <p>Use this constructor if you manually created {@link CommandHandlerRegistry}. Usually, you
    * would want to do this if you manually injected {@link CommandHandlerRegistry} into Spring
    * Context for some reason (e.g., you want to look up registered command handlers in your own
-   * code, outside of {@link RestCommandExecutor}). To create {@link CommandHandlerRegistry}
+   * code, outside of {@link SpringRestCommander}). To create {@link CommandHandlerRegistry}
    * populated with automatically discovered command handlers, use {@link
    * SpringCommandHandlerRegistryFactory} class.</p>
    *
    * @param commandHandlerRegistry Command handler registry used to look up command handlers based
    * on the type identifier of a command received through the REST call.
    */
-  public RestCommandExecutor(CommandHandlerRegistry commandHandlerRegistry) {
+  public SpringRestCommander(CommandHandlerRegistry commandHandlerRegistry) {
     this.commandHandlerRegistry = commandHandlerRegistry;
   }
 
@@ -89,7 +101,10 @@ public class RestCommandExecutor {
   @PostConstruct
   private void createRequestMapping() throws Exception {
 
-    log.info("REST-COMMANDER endpoint configured for URI: /" + endpointUri);
+    String message = "REST-COMMANDER endpoint configured for URI: /" + endpointUri;
+    message += ". To configure custom URI, supply 'com.clearlydecoded.commander.endpoint.uri'";
+    message += " property.";
+    log.info(message);
 
     // Wire up request mapping for command execution
     RequestMappingInfo commandExecutionRequestMappingInfo = RequestMappingInfo
@@ -99,7 +114,7 @@ public class RestCommandExecutor {
         .produces(MediaType.APPLICATION_JSON_VALUE)
         .build();
     requestMappingHandlerMapping.registerMapping(commandExecutionRequestMappingInfo, this,
-        RestCommandExecutor.class.getDeclaredMethod("executeCommand", String.class));
+        SpringRestCommander.class.getDeclaredMethod("execute", String.class));
 
     // Wire up request mapping for output of available commands in the system
     RequestMappingInfo getAvailableCommandsRequestMappingInfo = RequestMappingInfo
@@ -108,20 +123,20 @@ public class RestCommandExecutor {
         .produces(MediaType.APPLICATION_JSON_VALUE)
         .build();
     requestMappingHandlerMapping.registerMapping(getAvailableCommandsRequestMappingInfo, this,
-        RestCommandExecutor.class.getDeclaredMethod("getAvailableCommands"));
+        SpringRestCommander.class.getDeclaredMethod("getAvailableCommands"));
   }
 
   /**
    * Executes commands that are sent as part of the request body.
    *
-   * @param commandString JSON string representing the command to execute.
+   * @param command JSON string representing the command to execute.
    * @return Command response, serialized as a JSON string.
    */
   @SuppressWarnings("unchecked")
   private <CommandT extends Command<CommandResponseT>, CommandResponseT extends CommandResponse>
-  String executeCommand(@RequestBody String commandString) {
+  String execute(@RequestBody String command) {
 
-    log.fine("Full command string received: " + commandString);
+    log.fine("Full command string received: " + command);
 
     // Create Jackson JSON/Object mapper
     ObjectMapper mapper = new ObjectMapper();
@@ -129,9 +144,9 @@ public class RestCommandExecutor {
     // Deserialize command just to find out the type identifier
     CommandWithJustType typedCommand;
     try {
-      typedCommand = mapper.readValue(commandString, CommandWithJustType.class);
+      typedCommand = mapper.readValue(command, CommandWithJustType.class);
     } catch (IOException e) {
-      String message = "Error deserializing command type identifier from JSON: " + commandString;
+      String message = "Error deserializing command type identifier from JSON: " + command;
       log.severe(message);
       throw new IllegalArgumentException(message, e);
     }
@@ -156,22 +171,24 @@ public class RestCommandExecutor {
           "Command with type [" + commandType + "] is not supported.");
     }
 
-    // Attempt to deserialize commandString using command handler's command class
-    Class<CommandT> commandClassType = commandHandler
+    // Retrieve command handler's command class type
+    Class<CommandT> handlersCommandClassType = commandHandler
         .getCompatibleCommandClassType();
-    CommandT command;
+
+    // Attempt to deserialize string command using command handler's command class type
+    CommandT javaTypedCommand;
     try {
-      command = mapper.readValue(commandString, commandClassType);
+      javaTypedCommand = mapper.readValue(command, handlersCommandClassType);
     } catch (IOException e) {
-      String message = "Error deserializing " + commandString + " to " + commandClassType;
+      String message = "Error deserializing " + command + " to " + handlersCommandClassType;
       log.severe(message);
       throw new IllegalArgumentException(message, e);
     }
 
-    log.fine("Command about to be executed: " + command);
+    log.fine("Command about to be executed: " + javaTypedCommand);
 
     // Execute de-serialized command
-    CommandResponseT commandResponse = commandHandler.execute(command);
+    CommandResponseT commandResponse = commandHandler.execute(javaTypedCommand);
 
     // Generate raw JSON from command response
     String response;
@@ -189,40 +206,39 @@ public class RestCommandExecutor {
   }
 
   /**
-   *
    * @return TODO: not done yet.
    */
   private String getAvailableCommands() throws Exception {
 
-    // Retrieve all command handlers
-    List<CommandHandler<? extends Command<? extends CommandResponse>,
-        ? extends CommandResponse>> commandHandlers = commandHandlerRegistry.getHandlers();
-
-    // Retrieve all command handlers' command class types
-    List<Class<? extends Command<? extends CommandResponse>>> commandClassTypes = commandHandlers
-        .stream()
-        .map(CommandHandler::getCompatibleCommandClassType)
-        .collect(Collectors.toList());
-
-    ObjectMapper mapper = new ObjectMapper();
-    JsonSchemaGenerator schemaGenerator = new JsonSchemaGenerator(mapper);
-
-    // Instantiate each command so it can be serialized to JSON
-    List<Command<? extends CommandResponse>> commands = new ArrayList<>();
-    for (Class<? extends Command<? extends CommandResponse>> commandClass : commandClassTypes) {
-
-      System.out.println("************** " + commandClass + "**************");
-      ObjectSchema schema = schemaGenerator.generateSchema(commandClass).asObjectSchema();
-
-
-      String prettyPrint = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(schema);
-      System.out.println(prettyPrint);
-
-      Command<? extends CommandResponse> command = commandClass.newInstance();
-      commands.add(command);
-    }
-
-    String commandsJSON = mapper.writeValueAsString(commands);
-    return commandsJSON;
+    //    // Retrieve all command handlers
+    //    List<CommandHandler<? extends Command<? extends CommandResponse>,
+    //        ? extends CommandResponse>> commandHandlers = commandHandlerRegistry.getHandlers();
+    //
+    //    // Retrieve all command handlers' command class types
+    //    List<Class<? extends Command<? extends CommandResponse>>> commandClassTypes = commandHandlers
+    //        .stream()
+    //        .map(CommandHandler::getCompatibleCommandClassType)
+    //        .collect(Collectors.toList());
+    //
+    //    ObjectMapper mapper = new ObjectMapper();
+    //    JsonSchemaGenerator schemaGenerator = new JsonSchemaGenerator(mapper);
+    //
+    //    // Instantiate each command so it can be serialized to JSON
+    //    List<Command<? extends CommandResponse>> commands = new ArrayList<>();
+    //    for (Class<? extends Command<? extends CommandResponse>> commandClass : commandClassTypes) {
+    //
+    //      System.out.println("************** " + commandClass + "**************");
+    //      JsonSchema schema = schemaGenerator.generateSchema(commandClass);
+    //
+    //      String prettyPrint = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(schema);
+    //      System.out.println(prettyPrint);
+    //
+    //      Command<? extends CommandResponse> command = commandClass.newInstance();
+    //      System.out.println(mapper.writeValueAsString(command));
+    //      commands.add(command);
+    //    }
+    //
+    //    String commandsJSON = mapper.writeValueAsString(commands);
+    return "Not implemented yet";
   }
 }
