@@ -28,4 +28,9 @@ public class MockCommandHandler implements CommandHandler<MockCommand, MockComma
   public Class<MockCommand> getCompatibleCommandClassType() {
     return MockCommand.class;
   }
+
+  @Override
+  public Class<MockCommandResponse> getCompatibleCommandResponseClassType() {
+    return MockCommandResponse.class;
+  }
 }

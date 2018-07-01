@@ -36,4 +36,9 @@ public class Command5Handler implements CommandHandler<Command5, Command5Respons
   public Class<Command5> getCompatibleCommandClassType() {
     return Command5.class;
   }
+
+  @Override
+  public Class<Command5Response> getCompatibleCommandResponseClassType() {
+    return Command5Response.class;
+  }
 }

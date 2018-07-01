@@ -30,4 +30,9 @@ public class WontBeDiscoveredHandler implements CommandHandler<Command2, Command
   public Class<Command2> getCompatibleCommandClassType() {
     return null;
   }
+
+  @Override
+  public Class<Command2Response> getCompatibleCommandResponseClassType() {
+    return null;
+  }
 }

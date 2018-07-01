@@ -27,4 +27,9 @@ public class MockCommandWithNoPublicConstructorHandler implements
   public Class<MockCommandWithNoPublicConstructor> getCompatibleCommandClassType() {
     return MockCommandWithNoPublicConstructor.class;
   }
+
+  @Override
+  public Class<MockCommandResponse> getCompatibleCommandResponseClassType() {
+    return MockCommandResponse.class;
+  }
 }

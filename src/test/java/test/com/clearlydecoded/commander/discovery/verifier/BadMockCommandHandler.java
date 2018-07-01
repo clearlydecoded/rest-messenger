@@ -26,4 +26,9 @@ public class BadMockCommandHandler implements CommandHandler<BadMockCommand, Moc
   public Class<BadMockCommand> getCompatibleCommandClassType() {
     return BadMockCommand.class;
   }
+
+  @Override
+  public Class<MockCommandResponse> getCompatibleCommandResponseClassType() {
+    return MockCommandResponse.class;
+  }
 }

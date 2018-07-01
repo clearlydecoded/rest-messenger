@@ -29,4 +29,9 @@ public class Command2Handler implements CommandHandler<Command2, Command2Respons
   public Class<Command2> getCompatibleCommandClassType() {
     return Command2.class;
   }
+
+  @Override
+  public Class<Command2Response> getCompatibleCommandResponseClassType() {
+    return Command2Response.class;
+  }
 }

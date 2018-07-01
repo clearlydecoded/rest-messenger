@@ -27,4 +27,9 @@ public class MockCommandWithNoDefaultConstructorHandler implements
   public Class<MockCommandWithNoDefaultConstructor> getCompatibleCommandClassType() {
     return MockCommandWithNoDefaultConstructor.class;
   }
+
+  @Override
+  public Class<MockCommandResponse> getCompatibleCommandResponseClassType() {
+    return MockCommandResponse.class;
+  }
 }

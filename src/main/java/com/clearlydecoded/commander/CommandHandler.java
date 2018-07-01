@@ -54,4 +54,11 @@ public interface CommandHandler
    * @return Class type of the command this handler is able to process.
    */
   Class<CommandT> getCompatibleCommandClassType();
+
+  /**
+   * Retrieves class type of the command response this handler is set to return.
+   *
+   * @return Class type of the command response this handler is set to return.
+   */
+  Class<CommandResponseT> getCompatibleCommandResponseClassType();
 }
