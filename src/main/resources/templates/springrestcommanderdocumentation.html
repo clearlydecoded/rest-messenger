@@ -1,0 +1,91 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Spring Rest Commander Docs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    .command {
+      display: flex;
+      flex-direction: column;
+    }
+    .command-name {
+      font-size: 1.3em;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+    .command-details {
+      display: flex;
+      background-color: rgb(60, 63, 65);
+      color: papayawhip;
+    }
+    .model-details {
+      margin-right: 40px;
+      margin-left: 10px;
+      margin-top: 15px;
+      display: flex;
+      flex-direction: column;
+    }
+    .model-details textarea {
+      margin-top: 10px;
+    }
+    .copy-button {
+      font-size: 20px;
+      height: 30px;
+      align-self: flex-end;
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
+  </style>
+  <script>
+  function toggleCommandDetails(commandDetailsId) {
+    var currentState = document.getElementById(commandDetailsId).style.display;
+
+    // If none, change to flex
+    if (currentState === 'none') {
+      document.getElementById(commandDetailsId).style.display = 'flex';
+    } else {
+      document.getElementById(commandDetailsId).style.display = 'none';
+    }
+  }
+
+  </script>
+</head>
+
+<body>
+  <h1>Spring Rest Commander Docs for CONTEXT-NAME</h1>
+  <h2>Issue a POST request to CONTEXT-NAME/execute with one of these commands as payload</h2>
+
+  <div id="commands">
+    <div class="command">
+      <div class="command-name">
+        PersonCommand ---> PersonCommandResponse
+      </div>
+      <div class="command-details" id="PersonCommand" style="display: none;">
+        <div class="model-details">
+          <div>
+            Command Model
+          </div>
+          <textarea name="" cols="40" rows="20" disabled>
+          All kinds of bla bla here
+          </textarea>
+          <button class="copy-button">Copy</button>
+        </div>
+        <div class="model-details">
+          <div>
+            Command Response Model
+          </div>
+          <textarea name="" cols="40" rows="20" disabled>
+              All kinds of bla bla here
+          </textarea>
+          <button class="copy-button">Copy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

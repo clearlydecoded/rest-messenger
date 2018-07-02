@@ -8,10 +8,9 @@
  */
 package test.com.clearlydecoded.commander.rest;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
@@ -84,12 +83,12 @@ public class SpringRestCommanderTest {
             .contentType(MediaType.APPLICATION_JSON));
   }
 
-  @Test
-  public void testGetAvailableCommands() throws Exception {
-    mvc.perform(get("/execute")).andDo(print());
-//        .contentType(MediaType.APPLICATION_JSON))
-//        .andExpect(status().isOk())
-//        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
-//        .andExpect(content().string(expectedResponseString));
-  }
+  //  @Test
+  //  public void testGetAvailableCommands() throws Exception {
+  //    mvc.perform(get("/execute")).andDo(print());
+  ////        .contentType(MediaType.APPLICATION_JSON))
+  ////        .andExpect(status().isOk())
+  ////        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+  ////        .andExpect(content().string(expectedResponseString));
+  //  }
 }

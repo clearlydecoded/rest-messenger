@@ -25,7 +25,7 @@ public class ApplicationConfig {
    * discovered command handlers and expose it as a Bean into the Spring Context.
    */
   @Bean
-  public SpringRestCommander configureCommandHandlerRegistry(ApplicationContext springContext) {
+  public SpringRestCommander createSpringRestCommander(ApplicationContext springContext) {
     return new SpringRestCommander(springContext);
   }
 }

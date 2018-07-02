@@ -27,7 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -44,7 +43,6 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
  *
  * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
  */
-@Controller
 @Log
 public class SpringRestCommander {
 
@@ -58,7 +56,8 @@ public class SpringRestCommander {
   /**
    * Spring request mapping instance to use for wiring up request mapping for this endpoint.
    */
-  @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
+  @SuppressWarnings({"SpringJavaAutowiredFieldsWarningInspection",
+      "SpringJavaAutowiredMembersInspection"})
   @Autowired
   @Setter
   private RequestMappingHandlerMapping requestMappingHandlerMapping;
@@ -145,13 +144,13 @@ public class SpringRestCommander {
         SpringRestCommander.class.getDeclaredMethod("execute", String.class));
 
     // Wire up request mapping for output of available commands in the system
-    RequestMappingInfo getAvailableCommandsRequestMappingInfo = RequestMappingInfo
-        .paths(endpointUri)
-        .methods(RequestMethod.GET)
-        .produces(MediaType.APPLICATION_JSON_VALUE)
-        .build();
-    requestMappingHandlerMapping.registerMapping(getAvailableCommandsRequestMappingInfo, this,
-        SpringRestCommander.class.getDeclaredMethod("getAvailableCommands"));
+    //    RequestMappingInfo getAvailableCommandsRequestMappingInfo = RequestMappingInfo
+    //        .paths(endpointUri)
+    //        .methods(RequestMethod.GET)
+    //        .produces(MediaType.TEXT_HTML_VALUE)
+    //        .build();
+    //    requestMappingHandlerMapping.registerMapping(getAvailableCommandsRequestMappingInfo, this,
+    //        SpringRestCommander.class.getDeclaredMethod("getAvailableCommands", Model.class));
   }
 
   /**
@@ -234,40 +233,17 @@ public class SpringRestCommander {
     return response;
   }
 
-  /**
-   * @return TODO: not done yet.
-   */
-  private String getAvailableCommands() throws Exception {
-
-    //    // Retrieve all command handlers
-    //    List<CommandHandler<? extends Command<? extends CommandResponse>,
-    //        ? extends CommandResponse>> commandHandlers = commandHandlerRegistry.getHandlers();
-    //
-    //    // Retrieve all command handlers' command class types
-    //    List<Class<? extends Command<? extends CommandResponse>>> commandClassTypes = commandHandlers
-    //        .stream()
-    //        .map(CommandHandler::getCompatibleCommandClassType)
-    //        .collect(Collectors.toList());
-    //
-    //    ObjectMapper mapper = new ObjectMapper();
-    //    JsonSchemaGenerator schemaGenerator = new JsonSchemaGenerator(mapper);
-    //
-    //    // Instantiate each command so it can be serialized to JSON
-    //    List<Command<? extends CommandResponse>> commands = new ArrayList<>();
-    //    for (Class<? extends Command<? extends CommandResponse>> commandClass : commandClassTypes) {
-    //
-    //      System.out.println("************** " + commandClass + "**************");
-    //      JsonSchema schema = schemaGenerator.generateSchema(commandClass);
-    //
-    //      String prettyPrint = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(schema);
-    //      System.out.println(prettyPrint);
-    //
-    //      Command<? extends CommandResponse> command = commandClass.newInstance();
-    //      System.out.println(mapper.writeValueAsString(command));
-    //      commands.add(command);
-    //    }
-    //
-    //    String commandsJSON = mapper.writeValueAsString(commands);
-    return "Not implemented yet";
-  }
+  //  /**
+  //   * Directs the request to the HTML page that displays all the documentation for the system
+  //   * discovered command handlers.
+  //   *
+  //   * @param model Shared model with the view.
+  //   * @return ID of the page to serve to the client.
+  //   */
+  //  private String getAvailableCommands(Model model) {
+  //
+  //    // Store handler docs in the model and send control to documentation HTML page
+  //    model.addAttribute("docs", handlerDocs);
+  //    return "springrestcommanderdocumentation";
+  //  }
 }
