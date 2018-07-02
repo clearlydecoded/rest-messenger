@@ -11,9 +11,11 @@ package test.com.clearlydecoded.commander.discovery.verifier;
 import com.clearlydecoded.commander.CommandResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class MockCommandResponse implements CommandResponse {
 
   private String response;

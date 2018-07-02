@@ -84,12 +84,12 @@ public class SpringRestCommanderTest {
             .contentType(MediaType.APPLICATION_JSON));
   }
 
-//  @Test
-//  public void testGetAvailableCommands() throws Exception {
-//    mvc.perform(get("/execute")).andDo(print());
-////        .contentType(MediaType.APPLICATION_JSON))
-////        .andExpect(status().isOk())
-////        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
-////        .andExpect(content().string(expectedResponseString));
-//  }
+  @Test
+  public void testGetAvailableCommands() throws Exception {
+    mvc.perform(get("/execute")).andDo(print());
+//        .contentType(MediaType.APPLICATION_JSON))
+//        .andExpect(status().isOk())
+//        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+//        .andExpect(content().string(expectedResponseString));
+  }
 }

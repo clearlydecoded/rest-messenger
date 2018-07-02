@@ -38,4 +38,11 @@ public class CommandHandlerVerifierTest {
     CommandHandlerVerifier
         .verifyCommandHandlerCompatibility(new BadMockCommandHandler());
   }
+
+  @Test(expected = IllegalStateException.class)
+  public void testVerifyCommandHandlerCompatibilityBadCommandResponse() {
+    CommandHandlerVerifier
+        .verifyCommandHandlerCompatibility(
+            new MockCommandWithResponseWithNoDefaultConstructorHandler());
+  }
 }

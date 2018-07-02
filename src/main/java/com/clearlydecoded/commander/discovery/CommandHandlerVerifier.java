@@ -37,7 +37,7 @@ public class CommandHandlerVerifier {
    * </p>
    * <p>
    * Calling this method prevents {@link CommandHandler}/{@link Command} pair that are liked by
-   * Java type but produce inconsistent string-based type identifiers.
+   * Java type to produce inconsistent string-based type identifiers.
    * </p>
    *
    * @param commandHandler {@link CommandHandler} to verify for correct {@link Command} type
@@ -45,6 +45,7 @@ public class CommandHandlerVerifier {
    * @throws IllegalStateException if <code>commandHandler</code> is found to command type
    * incompatibility.
    */
+  @SuppressWarnings("unused")
   public static void verifyCommandHandlerCompatibility(
       CommandHandler<? extends Command<? extends CommandResponse>,
           ? extends CommandResponse> commandHandler)
@@ -86,6 +87,24 @@ public class CommandHandlerVerifier {
               "implementations must have public no-argument constructor.";
       String message = MessageFormat
           .format(messageTemplate, commandHandler.getClass(), handlerCommandClassType);
+
+      // Rethrow as IllegalStateException
+      log.severe(message);
+      throw new IllegalStateException(message, e);
+    }
+
+    // Verify command response has a public no-argument constructor
+    Class<? extends CommandResponse> commandResponseClass = commandHandler
+        .getCompatibleCommandResponseClassType();
+    try {
+      CommandResponse commandResponse = commandResponseClass.newInstance();
+    } catch (InstantiationException | IllegalAccessException e) {
+      String messageTemplate =
+          "Error trying to verify command commandHandler [{0}]. Did not find " +
+              "public no-argument constructor on the command response class of type [{1}]. " +
+              "Command response implementations must have public no-argument constructor.";
+      String message = MessageFormat
+          .format(messageTemplate, commandHandler.getClass(), commandResponseClass);
 
       // Rethrow as IllegalStateException
       log.severe(message);

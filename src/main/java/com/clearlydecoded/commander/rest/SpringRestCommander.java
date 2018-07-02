@@ -13,9 +13,13 @@ import com.clearlydecoded.commander.CommandHandler;
 import com.clearlydecoded.commander.CommandHandlerRegistry;
 import com.clearlydecoded.commander.CommandResponse;
 import com.clearlydecoded.commander.discovery.SpringCommandHandlerRegistryFactory;
+import com.clearlydecoded.commander.documentation.RestCommandHandlerDocumentation;
+import com.clearlydecoded.commander.documentation.RestCommandHandlerDocumentationGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import lombok.Setter;
 import lombok.extern.java.Log;
@@ -23,9 +27,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
@@ -39,7 +44,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
  *
  * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
  */
-@RestController
+@Controller
 @Log
 public class SpringRestCommander {
 
@@ -65,6 +70,12 @@ public class SpringRestCommander {
   private CommandHandlerRegistry commandHandlerRegistry;
 
   /**
+   * List of documentation classes that can be used to describe inputs/outputs of all the commands
+   * registered in the system.
+   */
+  private List<RestCommandHandlerDocumentation> handlerDocs;
+
+  /**
    * Constructor.
    * <p>Use this constructor unless your application needs direct access to the {@link
    * CommandHandlerRegistry}. (Hint: in majority of cases, you don't need {@link
@@ -73,8 +84,8 @@ public class SpringRestCommander {
    * @param springContext Spring Application Context.
    */
   public SpringRestCommander(ApplicationContext springContext) {
-    this.commandHandlerRegistry = SpringCommandHandlerRegistryFactory
-        .discoverCommandHandlersAndCreateRegistry(springContext);
+    this(SpringCommandHandlerRegistryFactory
+        .discoverCommandHandlersAndCreateRegistry(springContext));
   }
 
   /**
@@ -91,6 +102,23 @@ public class SpringRestCommander {
    */
   public SpringRestCommander(CommandHandlerRegistry commandHandlerRegistry) {
     this.commandHandlerRegistry = commandHandlerRegistry;
+
+    handlerDocs = new ArrayList<>();
+
+    try {
+      // Generate docs for command handlers
+      for (CommandHandler commandHandler : commandHandlerRegistry.getHandlers()) {
+        RestCommandHandlerDocumentation documentation = RestCommandHandlerDocumentationGenerator
+            .generateDocumentation(commandHandler);
+        handlerDocs.add(documentation);
+      }
+    } catch (Exception e) {
+      String message = "Generating command handler documentation failed. However, this will NOT" +
+          "affect the functionality of the rest of the application. While it is most probably a " +
+          "bug, it can be safely ignored because it only affects the documentation of the REST "
+          + "API.";
+      log.severe(message);
+    }
   }
 
   /**
@@ -132,6 +160,7 @@ public class SpringRestCommander {
    * @param command JSON string representing the command to execute.
    * @return Command response, serialized as a JSON string.
    */
+  @ResponseBody
   @SuppressWarnings("unchecked")
   private <CommandT extends Command<CommandResponseT>, CommandResponseT extends CommandResponse>
   String execute(@RequestBody String command) {
