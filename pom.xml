@@ -12,16 +12,16 @@
   </parent>
 
   <groupId>com.clearlydecoded</groupId>
-  <artifactId>rest-commander</artifactId>
+  <artifactId>rest-messenger</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.0</version>
+  <version>1.0.0-SNAPSHOT</version>
 
   <name>rest-commander</name>
   <description>
-    Send REST-based commands which are automatically wired to auto-discovered command handlers
+    Send REST-based messages which are automatically wired to auto-discovered message handlers
     without losing compile-time strong Java typing, ensuring robustness of your code.
   </description>
-  <url>https://github.com/clearlydecoded/rest-commander</url>
+  <url>https://github.com/clearlydecoded/rest-messenger</url>
   <licenses>
     <license>
       <name>The Apache License, Version 2.0</name>
@@ -37,10 +37,10 @@
     </developer>
   </developers>
   <scm>
-    <connection>scm:git:git://github.com/clearlydecoded/rest-commander.git</connection>
-    <developerConnection>scm:git:ssh://github.com/clearlydecoded/rest-commander.git
+    <connection>scm:git:git://github.com/clearlydecoded/rest-messenger.git</connection>
+    <developerConnection>scm:git:ssh://github.com/clearlydecoded/rest-messenger.git
     </developerConnection>
-    <url>https://github.com/clearlydecoded/rest-commander/tree/master</url>
+    <url>https://github.com/clearlydecoded/rest-messenger/tree/master</url>
   </scm>
 
   <properties>
