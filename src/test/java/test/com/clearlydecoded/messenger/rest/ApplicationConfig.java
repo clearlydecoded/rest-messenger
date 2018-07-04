@@ -21,8 +21,8 @@ import org.springframework.context.annotation.Configuration;
 public class ApplicationConfig {
 
   /**
-   * Use the Spring-based command handler registry factory to create the registry with automatically
-   * discovered command handlers and expose it as a Bean into the Spring Context.
+   * Use the Spring-based message handler registry factory to create the registry with automatically
+   * discovered message handlers and expose it as a Bean into the Spring Context.
    */
   @Bean
   public SpringRestMessenger createSpringRestCommander(ApplicationContext springContext) {
