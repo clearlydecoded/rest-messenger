@@ -73,7 +73,7 @@ public class RestMessageProcessorDocumentationGenerator {
     String messageDocs = generateMessageDocumentation(messageClass);
     String messageResponseDocs = generateMessageResponseDocumentation(messageResponseClass);
 
-    // Set up the message handler documentation object
+    // Set up the message processor documentation object
     documentation.setMessageModel(messageDocs);
     documentation.setMessageShortClassName(messageClass.getSimpleName());
     documentation.setMessageResponseModel(messageResponseDocs);

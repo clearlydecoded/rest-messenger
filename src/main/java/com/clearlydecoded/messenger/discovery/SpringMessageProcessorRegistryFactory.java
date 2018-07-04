@@ -19,7 +19,7 @@ import org.springframework.context.ApplicationContext;
  *
  * <p>In order to be discovered,
  * these handlers have to be in the Application Context (i.e., Spring Context). This can be
- * accomplished by marking handler classes with {@link org.springframework.stereotype.Service},
+ * accomplished by marking processor classes with {@link org.springframework.stereotype.Service},
  * or {@link org.springframework.stereotype.Component}, etc.</p>
  *
  * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)

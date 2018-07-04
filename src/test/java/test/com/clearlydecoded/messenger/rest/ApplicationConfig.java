@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Configuration;
 public class ApplicationConfig {
 
   /**
-   * Use the Spring-based message handler registry factory to create the registry with automatically
+   * Use the Spring-based message processor registry factory to create the registry with automatically
    * discovered message handlers and expose it as a Bean into the Spring Context.
    */
   @Bean

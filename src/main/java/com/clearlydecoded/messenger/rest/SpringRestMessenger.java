@@ -190,7 +190,7 @@ public class SpringRestMessenger {
 
     // Throw exception if no such message processor is found
     if (messageProcessor == null) {
-      String logMessage = "No registered message handler found for message type [" + messageType
+      String logMessage = "No registered message processor found for message type [" + messageType
           + "]. If you think you have a MessageProcessor class implemented for this message type,"
           + " check that your message processor class is injected into the Spring Context either"
           + " by manually injecting it (in an @Configuration class) or by having the message"
