@@ -296,8 +296,13 @@ The server will respond with:
 ## Fully Functional Demo Application
 To see full source code of an application using rest-messenger for demo purposes, see the [rest-messenger-demo](https://github.com/clearlydecoded/rest-messenger-demo) repository.
 
-## Additional Info
+## FAQ
 
-* Want to contribute or have a question? File a new issue or comment on an existing one.
-* Want to make your POJOs even cleaner, check out [Project Lombok](https://projectlombok.org/). You'll never write another getter/setter by hand again. The code is SO much cleaner looking. For an example, take a look at [`MaxSugarOrder.java`](https://github.com/clearlydecoded/rest-messenger-demo/blob/master/src/main/java/com/clearlydecoded/messenger/demo/message/MaxSugarOrder.java) and [`MaxSugerOrderResponse.java`](https://github.com/clearlydecoded/rest-messenger-demo/blob/master/src/main/java/com/clearlydecoded/messenger/demo/message/MaxSugarOrderResponse.java) in the [rest-messenger-demo](https://github.com/clearlydecoded/rest-messenger-demo) repository.
+* Q: How can I ask a question about any of this or contribute to the framework? <br>
+  A: File a new issue or comment on an existing one.
+* Q: Can the POJO code be even cleaner? <br>
+  A: YES! check out [Project Lombok](https://projectlombok.org/). You'll never write another getter/setter by hand again. The code is SO much cleaner looking. For an example, take a look at [`MaxSugarOrder.java`](https://github.com/clearlydecoded/rest-messenger-demo/blob/master/src/main/java/com/clearlydecoded/messenger/demo/message/MaxSugarOrder.java) and [`MaxSugerOrderResponse.java`](https://github.com/clearlydecoded/rest-messenger-demo/blob/master/src/main/java/com/clearlydecoded/messenger/demo/message/MaxSugarOrderResponse.java) in the [rest-messenger-demo](https://github.com/clearlydecoded/rest-messenger-demo) repository.
+* Q: So, what's the disadvange of using this pattern and framework? <br>
+  A: 3 classes are required to accomplish *each* request-process-response. Luckily, these are simple classes and a significantly larger number of Java files in your project isn't a problem, especially if you neatly organize them into some `mesage`, `response`, and `processor` packages. You can always organize those even further, of course. You should also be able to easily tell what the message is going to accomplish by simply looking at the Java file name. In other words, `UpdateIndex.java` should give you a strong hint as to what it does.
+  
 
