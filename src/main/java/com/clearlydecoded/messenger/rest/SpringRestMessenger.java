@@ -210,16 +210,17 @@ public class SpringRestMessenger {
     try {
       javaTypedMessage = mapper.readValue(message, processorMessageClassType);
     } catch (IOException e) {
-      String logMessage = "Error deserializing " + message + " to " + processorMessageClassType
-          + ". Please verify that the message is valid JSON and that the required message"
-          + " properties are included.";
-      log.severe(logMessage);
+      String errorMessage = "Error deserializing " + message + " to " + processorMessageClassType
+          + ". Please verify that the message is valid JSON, no unrelated properties are included,"
+          + " and that the required message properties are present.";
 
       // Add to the log message a hint for server-side developers
-      logMessage += " Also, verify that the [" + processorMessageClassType + "] contains correct"
-          + " Jackson annotations for properties that can be ignored and properties that are"
-          + " required.";
-      throw new IllegalArgumentException(logMessage, e);
+      String logMessage = " Also, verify that the [" + processorMessageClassType + "] contains"
+          + " correct Jackson annotations for properties that can be ignored and properties that"
+          + " are required.";
+      log.severe(errorMessage + logMessage);
+
+      throw new IllegalArgumentException(errorMessage, e);
     }
 
     log.fine("Message about to be processed: " + javaTypedMessage);
