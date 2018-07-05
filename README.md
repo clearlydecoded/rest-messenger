@@ -21,7 +21,7 @@ One of the fairly standard integration design patterns (i.e, approaches) for cre
 
 However, when it comes to implementing this pattern in Java, especially when receiving these requests over HTTP as JSON, there are some challenges:
 * We want Java's strong *compile-time* type verification benefits but a serialized generic message coming in as JSON doesn't contain any Java typing information. It's just a string. Creating a separate endpoint for each type of message creates more boilerplate code, increasing complexity and uncertainty of which endpoint to use when and how to use it, especially as the API grows in size.
-* We have have a single endpoint accept all kinds of messages, but we don't want to have to update some giant `switch` statement every time we add a new message to our API. This is tedious and error-prone.
+* We'd have a single endpoint accept all kinds of messages, but we don't want to have to update some giant `switch` statement every time we add a new message to our API. This is tedious and error-prone.
 * We need an easy and robust mechanism to connect these messages to their classes that process them.
 * We need a *compile-time* mechanism to ensure that our message and message response POJOs are compatible and that there is no way to make a mistake of which message is corresponds to which response.
 
