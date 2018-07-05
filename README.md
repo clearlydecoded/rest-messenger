@@ -259,7 +259,7 @@ public class GreetMeMessageProcessor implements
 }
 ```
 
-*TIP! Once you typed in `implements MessageProcessor<GreetMeMessage, GreetMeMessageResponse>`, have your IDE generate the interface-required methods for you automatically.*
+*TIP!* Once you type in `implements MessageProcessor<GreetMeMessage, GreetMeMessageResponse>`, have your IDE generate the interface-required methods for you automatically.
 
 Now, *"rinse and repeat"* as you expand your API.
 
