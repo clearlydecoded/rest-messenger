@@ -13,7 +13,7 @@ It is very often the case that the standard REST conventions of providing endpoi
 
 In many such cases (or even if you feel like it's appropriate to break the REST convention), you'd need to implement an API that is robust, easy to understand, and easy to use for the clients of your API.
 
-Going to full blown Enterprise Integration frameworks like Spring Integration or Apache Camel is overkill in a *lot* of scenarios. In the opinions of people a lot smarter than I, you should always strive for simple solutions to complex problems, not complicated solutions to simple problems. Use those frameworks when they make super complex things simpler, not straightforward use cases complicated. (TODO watch that video again and quote from there.)
+Going to full blown Enterprise Integration frameworks like Spring Integration or Apache Camel is overkill in a *lot* of scenarios. In the opinions of people a lot smarter than I, you should always strive for simple solutions to complex problems, not complicated solutions to simple problems. Use those frameworks when they make super complex things simpler, not straightforward use cases complicated.
 
 In most cases, projects are looking for a very simple and straightforward way to expose their API to outside clients, be they truly external or simply a microservice which is part of an enterprise integration effort.
 
