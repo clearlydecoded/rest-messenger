@@ -263,7 +263,7 @@ public class GreetMeMessageProcessor implements
 
 Now, *"rinse and repeat"* as you expand your API.
 
-✅ That's it! 2 simple steps to configure. 3 simple classes for a very clearly defined endpoint API.
+✅ That's it! 3 simple classes for a very clearly defined endpoint API.
 
 Now, start up the application with a simple maven command:
 ```bash
