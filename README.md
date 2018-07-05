@@ -45,7 +45,7 @@ Set your stopwatch. This will take 5 minutes.
 
 2 simple steps to configure the framework.
 
-**Step 1**: Start with a simple Spring Boot configured `pom.xml` and add `rest-commander` dependency to it.
+**Step 1**: Start with a simple Spring Boot configured `pom.xml` and add `rest-messenger` dependency to it.
 
 For example:
 ```xml
