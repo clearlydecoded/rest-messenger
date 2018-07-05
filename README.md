@@ -3,7 +3,7 @@ Easily create and expose a Spring REST-based API implementation, without losing 
 
 It's so easy to use, you can start implementing your APIs in under 5 minutes. 
 
-Yes, really. Just see the How section.
+Yes, really. Just see the [How](#how) section.
 
 ## Why?
 
