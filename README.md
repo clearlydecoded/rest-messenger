@@ -1,7 +1,7 @@
 # REST Messenger
 Easily create and expose a Spring REST-based API implementation, without losing strong Java message typing, improving simplicity and robustness of your implementations.
 
-It's so easy to use, you can start implementing your production APIs in under 5 minutes. 
+It's so easy to use, you can start implementing your APIs in under 5 minutes. 
 
 Yes, really. Just see the How section.
 
