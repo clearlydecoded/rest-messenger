@@ -296,5 +296,5 @@ To see full source code of an application using rest-messenger for demo purposes
 ## Additional Info
 
 * Want to contribute or have a question? File a new issue or comment on an existing one.
-* Want to make your POJOs even cleaner, check out [Project Lombok](https://projectlombok.org/). You'll never write another getter/setter by hand again. The code is SO much cleaner looking. For an example, take a look at [`MaxSugarOrder.java`](https://github.com/clearlydecoded/rest-messenger-demo/blob/master/src/main/java/com/clearlydecoded/messenger/demo/message/MaxSugarOrder.java) in the [rest-messenger-demo](https://github.com/clearlydecoded/rest-messenger-demo) repository.
+* Want to make your POJOs even cleaner, check out [Project Lombok](https://projectlombok.org/). You'll never write another getter/setter by hand again. The code is SO much cleaner looking. For an example, take a look at [`MaxSugarOrder.java`](https://github.com/clearlydecoded/rest-messenger-demo/blob/master/src/main/java/com/clearlydecoded/messenger/demo/message/MaxSugarOrder.java) and [`MaxSugerOrderResponse.java`](https://github.com/clearlydecoded/rest-messenger-demo/blob/master/src/main/java/com/clearlydecoded/messenger/demo/message/MaxSugarOrderResponse.java) in the [rest-messenger-demo](https://github.com/clearlydecoded/rest-messenger-demo) repository.
 
