@@ -11,7 +11,7 @@ Yes, really. Just see the [How](#how) section.
 
 It is very often the case that the standard REST conventions of providing separate endpoints for CRUD (**C**reate with `POST`, **R**ead with `GET`, etc.) don't fit with some use cases. This is especially true when the API you are trying to create is for a microservice.
 
-In many such cases (or even if you feel like it's appropriate to break the REST convention), you'd need to implement an API that is robust, easy to understand, and easy to use for the clients of your API.
+In many such cases (or even if you feel like it's appropriate to break the REST convention), you'd need a way to implement the API in a way that is simple to define, simple to maintain, and simple to add new API functionality to.
 
 Going to full blown Enterprise Integration frameworks like Spring Integration or Apache Camel is overkill in a *lot* of scenarios. In the opinions of people a lot smarter than I, you should always strive for simple solutions to complex problems, not complicated solutions to simple problems. Use those frameworks when they make super complex things simpler, not straightforward use cases complicated.
 
