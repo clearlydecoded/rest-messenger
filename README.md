@@ -23,7 +23,7 @@ However, when it comes to implementing this pattern in Java, especially when rec
 * We want Java's strong *compile-time* type verification benefits but a serialized generic message coming in as JSON doesn't contain any Java typing information. It's just a string. Creating a separate endpoint for each type of message creates more boilerplate code, increasing complexity and uncertainty of which endpoint to use when and how to use it, especially as the API grows in size.
 * We'd like to have a single endpoint that accepts all kinds of messages (with a `type` property), but we don't want to have to update some giant `switch` statement every time we add a new message to our API. This is tedious and error-prone.
 * We need a simple and reliable mechanism to route these messages to the places in our system that process them. Ideally, we want the Java *compile-time* type verification involved so there would be no room for runtime errors.
-* We need a *compile-time* mechanism to ensure that our message, message response, and message processor are compatible and that there is no way to make a mistake about which message goes with which response and processor by which processor.
+* We need a *compile-time* mechanism to ensure that our message, message response, and message processor are compatible and that there is no way to make a mistake about which message goes with which response and is then processed by which processor.
 
 The REST-MESSENGER framework takes care of all of these challenges in a lightweight manner with *zero* effort on your part.
 
