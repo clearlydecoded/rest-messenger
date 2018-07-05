@@ -6,6 +6,9 @@ It's so easy to use, you can start implementing your production APIs in under 5 
 Yes, really. Just see the How section.
 
 ## Why?
+
+**If you don't care about philosophical blah blah, just skip this section. You've been warned. :-)**
+
 It is very often the case that the standard REST conventions of providing endpoints for CRUD (**C**reate with `POST`, **R**ead with `GET`, etc.) don't fit with some use cases. This is especially true when the API you are trying to create is a microservice.
 
 In many such cases (or even if you feel like it's appropriate to break the REST convention), you'd need to implement an API that is robust, easy to understand, and easy to use for the clients of your API.
