@@ -22,8 +22,8 @@ One of the fairly standard integration design patterns (i.e, approaches) for cre
 However, when it comes to implementing this pattern in Java, especially when receiving these requests over HTTP as JSON, there are some challenges:
 * We want Java's strong *compile-time* type verification benefits but a serialized generic message coming in as JSON doesn't contain any Java typing information. It's just a string. Creating a separate endpoint for each type of message creates more boilerplate code, increasing complexity and uncertainty of which endpoint to use when and how to use it, especially as the API grows in size.
 * We'd like to have a single endpoint that accepts all kinds of messages (with a `type` property), but we don't want to have to update some giant `switch` statement every time we add a new message to our API. This is tedious and error-prone.
-* We need an easy and robust mechanism to connect these messages to their classes that process them.
-* We need a *compile-time* mechanism to ensure that our message and message response POJOs are compatible and that there is no way to make a mistake of which message is corresponds to which response.
+* We need an simple and reliable mechanism to route these messages to the places in our system that process them. Ideally, we want the Java *compile-time* type verification involved so there would be no room for runtime errors.
+* We need a *compile-time* mechanism to ensure that our message, message response, and message processor are compatible and that there is no way to make a mistake of which message goes with which response and processor by which processor.
 
 The REST-MESSENGER framework takes care of all of these challenges in a lightweight manner with *zero* effort on your part.
 
