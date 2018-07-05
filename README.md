@@ -258,6 +258,8 @@ public class GreetMeMessageProcessor implements
   }
 }
 ```
+*Hint! Once you typed in `implements MessageProcessor<GreetMeMessage, GreetMeMessageResponse>`, have your IDE generate the interface-required methods for you automatically.*
+
 Now, *"rinse and repeat"* as you expand your API.
 
 ✅ That's it! 2 simple steps to configure. 3 simple classes for a very clearly defined endpoint API.
