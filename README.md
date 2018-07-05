@@ -122,7 +122,7 @@ public class AppConfig {
 
 ✅ That's it! Configuration is done!
 
-Now, we can start creating message, message response, and message processor classes.
+Now, we can start creating the message, message response, and message processor classes.
 
 **Step 1**: Define a POJO you expect as a message response (you'll see why response is first in a second).
 
