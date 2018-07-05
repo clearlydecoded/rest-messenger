@@ -96,7 +96,7 @@ For example:
 </project>
 ```
 
-**Step 2**: Create `rest-messenger` as a bean in a `@Configuration` class. (You can do this directly in the class annotated with `@SpringBootApplication` instead if you choose.)
+**Step 2**: Create `SpringRestMessenger` as a bean in a `@Configuration` class. (You can do this directly in the class annotated with `@SpringBootApplication` instead if you choose.)
 
 For example:
 ```java
