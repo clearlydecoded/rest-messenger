@@ -166,8 +166,8 @@ public class GreetMeMessageResponse implements MessageResponse {
 
 **Step 2**: Define a POJO you expect to receive as a message request.
 
-It must implement `com.clearlydecoded.messenger.Message` interface that is typed with the
-previously defined message response POJO. In this case, `GreetMeMessageResponse`.
+It must implement `com.clearlydecoded.messenger.Message` interface that be generically typed with the
+previously defined message response POJO class. In this case, `GreetMeMessageResponse`.
 
 For example:
 ```java
