@@ -29,7 +29,7 @@ The REST-MESSENGER framework takes care of all of these challenges in a lightwei
 
 Blah blah blah... Just tell me how to use it already!
 
-Ok, ok. If you are that impatient, just jump to the How section.
+Ok, ok. If you are that impatient, just jump to the [How](#how) section.
 
 ## Features
 * Single (and simple!) line of code to configure
