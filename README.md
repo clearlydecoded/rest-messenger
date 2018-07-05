@@ -126,7 +126,7 @@ Now, we can start creating the message, message response, and message processor 
 
 **Step 1**: Define a POJO you expect as a message response (you'll see why response is first in a second).
 
-It must implement `com.clearlydecoded.messenger.MessageResponse` interface.
+It must implement the `com.clearlydecoded.messenger.MessageResponse` interface.
 
 For example:
 ```java
@@ -166,7 +166,7 @@ public class GreetMeMessageResponse implements MessageResponse {
 
 **Step 2**: Define a POJO you expect to receive as a message request.
 
-It must implement `com.clearlydecoded.messenger.Message` interface that be generically typed with the
+It must implement the `com.clearlydecoded.messenger.Message` interface that be generically typed with the
 previously defined message response POJO class. In this case, `GreetMeMessageResponse`.
 
 For example:
