@@ -266,9 +266,11 @@ mvn spring-boot:run
 Look closely at the logs. Depending on the configured logging level, at the very least, you should see something like this:
 
 ```bash
-...DefaultMessageProcessorRegistry: Registered [GreetMeMessageProcessor] to process messages of type [GreetMeMessage] identified by [GreetMe]
+...DefaultMessageProcessorRegistry: Registered [GreetMeMessageProcessor] to process
+ messages of type [GreetMeMessage] identified by [GreetMe]
 ...
-...SpringRestMessenger: REST-MESSENGER endpoint configured for URI: /process. To configure custom URI, supply 'com.clearlydecoded.messenger.endpoint.uri' property.
+...SpringRestMessenger: REST-MESSENGER endpoint configured for URI: /process. To 
+configure custom URI, supply 'com.clearlydecoded.messenger.endpoint.uri' property.
 ```
 
 To test this message/response with a browser, download a REST client plugin (e.g., [Restlet Client for Chrome](https://chrome.google.com/webstore/detail/restlet-client-rest-api-t/aejoelaoggembcahagimdiliamlcdmfm)) and send the following in the body of the `POST` request to the `/process` URI:
