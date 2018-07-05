@@ -217,7 +217,7 @@ public class GreetMeMessage implements Message<GreetMeMessageResponse> {
 
 **Step 3**: Define message processor class.
 
-It must implement `com.clearlydecoded.messenger.MessageProcessor` interface, be annotated with either `@Service`, `@Component`, etc. for Spring to discover it, and be typed in terms of the previously defined message and message response POJOs. In this case, `GreetMeMessage` and `GreetMeMessageResponse`.
+The processor class must implement the `com.clearlydecoded.messenger.MessageProcessor` interface, be annotated with either `@Service`, `@Component`, etc. for Spring to discover it, and be generically typed with the previously defined message and message response POJO classes. In this case, `GreetMeMessage` and `GreetMeMessageResponse`.
 
 For example:
 ```java
