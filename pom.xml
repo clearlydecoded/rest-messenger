@@ -16,10 +16,11 @@
   <packaging>jar</packaging>
   <version>1.0.0</version>
 
-  <name>rest-commander</name>
+  <name>rest-messenger</name>
   <description>
-    Send REST-based messages which are automatically wired to auto-discovered message handlers
-    without losing compile-time strong Java typing, ensuring robustness of your code.
+    Easily create and expose a Spring REST-based API implementation, without losing strong Java
+    message typing, improving simplicity and robustness of your implementations. It's so easy
+    to use, you can start implementing your production APIs in under 5 minutes.
   </description>
   <url>https://github.com/clearlydecoded/rest-messenger</url>
   <licenses>
