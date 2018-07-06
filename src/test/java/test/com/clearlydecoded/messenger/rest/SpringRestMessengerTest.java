@@ -8,7 +8,9 @@
  */
 package test.com.clearlydecoded.messenger.rest;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -83,12 +85,12 @@ public class SpringRestMessengerTest {
             .contentType(MediaType.APPLICATION_JSON));
   }
 
-  //  @Test
-  //  public void testGetAvailableCommands() throws Exception {
-  //    mvc.perform(get("/process")).andDo(print());
-  ////        .contentType(MediaType.APPLICATION_JSON))
-  ////        .andExpect(status().isOk())
-  ////        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
-  ////        .andExpect(content().string(expectedResponseString));
-  //  }
+  @Test
+  public void testGetAvailableCommands() throws Exception {
+    mvc.perform(get("/process")).andDo(print());
+    //        .contentType(MediaType.APPLICATION_JSON))
+    //        .andExpect(status().isOk())
+    //        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+    //        .andExpect(content().string(expectedResponseString));
+  }
 }

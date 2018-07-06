@@ -27,9 +27,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
@@ -54,6 +57,9 @@ public class SpringRestMessenger {
   @Setter
   private String endpointUri;
 
+  @Autowired
+  private ApplicationContext springContext;
+
   /**
    * Spring request mapping instance to use for wiring up request mappings for this endpoint.
    */
@@ -62,6 +68,9 @@ public class SpringRestMessenger {
   @Autowired
   @Setter
   private RequestMappingHandlerMapping requestMappingHandlerMapping;
+
+  @Autowired
+  private SimpleUrlHandlerMapping simpleUrlHandlerMapping;
 
   /**
    * Message processor registry used to look up message processors based on the type identifier of a
@@ -121,6 +130,9 @@ public class SpringRestMessenger {
     }
   }
 
+  @Autowired
+  DispatcherServlet servlet;
+
   /**
    * Creates mapping for the <code>process</code> method with the <code>endpointUri</code>.
    *
@@ -144,13 +156,15 @@ public class SpringRestMessenger {
         SpringRestMessenger.class.getDeclaredMethod("process", String.class));
 
     // Wire up request mapping for output of processor docs
-    //    RequestMappingInfo getProcessorDocsRequestMappingInfo = RequestMappingInfo
-    //        .paths(endpointUri)
-    //        .methods(RequestMethod.GET)
-    //        .produces(MediaType.TEXT_HTML_VALUE)
-    //        .build();
-    //    requestMappingHandlerMapping.registerMapping(getProcessorDocsRequestMappingInfo, this,
-    //        SpringRestMessenger.class.getDeclaredMethod("getProcessorDocs", Model.class));
+    RequestMappingInfo getProcessorDocsRequestMappingInfo = RequestMappingInfo
+        .paths(endpointUri)
+        .methods(RequestMethod.GET)
+        .produces(MediaType.TEXT_HTML_VALUE)
+        .mappingName("")
+        .build();
+    requestMappingHandlerMapping.registerMapping(getProcessorDocsRequestMappingInfo, this,
+        SpringRestMessenger.class.getDeclaredMethod("getProcessorDocs", Model.class));
+
   }
 
   /**
@@ -243,17 +257,16 @@ public class SpringRestMessenger {
     return response;
   }
 
-  //  /**
-  //   * Directs the request to the HTML page that displays all the documentation for the system
-  //   * discovered message processors.
-  //   *
-  //   * @param model Shared model with the view.
-  //   * @return ID of the page to serve to the client.
-  //   */
-  //  private String getProcessorDocs(Model model) {
-  //
-  //    // Store processor docs in the model and send control to documentation HTML page
-  //    model.addAttribute("docs", processorDocs);
-  //    return "SpringRestProcessorDocumentation";
-  //  }
+  /**
+   * Directs the request to the HTML page that displays all the documentation for the system
+   * discovered message processors.
+   *
+   * @param model Shared model with the view.
+   * @return ID of the page to serve to the client.
+   */
+  private String getProcessorDocs(Model model) {
+
+    model.addAttribute("docs", processorDocs);
+    return "SpringRestProcessorDocumentation";
+  }
 }
