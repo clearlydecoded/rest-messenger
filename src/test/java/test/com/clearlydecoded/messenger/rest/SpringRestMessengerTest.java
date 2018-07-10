@@ -8,11 +8,12 @@
  */
 package test.com.clearlydecoded.messenger.rest;
 
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
@@ -23,6 +24,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.util.NestedServletException;
 
 /**
@@ -91,11 +93,15 @@ public class SpringRestMessengerTest {
   }
 
   @Test
-  public void testGetAvailableMessages() throws Exception {
-    mvc.perform(get("/process")).andDo(print());
-    //        .contentType(MediaType.APPLICATION_JSON))
-    //        .andExpect(status().isOk())
-    //        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
-    //        .andExpect(content().string(expectedResponseString));
+  public void testGetAvailableMessagesForwardsToCorrectTemplate() throws Exception {
+    MvcResult result = mvc.perform(get("/process"))
+        .andExpect(status().isOk())
+        .andExpect(view().name("SpringRestProcessorDocumentation"))
+        .andExpect(content().contentType(MediaType.TEXT_HTML_VALUE + ";charset=UTF-8"))
+        .andReturn();
+
+    String stringResult = result.getResponse().getContentAsString();
+    assertTrue("Response should at least contain snippet of HTML page.",
+        stringResult.contains("<h1>Spring Rest Messenger Docs for"));
   }
 }
