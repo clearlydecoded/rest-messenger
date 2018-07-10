@@ -39,13 +39,13 @@ public class SpringRestMessengerTest {
   private MockMvc mvc;
 
   @Test
-  public void testSendingCommand4() throws Exception {
-    Message4 command4 = new Message4("Hello", new Person("Yaakov", "Chaikin"));
+  public void testSendingMessage4() throws Exception {
+    Message4 message4 = new Message4("Hello", new Person("Yaakov", "Chaikin"));
     Message4Response expectedResponse = new Message4Response("Echo of Hello");
     ObjectMapper mapper = new ObjectMapper();
-    String command4String = mapper.writeValueAsString(command4);
+    String message4String = mapper.writeValueAsString(message4);
     String expectedResponseString = mapper.writeValueAsString(expectedResponse);
-    mvc.perform(post("/process").accept(MediaType.APPLICATION_JSON).content(command4String)
+    mvc.perform(post("/process").accept(MediaType.APPLICATION_JSON).content(message4String)
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -53,13 +53,13 @@ public class SpringRestMessengerTest {
   }
 
   @Test
-  public void testSendingCommand5Hello() throws Exception {
-    Message5 command5 = new Message5("Hello");
+  public void testSendingMessage5Hello() throws Exception {
+    Message5 message5 = new Message5("Hello");
     Message5Response expectedResponse = new Message5Response("Hi!");
     ObjectMapper mapper = new ObjectMapper();
-    String command4String = mapper.writeValueAsString(command5);
+    String message4String = mapper.writeValueAsString(message5);
     String expectedResponseString = mapper.writeValueAsString(expectedResponse);
-    mvc.perform(post("/process").accept(MediaType.APPLICATION_JSON).content(command4String)
+    mvc.perform(post("/process").accept(MediaType.APPLICATION_JSON).content(message4String)
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -67,13 +67,13 @@ public class SpringRestMessengerTest {
   }
 
   @Test
-  public void testSendingCommand5Bye() throws Exception {
-    Message5 command5 = new Message5("Good Bye");
+  public void testSendingMessage5Bye() throws Exception {
+    Message5 message5 = new Message5("Good Bye");
     Message5Response expectedResponse = new Message5Response("Bye!");
     ObjectMapper mapper = new ObjectMapper();
-    String command4String = mapper.writeValueAsString(command5);
+    String message4String = mapper.writeValueAsString(message5);
     String expectedResponseString = mapper.writeValueAsString(expectedResponse);
-    mvc.perform(post("/process").accept(MediaType.APPLICATION_JSON).content(command4String)
+    mvc.perform(post("/process").accept(MediaType.APPLICATION_JSON).content(message4String)
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -81,17 +81,17 @@ public class SpringRestMessengerTest {
   }
 
   @Test(expected = NestedServletException.class)
-  public void testSendingUnknownCommand() throws Exception {
-    UnsupportedMessage unsupportedCommand = new UnsupportedMessage();
+  public void testSendingUnknownMessage() throws Exception {
+    UnsupportedMessage unsupportedMessage = new UnsupportedMessage();
     ObjectMapper mapper = new ObjectMapper();
-    String unsupportedCommandString = mapper.writeValueAsString(unsupportedCommand);
+    String unsupportedMessageString = mapper.writeValueAsString(unsupportedMessage);
     mvc.perform(
-        post("/process").accept(MediaType.APPLICATION_JSON).content(unsupportedCommandString)
+        post("/process").accept(MediaType.APPLICATION_JSON).content(unsupportedMessageString)
             .contentType(MediaType.APPLICATION_JSON));
   }
 
   @Test
-  public void testGetAvailableCommands() throws Exception {
+  public void testGetAvailableMessages() throws Exception {
     mvc.perform(get("/process")).andDo(print());
     //        .contentType(MediaType.APPLICATION_JSON))
     //        .andExpect(status().isOk())
