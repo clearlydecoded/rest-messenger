@@ -25,6 +25,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.util.NestedServletException;
 
+/**
+ * {@link SpringRestMessengerTest} class tests the rest controller.
+ *
+ * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ApplicationConfig.class)
 @AutoConfigureMockMvc

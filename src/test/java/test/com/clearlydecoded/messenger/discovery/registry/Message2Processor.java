@@ -11,8 +11,13 @@ package test.com.clearlydecoded.messenger.discovery.registry;
 import com.clearlydecoded.messenger.MessageProcessor;
 import org.springframework.stereotype.Service;
 
+/**
+ * {@link Message2Processor} class is used for registry testing.
+ *
+ * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
+ */
 @Service
-public class Message2Handler implements MessageProcessor<Message2, Message2Response> {
+public class Message2Processor implements MessageProcessor<Message2, Message2Response> {
 
   @Override
   public Message2Response process(Message2 message) {

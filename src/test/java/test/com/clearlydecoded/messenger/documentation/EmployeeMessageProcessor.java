@@ -9,32 +9,35 @@
 package test.com.clearlydecoded.messenger.documentation;
 
 import com.clearlydecoded.messenger.MessageProcessor;
+import org.springframework.stereotype.Service;
 
 /**
- * {@link PersonMessageProcessor} class is used to test generation of documentation.
+ * {@link EmployeeMessageProcessor} class is used to test generation of documentation when the
+ * message has inherited properties.
  *
  * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
  */
-public class PersonMessageProcessor implements
-    MessageProcessor<PersonMessage, PersonMessageResponse> {
+@Service
+public class EmployeeMessageProcessor implements
+    MessageProcessor<EmployeeMessage, GetPersonMessageResponse> {
 
   @Override
-  public PersonMessageResponse process(PersonMessage message) {
+  public GetPersonMessageResponse process(EmployeeMessage message) {
     return null;
   }
 
   @Override
   public String getCompatibleMessageType() {
-    return PersonMessage.TYPE;
+    return EmployeeMessage.TYPE;
   }
 
   @Override
-  public Class<PersonMessage> getCompatibleMessage() {
-    return PersonMessage.class;
+  public Class<EmployeeMessage> getCompatibleMessage() {
+    return EmployeeMessage.class;
   }
 
   @Override
-  public Class<PersonMessageResponse> getCompatibleMessageResponseClassType() {
-    return PersonMessageResponse.class;
+  public Class<GetPersonMessageResponse> getCompatibleMessageResponseClassType() {
+    return GetPersonMessageResponse.class;
   }
 }

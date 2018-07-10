@@ -110,7 +110,7 @@ public class RestMessageProcessorDocumentationGenerator {
     List<String> jsonEntries = propNames.stream().map(propName -> {
 
       JsonSchema propSchema = propertiesMap.get(propName);
-      return getJsonEntry(propName, propSchema, spacePadding);
+      return getJsonEntry(propName, propSchema, spacePadding, true);
 
     }).collect(Collectors.toList());
 
@@ -137,29 +137,53 @@ public class RestMessageProcessorDocumentationGenerator {
     // Start with {
     model.append("{");
 
-    // If any schema, i.e., empty, skip the rest of generation
+    // If any schema, i.e., empty, skip the rest of model generation
     JsonSchema schema = schemaGenerator.generateSchema(messageResponseClass);
     if (!(schema instanceof AnySchema)) {
+
       // Generate message response object schema
       ObjectSchema messageResponseSchema = schemaGenerator.generateSchema(messageResponseClass)
           .asObjectSchema();
 
-      // Loop over all properties of message response object
+      // Generate object model
       Map<String, JsonSchema> propertiesMap = messageResponseSchema.getProperties();
-      Set<String> propNames = propertiesMap.keySet();
-      List<String> jsonEntries = propNames.stream().map(propName -> {
-
-        JsonSchema propSchema = propertiesMap.get(propName);
-        return getJsonEntry(propName, propSchema, spacePadding);
-
-      }).collect(Collectors.toList());
-
-      jsonEntries.forEach(model::append);
+      model.append(generateObjectModel(propertiesMap, false, spacePadding));
     }
 
     model.append("\n}");
 
     return model.toString();
+  }
+
+  /**
+   * Generates model of the properties of an object represented by the <code>propertiesMap</code>.
+   *
+   * @param firstPropertyAlreadyGenerated Indicates the object being modeled already has 1 or more
+   * properties inserted into its model. If false, that means that the first property inserted into
+   * the model should not have a leading comma.
+   * @param spacePadding Leading space to maintain for each property in the object.
+   * @return Model of the object represented by the <code>propertiesMap</code>.
+   */
+  private static StringBuilder generateObjectModel(Map<String, JsonSchema> propertiesMap,
+      boolean firstPropertyAlreadyGenerated, String spacePadding) {
+
+    // Skip first property's leading comma if first properties has NOT been generated
+    boolean skipLeadingComma = !firstPropertyAlreadyGenerated;
+
+    // Loop over properties and generate model
+    StringBuilder model = new StringBuilder();
+    for (String propName : propertiesMap.keySet()) {
+
+      // Do not insert leading comma for the first property
+      if (skipLeadingComma) {
+        model.append(getJsonEntry(propName, propertiesMap.get(propName), spacePadding, false));
+        skipLeadingComma = false;
+      } else {
+        model.append(getJsonEntry(propName, propertiesMap.get(propName), spacePadding, true));
+      }
+    }
+
+    return model;
   }
 
   /**
@@ -188,10 +212,13 @@ public class RestMessageProcessorDocumentationGenerator {
    * @param propName Name of the property which <code>jsonSchema</code> describes.
    * @param jsonSchema JSON schema object for the <code>propName</code>.
    * @param currentPadding Current space padding to use for indenting the output.
+   * @param insertLeadingComma Flag to indicate if a leading comma should be inserted before the
+   * property name (for an object property) or property value (for an array property). If the
+   * property is first property of an object or an array, the comma should be skipped.
    * @return JSON-formatted string that represents the model for the <code>propName</code>.
    */
   private static String getJsonEntry(String propName, JsonSchema jsonSchema,
-      String currentPadding) {
+      String currentPadding, boolean insertLeadingComma) {
 
     // Identify self-referencing
     if (jsonSchema instanceof ReferenceSchema) {
@@ -200,11 +227,14 @@ public class RestMessageProcessorDocumentationGenerator {
       int lastColonIndex = refObject.lastIndexOf(":");
       String objectReference = refObject.substring(lastColonIndex + 1);
 
+      // Insert comma if indicated
+      String possibleComma = insertLeadingComma ? "," : "";
+
       // If propName is null, assume inside of an array - no propName needed
       if (propName == null) {
-        return "\n" + currentPadding + objectReference + " self reference";
+        return possibleComma + "\n" + currentPadding + objectReference + " self reference";
       } else {
-        return "\n" + currentPadding + "\"" + propName + "\": " + objectReference
+        return possibleComma + "\n" + currentPadding + "\"" + propName + "\": " + objectReference
             + " self reference";
       }
     }
@@ -213,17 +243,23 @@ public class RestMessageProcessorDocumentationGenerator {
     JsonFormatTypes schemaType = jsonSchema.getType();
     switch (schemaType) {
       case ARRAY:
-        return getJsonEntry(propName, jsonSchema.asArraySchema(), currentPadding);
+        return getJsonEntry(propName, jsonSchema.asArraySchema(), currentPadding,
+            insertLeadingComma);
       case OBJECT:
-        return getJsonEntry(propName, jsonSchema.asObjectSchema(), currentPadding);
+        return getJsonEntry(propName, jsonSchema.asObjectSchema(), currentPadding,
+            insertLeadingComma);
       case BOOLEAN:
-        return getJsonEntry(propName, jsonSchema.asBooleanSchema(), currentPadding);
+        return getJsonEntry(propName, jsonSchema.asBooleanSchema(), currentPadding,
+            insertLeadingComma);
       case INTEGER:
-        return getJsonEntry(propName, jsonSchema.asIntegerSchema(), currentPadding);
+        return getJsonEntry(propName, jsonSchema.asIntegerSchema(), currentPadding,
+            insertLeadingComma);
       case NUMBER:
-        return getJsonEntry(propName, jsonSchema.asNumberSchema(), currentPadding);
+        return getJsonEntry(propName, jsonSchema.asNumberSchema(), currentPadding,
+            insertLeadingComma);
       case STRING:
-        return getJsonEntry(propName, jsonSchema.asStringSchema(), currentPadding);
+        return getJsonEntry(propName, jsonSchema.asStringSchema(), currentPadding,
+            insertLeadingComma);
       case ANY:
         return null;
       default:
@@ -238,26 +274,32 @@ public class RestMessageProcessorDocumentationGenerator {
    * @param propName Name of the property which <code>jsonSchema</code> describes.
    * @param arraySchema Array type schema object for the <code>propName</code>.
    * @param currentPadding Current space padding to use for indenting the output.
+   * @param insertLeadingComma Flag to indicate if a leading comma should be inserted before the
+   * property name (for an object property) or property value (for an array property). If the
+   * property is first property of an object or an array, the comma should be skipped.
    * @return JSON-formatted string that represents the model for the <code>propName</code>.
    */
   private static String getJsonEntry(String propName, ArraySchema arraySchema,
-      String currentPadding) {
+      String currentPadding, boolean insertLeadingComma) {
 
     String output;
 
+    // Insert comma if indicated
+    String possibleComma = insertLeadingComma ? "," : "";
+
     // If propName is null, assume another array inside of this one - no propName needed
     if (propName == null) {
-      output = "\n" + currentPadding + "[";
+      output = possibleComma + "\n" + currentPadding + "[";
     } else {
-      output = "\n" + currentPadding + "\"" + propName + "\": [";
+      output = possibleComma + "\n" + currentPadding + "\"" + propName + "\": [";
     }
 
-    // Double padding for subsequent properties
+    // Increase padding for subsequent properties
     String newSpacePadding = currentPadding + spacePadding;
 
     // Extract json entry from array items
     JsonSchema arrayItemsSchema = arraySchema.getItems().asSingleItems().getSchema();
-    output += getJsonEntry(null, arrayItemsSchema, newSpacePadding);
+    output += getJsonEntry(null, arrayItemsSchema, newSpacePadding, false);
 
     // Append ] at the same level as the array property name
     output += "\n" + currentPadding + "]";
@@ -272,31 +314,33 @@ public class RestMessageProcessorDocumentationGenerator {
    * @param propName Name of the property which <code>jsonSchema</code> describes.
    * @param objectSchema Object type schema object for the <code>propName</code>.
    * @param currentPadding Current space padding to use for indenting the output.
+   * @param insertLeadingComma Flag to indicate if a leading comma should be inserted before the
+   * property name (for an object property) or property value (for an array property). If the
+   * property is first property of an object or an array, the comma should be skipped.
    * @return JSON-formatted string that represents the model for the <code>propName</code>.
    */
   private static String getJsonEntry(String propName, ObjectSchema objectSchema,
-      String currentPadding) {
+      String currentPadding, boolean insertLeadingComma) {
 
     String output;
 
+    // Insert comma if indicated
+    String possibleComma = insertLeadingComma ? "," : "";
+
     // If propName is null, assume schema inside of an array - no propName needed
     if (propName == null) {
-      output = "\n" + currentPadding + "{";
+      output = possibleComma + "\n" + currentPadding + "{";
     } else {
-      output = "\n" + currentPadding + "\"" + propName + "\": {";
+      output = possibleComma + "\n" + currentPadding + "\"" + propName + "\": {";
     }
 
-    // Double spacing for subsequent properties
+    // Increase spacing for subsequent properties
     String newSpacePadding = currentPadding + spacePadding;
 
     // Loop over all properties object and append to output
     Map<String, JsonSchema> propertiesMap = objectSchema.getProperties();
-    StringBuilder outputBuilder = new StringBuilder();
-    for (String objectPropName : propertiesMap.keySet()) {
-      outputBuilder
-          .append(getJsonEntry(objectPropName, propertiesMap.get(objectPropName), newSpacePadding));
-    }
-    output += outputBuilder.toString();
+    StringBuilder model = generateObjectModel(propertiesMap, false, newSpacePadding);
+    output += model.toString();
 
     // Append } at the same level as the object property name
     output += "\n" + currentPadding + "}";
@@ -311,17 +355,23 @@ public class RestMessageProcessorDocumentationGenerator {
    * @param propName Name of the property which <code>jsonSchema</code> describes.
    * @param booleanSchema Boolean type schema object for the <code>propName</code>.
    * @param currentPadding Current space padding to use for indenting the output.
+   * @param insertLeadingComma Flag to indicate if a leading comma should be inserted before the
+   * property name (for an object property) or property value (for an array property). If the
+   * property is first property of an object or an array, the comma should be skipped.
    * @return JSON-formatted string that represents the model for the <code>propName</code>.
    */
   @SuppressWarnings("unused")
   private static String getJsonEntry(String propName, BooleanSchema booleanSchema,
-      String currentPadding) {
+      String currentPadding, boolean insertLeadingComma) {
+
+    // Insert comma if indicated
+    String possibleComma = insertLeadingComma ? "," : "";
 
     // If propName is null, assume schema inside of an array - no propName needed
     if (propName == null) {
-      return "\n" + currentPadding + "boolean";
+      return possibleComma + "\n" + currentPadding + "boolean";
     } else {
-      return "\n" + currentPadding + "\"" + propName + "\": boolean";
+      return possibleComma + "\n" + currentPadding + "\"" + propName + "\": boolean";
     }
   }
 
@@ -332,17 +382,23 @@ public class RestMessageProcessorDocumentationGenerator {
    * @param propName Name of the property which <code>jsonSchema</code> describes.
    * @param integerSchema Integer type schema object for the <code>propName</code>.
    * @param currentPadding Current space padding to use for indenting the output.
+   * @param insertLeadingComma Flag to indicate if a leading comma should be inserted before the
+   * property name (for an object property) or property value (for an array property). If the
+   * property is first property of an object or an array, the comma should be skipped.
    * @return JSON-formatted string that represents the model for the <code>propName</code>.
    */
   @SuppressWarnings("unused")
   private static String getJsonEntry(String propName, IntegerSchema integerSchema,
-      String currentPadding) {
+      String currentPadding, boolean insertLeadingComma) {
+
+    // Insert comma if indicated
+    String possibleComma = insertLeadingComma ? "," : "";
 
     // If propName is null, assume schema inside of an array - no propName needed
     if (propName == null) {
-      return "\n" + currentPadding + "number";
+      return possibleComma + "\n" + currentPadding + "number";
     } else {
-      return "\n" + currentPadding + "\"" + propName + "\": number";
+      return possibleComma + "\n" + currentPadding + "\"" + propName + "\": number";
     }
   }
 
@@ -353,17 +409,23 @@ public class RestMessageProcessorDocumentationGenerator {
    * @param propName Name of the property which <code>jsonSchema</code> describes.
    * @param numberSchema Number type schema object for the <code>propName</code>.
    * @param currentPadding Current space padding to use for indenting the output.
+   * @param insertLeadingComma Flag to indicate if a leading comma should be inserted before the
+   * property name (for an object property) or property value (for an array property). If the
+   * property is first property of an object or an array, the comma should be skipped.
    * @return JSON-formatted string that represents the model for the <code>propName</code>.
    */
   @SuppressWarnings("unused")
   private static String getJsonEntry(String propName, NumberSchema numberSchema,
-      String currentPadding) {
+      String currentPadding, boolean insertLeadingComma) {
+
+    // Insert comma if indicated
+    String possibleComma = insertLeadingComma ? "," : "";
 
     // If propName is null, assume schema inside of an array - no propName needed
     if (propName == null) {
-      return "\n" + currentPadding + "number";
+      return possibleComma + "\n" + currentPadding + "number";
     } else {
-      return "\n" + currentPadding + "\"" + propName + "\": number";
+      return possibleComma + "\n" + currentPadding + "\"" + propName + "\": number";
     }
   }
 
@@ -374,17 +436,23 @@ public class RestMessageProcessorDocumentationGenerator {
    * @param propName Name of the property which <code>jsonSchema</code> describes.
    * @param stringSchema String type schema object for the <code>propName</code>.
    * @param currentPadding Current space padding to use for indenting the output.
+   * @param insertLeadingComma Flag to indicate if a leading comma should be inserted before the
+   * property name (for an object property) or property value (for an array property). If the
+   * property is first property of an object or an array, the comma should be skipped.
    * @return JSON-formatted string that represents the model for the <code>propName</code>.
    */
   @SuppressWarnings("unused")
   private static String getJsonEntry(String propName, StringSchema stringSchema,
-      String currentPadding) {
+      String currentPadding, boolean insertLeadingComma) {
+
+    // Insert comma if indicated
+    String possibleComma = insertLeadingComma ? "," : "";
 
     // If propName is null, assume schema inside of an array - no propName needed
     if (propName == null) {
-      return "\n" + currentPadding + "\"string\"";
+      return possibleComma + "\n" + currentPadding + "\"string\"";
     } else {
-      return "\n" + currentPadding + "\"" + propName + "\": \"string\"";
+      return possibleComma + "\n" + currentPadding + "\"" + propName + "\": \"string\"";
     }
   }
 }

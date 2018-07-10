@@ -15,13 +15,20 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * {@link ApplicationConfig} class is a Spring Context configuration class for testing the rest
+ * controller.
+ *
+ * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
+ */
 @Configuration
 @ComponentScan
 @EnableAutoConfiguration
 public class ApplicationConfig {
 
   /**
-   * Use the Spring-based message processor registry factory to create the registry with automatically
+   * Use the Spring-based message processor registry factory to create the registry with
+   * automatically
    * discovered message handlers and expose it as a Bean into the Spring Context.
    */
   @Bean

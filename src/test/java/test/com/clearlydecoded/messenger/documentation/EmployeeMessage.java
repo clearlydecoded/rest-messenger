@@ -8,33 +8,30 @@
  */
 package test.com.clearlydecoded.messenger.documentation;
 
-import com.clearlydecoded.messenger.MessageProcessor;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
- * {@link PersonMessageProcessor} class is used to test generation of documentation.
+ * {@link EmployeeMessage} class is used to test documentation generation when the class has
+ * inherited properties.
  *
  * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
  */
-public class PersonMessageProcessor implements
-    MessageProcessor<PersonMessage, PersonMessageResponse> {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+public class EmployeeMessage extends GetPersonMessage {
+
+  public static final String TYPE = "EmployeeMessage";
+  private final String type = TYPE;
+
+  private String employeeNumber;
 
   @Override
-  public PersonMessageResponse process(PersonMessage message) {
-    return null;
-  }
-
-  @Override
-  public String getCompatibleMessageType() {
-    return PersonMessage.TYPE;
-  }
-
-  @Override
-  public Class<PersonMessage> getCompatibleMessage() {
-    return PersonMessage.class;
-  }
-
-  @Override
-  public Class<PersonMessageResponse> getCompatibleMessageResponseClassType() {
-    return PersonMessageResponse.class;
+  public String getType() {
+    return type;
   }
 }

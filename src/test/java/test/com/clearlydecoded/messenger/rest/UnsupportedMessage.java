@@ -12,6 +12,11 @@ import com.clearlydecoded.messenger.Message;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+/**
+ * {@link UnsupportedMessage} class is used for testing rest controller.
+ *
+ * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
+ */
 @Data
 @AllArgsConstructor
 public class UnsupportedMessage implements Message {

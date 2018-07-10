@@ -14,6 +14,8 @@ import org.junit.Test;
 /**
  * {@link MessageProcessorValidatorTest} class is a test class for {@link
  * MessageProcessorValidator}.
+ *
+ * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
  */
 public class MessageProcessorValidatorTest {
 
@@ -25,13 +27,13 @@ public class MessageProcessorValidatorTest {
   @Test(expected = IllegalStateException.class)
   public void testValidateMessageProcessorNoDefaultConstructor() {
     MessageProcessorValidator
-        .validateMessageProcessor(new MockMessageWithResponseWithNoDefaultConstructorHandler());
+        .validateMessageProcessor(new MockMessageWithResponseWithNoDefaultConstructorProcessor());
   }
 
   @Test(expected = IllegalStateException.class)
   public void testValidateMessageProcessorNoPublicConstructor() {
     MessageProcessorValidator
-        .validateMessageProcessor(new MockMessageMessageWithNoPublicConstructorProcessor());
+        .validateMessageProcessor(new MockMessageWithNoPublicConstructorProcessor());
   }
 
   @Test(expected = IllegalStateException.class)
@@ -44,6 +46,6 @@ public class MessageProcessorValidatorTest {
   public void testValidateMessageProcessorBadMessageResponse() {
     MessageProcessorValidator
         .validateMessageProcessor(
-            new MockMessageWithResponseWithNoDefaultConstructorHandler());
+            new MockMessageWithResponseWithNoDefaultConstructorProcessor());
   }
 }

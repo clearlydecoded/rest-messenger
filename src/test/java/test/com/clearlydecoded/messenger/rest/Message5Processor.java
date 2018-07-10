@@ -11,8 +11,13 @@ package test.com.clearlydecoded.messenger.rest;
 import com.clearlydecoded.messenger.MessageProcessor;
 import org.springframework.stereotype.Service;
 
+/**
+ * {@link Message5Processor} class is used for testing the rest controller.
+ *
+ * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
+ */
 @Service
-public class Command5Handler implements MessageProcessor<Message5, Message5Response> {
+public class Message5Processor implements MessageProcessor<Message5, Message5Response> {
 
   @Override
   public Message5Response process(Message5 message) {

@@ -10,6 +10,11 @@ package test.com.clearlydecoded.messenger.discovery.registry;
 
 import com.clearlydecoded.messenger.MessageResponse;
 
+/**
+ * {@link Message1Response} class is used for registry testing.
+ *
+ * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
+ */
 public class Message1Response implements MessageResponse {
 
 }

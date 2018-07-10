@@ -11,6 +11,11 @@ package test.com.clearlydecoded.messenger.discovery.validator;
 import com.clearlydecoded.messenger.MessageProcessor;
 import org.springframework.stereotype.Service;
 
+/**
+ * {@link MockMessageProcessor} class is used for testing processor validation.
+ *
+ * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
+ */
 @Service
 public class MockMessageProcessor implements MessageProcessor<MockMessage, MockMessageResponse> {
 

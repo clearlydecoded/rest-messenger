@@ -13,6 +13,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * {@link MockMessageResponse} class is used for testing processor validation.
+ *
+ * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

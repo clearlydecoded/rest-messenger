@@ -10,6 +10,12 @@ package test.com.clearlydecoded.messenger.discovery.validator;
 
 import com.clearlydecoded.messenger.MessageProcessor;
 
+/**
+ * {@link MockMessageWithNoDefaultConstructorProcessor} class is used for testing processor
+ * validation.
+ *
+ * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
+ */
 public class MockMessageWithNoDefaultConstructorProcessor implements
     MessageProcessor<MockMessageWithNoDefaultConstructor, MockMessageResponse> {
 

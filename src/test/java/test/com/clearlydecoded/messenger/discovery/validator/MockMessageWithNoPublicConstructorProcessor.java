@@ -6,33 +6,36 @@
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
  */
-package test.com.clearlydecoded.messenger.discovery.registry;
+package test.com.clearlydecoded.messenger.discovery.validator;
 
 import com.clearlydecoded.messenger.MessageProcessor;
 
 /**
- * Won't be automatically discovered because it's not marked with @Service.
+ * {@link MockMessageWithNoPublicConstructorProcessor} class is used for testing processor
+ * validation.
+ *
+ * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
  */
-public class WontBeDiscoveredHandler implements MessageProcessor<Message2, Message2Response> {
-
+public class MockMessageWithNoPublicConstructorProcessor implements
+    MessageProcessor<MockMessageWithNoPublicConstructor, MockMessageResponse> {
 
   @Override
-  public Message2Response process(Message2 message) {
+  public MockMessageResponse process(MockMessageWithNoPublicConstructor message) {
     return null;
   }
 
   @Override
   public String getCompatibleMessageType() {
-    return null;
+    return MockMessageWithNoPublicConstructor.TYPE;
   }
 
   @Override
-  public Class<Message2> getCompatibleMessage() {
-    return null;
+  public Class<MockMessageWithNoPublicConstructor> getCompatibleMessage() {
+    return MockMessageWithNoPublicConstructor.class;
   }
 
   @Override
-  public Class<Message2Response> getCompatibleMessageResponseClassType() {
-    return null;
+  public Class<MockMessageResponse> getCompatibleMessageResponseClassType() {
+    return MockMessageResponse.class;
   }
 }
