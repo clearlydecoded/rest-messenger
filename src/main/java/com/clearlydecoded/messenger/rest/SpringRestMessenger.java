@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.DispatcherServlet;
-import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
@@ -46,6 +45,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
  *
  * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
  */
+@SuppressWarnings("SpringJavaAutowiredMembersInspection")
 @Log
 public class SpringRestMessenger {
 
@@ -57,9 +57,6 @@ public class SpringRestMessenger {
   @Setter
   private String endpointUri;
 
-  @Autowired
-  private ApplicationContext springContext;
-
   /**
    * Spring request mapping instance to use for wiring up request mappings for this endpoint.
    */
@@ -68,9 +65,6 @@ public class SpringRestMessenger {
   @Autowired
   @Setter
   private RequestMappingHandlerMapping requestMappingHandlerMapping;
-
-  @Autowired
-  private SimpleUrlHandlerMapping simpleUrlHandlerMapping;
 
   /**
    * Message processor registry used to look up message processors based on the type identifier of a
@@ -267,6 +261,7 @@ public class SpringRestMessenger {
   private String getProcessorDocs(Model model) {
 
     model.addAttribute("docs", processorDocs);
+    model.addAttribute("endpointUri", endpointUri);
     return "SpringRestProcessorDocumentation";
   }
 }

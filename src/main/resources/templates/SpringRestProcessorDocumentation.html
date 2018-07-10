@@ -41,47 +41,71 @@
     }
   </style>
   <script>
-  function toggleMessageDetails(messageDetailsId) {
-    var currentState = document.getElementById(messageDetailsId).style.display;
 
-    // If none, change to flex
-    if (currentState === 'none') {
-      document.getElementById(messageDetailsId).style.display = 'flex';
-    } else {
-      document.getElementById(messageDetailsId).style.display = 'none';
+    /**
+     * Toggle shows or hides an area with the provided ID attribute.
+     *
+     * @param messageDetailsId ID of the area to toggle show or hide.
+     */
+    function toggleMessageDetails(messageDetailsId) {
+      var currentState = document.getElementById(messageDetailsId).style.display;
+
+      // If none, change to flex
+      if (currentState === 'none') {
+        document.getElementById(messageDetailsId).style.display = 'flex';
+      } else {
+        document.getElementById(messageDetailsId).style.display = 'none';
+      }
     }
-  }
+
+    /**
+     * Copy to clipboard the text inside of the textarea tag with the provide ID attribute.
+     * @param textAreaId ID attribute of the textarea whose contents need to be copied.
+     */
+    function copy(textAreaId) {
+      var textArea = document.getElementById(textAreaId);
+      textArea.select();
+      document.execCommand('copy');
+    }
 
   </script>
 </head>
 
 <body>
-  <h1>Spring Rest Messenger Docs for CONTEXT-NAME</h1>
-  <h2>Issue a POST request to CONTEXT-NAME/process with one of these messages as payload</h2>
+<h1>Spring Rest Messenger Docs for '/<span th:text="${#request.contextPath}"></span>' Context Path</h1>
+  <h2>Issue a POST request to
+    '<span th:text="${#request.contextPath} + '/' + ${endpointUri}"></span>' with one of these messages as payload</h2>
 
   <div id="messages">
-    <div class="message">
-      <div class="message-name">
-        PersonMessage ---> PersonResponseResponse
+    <div class="message" th:each="doc : ${docs}">
+      <div class="message-name"
+           th:onclick="'toggleMessageDetails(\'' + ${doc.messageShortClassName} + '\');'">
+        <span th:text="${doc.messageShortClassName}">PersonMessage</span>
+        --->
+        <span th:text="${doc.messageResponseShortClassName}">PersonResponseResponse</span>
       </div>
-      <div class="message-details" id="PersonMessage" style="display: none;">
+      <div class="message-details" th:id="${doc.messageShortClassName}" style="display: none;">
         <div class="model-details">
           <div>
             Message Model
           </div>
-          <textarea name="" cols="40" rows="20" disabled>
-          All kinds of bla bla here
+          <textarea name="" cols="40" rows="20"
+                    th:id="${doc.messageShortClassName} + '-textarea'"
+                    th:text="${doc.messageModel}">
           </textarea>
-          <button class="copy-button">Copy</button>
+          <button class="copy-button"
+                  th:onclick="'copy(\'' + ${doc.messageShortClassName} + '-textarea\');'">Copy</button>
         </div>
         <div class="model-details">
           <div>
             Message Response Model
           </div>
-          <textarea name="" cols="40" rows="20" disabled>
-              All kinds of bla bla here
+          <textarea name="" cols="40" rows="20"
+                    th:id="${doc.messageResponseShortClassName} + '-textarea'"
+                    th:text="${doc.messageResponseModel}">
           </textarea>
-          <button class="copy-button">Copy</button>
+          <button class="copy-button"
+                  th:onclick="'copy(\'' + ${doc.messageResponseShortClassName} + '-textarea\');'">Copy</button>
         </div>
       </div>
     </div>
