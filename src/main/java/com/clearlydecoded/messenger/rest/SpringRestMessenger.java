@@ -13,8 +13,8 @@ import com.clearlydecoded.messenger.MessageProcessor;
 import com.clearlydecoded.messenger.MessageProcessorRegistry;
 import com.clearlydecoded.messenger.MessageResponse;
 import com.clearlydecoded.messenger.discovery.SpringMessageProcessorRegistryFactory;
-import com.clearlydecoded.messenger.documentation.RestMessageProcessorDocumentation;
-import com.clearlydecoded.messenger.documentation.RestMessageProcessorDocumentationGenerator;
+import com.clearlydecoded.messenger.documentation.RestProcessorDocumentation;
+import com.clearlydecoded.messenger.documentation.RestProcessorDocumentationGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -76,7 +76,7 @@ public class SpringRestMessenger {
    * List of documentation classes that can be used to describe inputs/outputs of all the processors
    * registered in the system.
    */
-  private List<RestMessageProcessorDocumentation> processorDocs;
+  private List<RestProcessorDocumentation> processorDocs;
 
   /**
    * Constructor.
@@ -111,7 +111,7 @@ public class SpringRestMessenger {
     try {
       // Generate docs for message processors
       for (MessageProcessor messageProcessor : processorRegistry.getProcessors()) {
-        RestMessageProcessorDocumentation documentation = RestMessageProcessorDocumentationGenerator
+        RestProcessorDocumentation documentation = RestProcessorDocumentationGenerator
             .generateDocumentation(messageProcessor);
         processorDocs.add(documentation);
       }

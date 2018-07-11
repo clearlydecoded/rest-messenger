@@ -1,6 +1,10 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
 
+<!--/*@thymesVar id="endpointUri" type="java.lang.String"*/-->
+<!--/*@thymesVar id="docs" type="java.util.List<com.clearlydecoded.messenger.documentation.RestProcessorDocumentation>"*/-->
+<!--/*@thymesVar id="doc" type="com.clearlydecoded.messenger.documentation.RestProcessorDocumentation"*/-->
+
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -40,6 +44,7 @@
       margin-bottom: 5px;
     }
   </style>
+  <!--suppress JSUnusedLocalSymbols -->
   <script>
 
     /**
@@ -72,40 +77,45 @@
 </head>
 
 <body>
-<h1>Spring Rest Messenger Docs for '/<span th:text="${#request.contextPath}"></span>' Context Path</h1>
+<h1>Spring Rest Messenger Docs for '/<span th:text="${#request.contextPath}"></span>' Context Path
+</h1>
   <h2>Issue a POST request to
-    '<span th:text="${#request.contextPath} + '/' + ${endpointUri}"></span>' with one of these messages as payload</h2>
+    <span th:text="${#request.contextPath} + '/' + ${endpointUri}"></span>'
+    with one of these messages as payload
+  </h2>
 
   <div id="messages">
+
     <div class="message" th:each="doc : ${docs}">
-      <div class="message-name"
-           th:onclick="'toggleMessageDetails(\'' + ${doc.messageShortClassName} + '\');'">
+
+      <div class="message-name" th:onclick="'toggleMessageDetails(\'' + ${doc.id} + '\');'">
         <span th:text="${doc.messageShortClassName}">PersonMessage</span>
         --->
         <span th:text="${doc.messageResponseShortClassName}">PersonResponseResponse</span>
       </div>
-      <div class="message-details" th:id="${doc.messageShortClassName}" style="display: none;">
+
+      <div class="message-details" th:id="${doc.id}" style="display: none;">
+
         <div class="model-details">
-          <div>
-            Message Model
-          </div>
+          <div>Message Model</div>
           <textarea name="" cols="40" rows="20"
-                    th:id="${doc.messageShortClassName} + '-textarea'"
-                    th:text="${doc.messageModel}">
+                    th:id="${doc.messageId} + '-textarea'"
+                    th:text="${doc.messageModel}"
+                    title="Message Model">
           </textarea>
           <button class="copy-button"
-                  th:onclick="'copy(\'' + ${doc.messageShortClassName} + '-textarea\');'">Copy</button>
+                  th:onclick="'copy(\'' + ${doc.messageId} + '-textarea\');'">Copy</button>
         </div>
+
         <div class="model-details">
-          <div>
-            Message Response Model
-          </div>
+          <div>Message Response Model</div>
           <textarea name="" cols="40" rows="20"
-                    th:id="${doc.messageResponseShortClassName} + '-textarea'"
-                    th:text="${doc.messageResponseModel}">
+                    th:id="${doc.messageResponseId} + '-textarea'"
+                    th:text="${doc.messageResponseModel}"
+                    title="Message Response Model">
           </textarea>
           <button class="copy-button"
-                  th:onclick="'copy(\'' + ${doc.messageResponseShortClassName} + '-textarea\');'">Copy</button>
+                  th:onclick="'copy(\'' + ${doc.messageResponseId} + '-textarea\');'">Copy</button>
         </div>
       </div>
     </div>

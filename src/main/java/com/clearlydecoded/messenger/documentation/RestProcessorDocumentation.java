@@ -9,12 +9,13 @@
 package com.clearlydecoded.messenger.documentation;
 
 import com.clearlydecoded.messenger.MessageProcessor;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * {@link RestMessageProcessorDocumentation} class represents REST JSON documentation for a {@link
+ * {@link RestProcessorDocumentation} class represents REST JSON documentation for a {@link
  * MessageProcessor}.
  *
  * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
@@ -22,7 +23,22 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RestMessageProcessorDocumentation {
+public class RestProcessorDocumentation {
+
+  /**
+   * Unique id of this documentation.
+   */
+  private final String id = UUID.randomUUID().toString();
+
+  /**
+   * Unique id of the message of this documentation.
+   */
+  private final String messageId = UUID.randomUUID().toString();
+
+  /**
+   * Unique id of the message response of this documentation.
+   */
+  private final String messageResponseId = UUID.randomUUID().toString();
 
   /**
    * Single word concrete message class name.

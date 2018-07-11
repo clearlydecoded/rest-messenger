@@ -10,17 +10,17 @@ package test.com.clearlydecoded.messenger.documentation;
 
 import static org.junit.Assert.assertEquals;
 
-import com.clearlydecoded.messenger.documentation.RestMessageProcessorDocumentation;
-import com.clearlydecoded.messenger.documentation.RestMessageProcessorDocumentationGenerator;
+import com.clearlydecoded.messenger.documentation.RestProcessorDocumentation;
+import com.clearlydecoded.messenger.documentation.RestProcessorDocumentationGenerator;
 import org.junit.Test;
 
 /**
- * {@link RestMessageProcessorDocumentationGeneratorTest} is a test class for
- * {@link RestMessageProcessorDocumentationGenerator} class.
+ * {@link RestProcessorDocumentationGeneratorTest} is a test class for
+ * {@link RestProcessorDocumentationGenerator} class.
  *
  * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
  */
-public class RestMessageProcessorDocumentationGeneratorTest {
+public class RestProcessorDocumentationGeneratorTest {
 
   @Test
   public void testGenerateProcessorDocumentation() throws Exception {
@@ -50,7 +50,7 @@ public class RestMessageProcessorDocumentationGeneratorTest {
         + "\n}";
 
     PersonMessageProcessor personMessageProcessor = new PersonMessageProcessor();
-    RestMessageProcessorDocumentation docs = RestMessageProcessorDocumentationGenerator
+    RestProcessorDocumentation docs = RestProcessorDocumentationGenerator
         .generateDocumentation(personMessageProcessor);
 
     assertEquals("Short message class name should be 'PersonMessage'", "PersonMessage",
@@ -91,7 +91,7 @@ public class RestMessageProcessorDocumentationGeneratorTest {
         + "}";
 
     GetPersonMessageProcessor getPersonMessageProcessor = new GetPersonMessageProcessor();
-    RestMessageProcessorDocumentation docs = RestMessageProcessorDocumentationGenerator
+    RestProcessorDocumentation docs = RestProcessorDocumentationGenerator
         .generateDocumentation(getPersonMessageProcessor);
 
     assertEquals("Short message class name should be 'GetPersonMessage'", "GetPersonMessage",
@@ -133,7 +133,7 @@ public class RestMessageProcessorDocumentationGeneratorTest {
         + "}";
 
     EmployeeMessageProcessor processor = new EmployeeMessageProcessor();
-    RestMessageProcessorDocumentation docs = RestMessageProcessorDocumentationGenerator
+    RestProcessorDocumentation docs = RestProcessorDocumentationGenerator
         .generateDocumentation(processor);
 
     assertEquals("Short message class name should be 'EmployeeMessage'", "EmployeeMessage",

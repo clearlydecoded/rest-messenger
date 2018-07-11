@@ -29,12 +29,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * {@link RestMessageProcessorDocumentationGenerator} is a utility class that produces JSON-based
+ * {@link RestProcessorDocumentationGenerator} is a utility class that produces JSON-based
  * documentation for {@link MessageProcessor}s.
  *
  * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
  */
-public class RestMessageProcessorDocumentationGenerator {
+public class RestProcessorDocumentationGenerator {
 
   /**
    * Jackson object mapper to use for JSON schema generation.
@@ -59,10 +59,9 @@ public class RestMessageProcessorDocumentationGenerator {
    * @throws Exception If anything goes wrong with generating message processor documentation.
    */
   @SuppressWarnings("unchecked")
-  public static RestMessageProcessorDocumentation generateDocumentation(
-      MessageProcessor processor)
+  public static RestProcessorDocumentation generateDocumentation(MessageProcessor processor)
       throws Exception {
-    RestMessageProcessorDocumentation documentation = new RestMessageProcessorDocumentation();
+    RestProcessorDocumentation documentation = new RestProcessorDocumentation();
 
     // Extract message & message response classes
     Class<? extends Message> messageClass = processor.getCompatibleMessage();
