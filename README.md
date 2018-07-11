@@ -52,6 +52,15 @@ Set your stopwatch. This will take 5 minutes.
 
 **Step 1**: Start with a simple Spring Boot configured `pom.xml` and add `rest-messenger` dependency to it.
 
+Add the following dependency to your maven `pom.xml` file:
+```xml
+<dependency>
+  <groupId>com.clearlydecoded</groupId>
+  <artifactId>rest-messenger</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
+
 For example:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
