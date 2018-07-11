@@ -11,7 +11,108 @@
   <title>Spring Rest Messenger Docs</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    .message {
+    /** Basic CSS reset */
+    html {
+      box-sizing: border-box;
+      font-size: 16px;
+      font-family: sans-serif;
+    }
+    *, *:before, *:after {
+      box-sizing: inherit;
+    }
+    body, h1, h2, h3, h4, h5, h6, p, ol, ul {
+      margin: 0;
+      padding: 0;
+      font-weight: normal;
+      background-color: #ffffffbb;
+    }
+    /** end css reset */
+
+    header {
+      color: #3b4151;
+      background-color: #fafafa;
+      border-bottom: 1px solid #cececede;
+      padding: 1.875rem;
+    }
+    header div.title {
+      font-size: 2.25rem;
+      font-weight: bold;
+      margin-bottom: 1.25rem;
+    }
+    header div.title span.version {
+      font-size: 0.75rem;
+      vertical-align: super;
+      background-color: #7d8492;
+      color: #fff;
+      padding: 0.2rem 0.3125rem;
+      border-radius: 0.625rem;
+    }
+    header div.description {
+      margin-bottom: 0.5rem;
+    }
+    header div.description span.hint {
+      font-size: 0.6rem;
+      vertical-align: super;
+      background-color: lightgreen;
+      border-radius: 8px;
+      border: 1px solid rgb(0, 175, 0);
+      padding: 3px 5px;
+    }
+    header div.app-name span {
+      font-weight: 500;
+    }
+    header div.description span.inline-uri {
+      font-family: monospace;
+      font-weight: 500;
+      background-color: #d4d4d473;
+      padding: 0.125rem 0.25rem;
+      border-radius: 0.25rem;
+    }
+    header div.messenger-links {
+      margin-top: 1.25rem;
+      font-size: 0.9rem;
+    }
+    header div.messenger-links div {
+      margin-bottom: 0.25rem;
+    }
+    header div.messenger-links div a:link,
+    header div.messenger-links div a:visited {
+      color: #4990e2;
+    }
+    header div.messenger-links div a:hover,
+    header div.messenger-links div a:active {
+      color: #0760c5;
+    }
+
+    div.main {
+      padding: 1.875rem;
+    }
+
+    div.uri-details span.http-method {
+      background-color: #49cc90;
+      border-radius: 3px;
+      color: #fff;
+      text-shadow: 0 1px 0 rgba(0,0,0,.1);
+      padding: 6px 15px;
+      font-size: 14px;
+      font-weight: 700;
+      min-width: 80px;
+      text-align: center;
+    }
+    div.uri-details span.inline-uri {
+      font-size: 1rem;
+      font-family: monospace;
+      font-weight: 600;
+      color: #3b4151;
+      margin-left: 8px;
+    }
+    div.uri-details span.uri-description {
+      font-size: 0.9rem;
+      margin-left: 8px;
+    }
+
+
+    /* .message {
       display: flex;
       flex-direction: column;
     }
@@ -42,7 +143,7 @@
       align-self: flex-end;
       margin-top: 5px;
       margin-bottom: 5px;
-    }
+    } */
   </style>
   <!--suppress JSUnusedLocalSymbols -->
   <script>
@@ -77,7 +178,40 @@
 </head>
 
 <body>
-<h1>Spring Rest Messenger Docs for '/<span th:text="${#request.contextPath}"></span>' Context Path
+  <header>
+    <div class="title">
+      Spring REST Messenger Docs <span class="version">1.0.0</span>
+    </div>
+    <div class="description">
+      Auto-generated documentation for messages  along with their paired responses
+      that the <span class="inline-uri" th:text="'/' + ${endpointUri}">/process</span> 
+      endpoint supports.
+    </div>
+    <div class="app-name">
+        Application name: <span>SOME-UI</span>
+      </div>
+    <div class="messenger-links">
+      <div>
+        <a href="https://github.com/clearlydecoded/rest-messenger#rest-messenger"
+           target="_blank">Getting Started with Spring REST Messenger</a>
+      </div>
+      <div>Found a bug or have a feature suggestion? Please 
+        <a href="https://github.com/clearlydecoded/rest-messenger/issues" 
+           target="_blank">file an issue</a>.
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="uri-details">
+      <span class="http-method">POST</span>
+      <span class="inline-uri" th:text="'/' + ${endpointUri}">/process</span>
+      <span class="uri-description">Send message to be processed as part of the body of the request</span>
+    </div>
+  </div>
+
+
+<!-- <h1>Spring Rest Messenger Docs for '/<span th:text="${#request.contextPath}"></span>' Context Path
 </h1>
   <h2>Issue a POST request to
     <span th:text="${#request.contextPath} + '/' + ${endpointUri}"></span>'
@@ -90,7 +224,7 @@
 
       <div class="message-name" th:onclick="'toggleMessageDetails(\'' + ${doc.id} + '\');'">
         <span th:text="${doc.messageShortClassName}">PersonMessage</span>
-        --->
+        --- >
         <span th:text="${doc.messageResponseShortClassName}">PersonResponseResponse</span>
       </div>
 
@@ -119,7 +253,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 </body>
 
 </html>
