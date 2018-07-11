@@ -299,7 +299,7 @@ To see full source code of an application using rest-messenger for demo purposes
 ## FAQ
 
 * **Q**: Can the default `/process` URI be configured to a custom URI value? <br>
-  **A**: YES! Simply provide your own value for `com.clearlydecoded.messenger.endpoint.uri` property to override the default.
+  **A**: YES! Simply provide your own value for the `com.clearlydecoded.messenger.endpoint.uri` property to override the default.
   
 * **Q**: How can I ask a question about any of this or contribute to the framework? <br>
   **A**: File a new issue or comment on an existing one.
