@@ -79,6 +79,19 @@ public class SpringRestMessenger {
   private List<RestProcessorDocumentation> processorDocs;
 
   /**
+   * Application's context path as is registered by the servlet container.
+   */
+  @Value("#{servletContext.contextPath}")
+  private String servletContextPath;
+
+  /**
+   * Spring application name, possibly wired in by the 'spring.application.name' property.
+   * Defaults to an empty string.
+   */
+  @Value("${spring.application.name:}")
+  private String springApplicationName;
+
+  /**
    * Constructor.
    * <p>Use this constructor unless your application needs direct access to the {@link
    * MessageProcessorRegistry}. (Hint: in majority of cases, you don't need {@link
@@ -262,6 +275,10 @@ public class SpringRestMessenger {
 
     model.addAttribute("docs", processorDocs);
     model.addAttribute("endpointUri", endpointUri);
+
+    String appName = springApplicationName.trim();
+    model.addAttribute("appName", appName.equals("") ? "unspecified" : appName);
+
     return "SpringRestProcessorDocumentation";
   }
 }
