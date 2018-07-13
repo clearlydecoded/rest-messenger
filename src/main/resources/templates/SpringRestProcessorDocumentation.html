@@ -84,13 +84,13 @@
       font-family: monospace;
     }
     div.uri-details span.http-method, .message {
-      background-color: #49cc90;
+      background-color: #39aa77;
       border-radius: 3px;
       color: #fff;
       text-shadow: 0 0.0625rem 0 rgba(0,0,0,.3);
       padding: 0.375rem 0.9375rem;
       font-size: 0.875rem;
-      font-weight: 700;
+      font-weight: 600;
       min-width: 5rem;
       text-align: center;
       letter-spacing: 0.015rem;
@@ -116,9 +116,19 @@
       display: flex;
       align-items: center;
       border: 1px solid #49cc90;
-      border-radius: 4px 4px 0 0;
+      border-radius: 4px 4px 4px 4px;
       padding: 0.625rem;
       background: rgba(73,204,144,.1);
+      cursor: pointer;
+    }
+    div.doc-header.bottom-square-corners {
+      border-radius: 4px 4px 0 0;
+    }
+    div.doc-header > div {
+      flex: 1 0 0;
+    }
+    div.doc-header > div.right-arrow {
+      flex: 0;
     }
     div.doc .right-arrow {
       font-size: 1.5rem;
@@ -126,14 +136,14 @@
 
     }
     div.message-response-pill {
-      margin-left: 0.625rem;
+      margin-left: 0.5rem;
     }
     div.pill-tag {
       font-size: 0.7rem;
       text-align: center;
       font-family: monospace;
       font-weight: 600;
-      color: #3b4151;
+      color: #0c1225;
       text-shadow: none;
       letter-spacing: normal;
     }
@@ -146,8 +156,14 @@
       background: rgba(73,204,144,.1);
       display: flex;
       align-items: center;
+      transition: .1s ease-in;
+    }
+    div.doc-body.hide-model-details,
+    div.doc-body.hide-model-details * {
       height: 0;
       visibility: hidden;
+      opacity: 0;
+      padding: 0;
     }
     div.model-title {
       font-size: 0.75rem;
@@ -199,14 +215,16 @@
      *
      * @param messageDetailsId ID of the area to toggle show or hide.
      */
-    function toggleMessageDetails(messageDetailsId) {
-      var currentState = document.getElementById(messageDetailsId).style.display;
+    function toggleMessageDetails(headerId, bodyId) {
+      var header = document.getElementById(headerId);
+      var body = document.getElementById(bodyId);
 
-      // If none, change to flex
-      if (currentState === 'none') {
-        document.getElementById(messageDetailsId).style.display = 'flex';
+      if (body.classList.contains('hide-model-details')) {
+        body.classList.remove('hide-model-details');
+        header.classList.add('bottom-square-corners');
       } else {
-        document.getElementById(messageDetailsId).style.display = 'none';
+        body.classList.add('hide-model-details');
+        header.classList.remove('bottom-square-corners');
       }
     }
 
@@ -234,7 +252,7 @@
       endpoint supports.
     </div>
     <div class="app-name">
-        Host application name:
+        Host application name (specified by <span class="monospace">spring.application.name</span>):
         <span th:text="${appName}">Application Name</span>
       </div>
     <div class="messenger-links">
@@ -262,37 +280,59 @@
     </div>
 
     <div class="docs">
-      <div class="doc">
-        <div class="doc-header">
+      <div class="doc" th:each="doc : ${docs}">
+        <div class="doc-header"
+             id="header"
+             title="Click to see message & response details"
+             onclick="toggleMessageDetails('header', 'body')"
+             th:id="${doc.id} + '-header'"
+             th:onclick="'toggleMessageDetails(\'' + ${doc.id} + '-header' + '\', \'' + ${doc.id} + '-body' + '\');'">
           <div class="message-pill">
             <div class="message">
-              <div>GetPersonMessage</div>
+              <div th:text="${doc.messageShortClassName}">GetPersonMessage</div>
               <div class="pill-tag">message</div>
             </div>
           </div>
           <div class="right-arrow">&#8594;</div>
           <div class="message-response-pill">
             <div class="message">
-              <div>GetPersonMessageResponse</div>
+              <div th:text="${doc.messageResponseShortClassName}">GetPersonMessageResponse</div>
               <div class="pill-tag">message response</div>
             </div>
           </div>
         </div> <!-- end doc-header -->
 
-        <div class="doc-body">
-
+        <div class="doc-body hide-model-details" id="body" th:id="${doc.id} + '-body'">
           <div class="model">
             <div class="model-title">Message Model</div>
             <div class="model-body">
-              <textarea title=""></textarea>
-              <button>copy</button>
+              <textarea
+                  id="message-textarea"
+                  title="Model for message"
+                  th:title="'Model for message ' + ${doc.messageShortClassName}"
+                  th:id="${doc.messageId} + '-textarea'"
+                  th:text="${doc.messageModel}">
+              </textarea>
+              <button
+                  onclick="copy('message-textarea')"
+                  th:onclick="'copy(\'' + ${doc.messageId} + '-textarea\')' ">copy
+              </button>
             </div>
           </div>
           <div class="model">
             <div class="model-title">Message Response Model</div>
             <div class="model-body">
-              <textarea title=""></textarea>
-              <button>copy</button>
+              <textarea
+                  id="message-response-textarea"
+                  title="Model for message response"
+                  th:title="'Model for message response' + ${doc.messageResponseShortClassName}"
+                  th:id="${doc.messageResponseId} + '-textarea'"
+                  th:text="${doc.messageResponseModel}">
+              </textarea>
+              <button
+                  onclick="copy('message-response-textarea')"
+                  th:onclick="'copy(\'' + ${doc.messageResponseId} + '-textarea\')' ">copy
+              </button>
             </div>
           </div>
 
