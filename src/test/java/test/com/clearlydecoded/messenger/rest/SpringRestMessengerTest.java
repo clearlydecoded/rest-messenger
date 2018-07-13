@@ -102,14 +102,6 @@ public class SpringRestMessengerTest {
 
     String stringResult = result.getResponse().getContentAsString();
     assertTrue("Response should at least contain snippet of HTML page.",
-        stringResult.contains("<h1>Spring Rest Messenger Docs for"));
-  }
-
-  @Test
-  public void testGetAvailableMessagesForwardsToCorrectTemplateOutputRemove() throws Exception {
-    MvcResult result = mvc.perform(get("/process")).andReturn();
-
-    String stringResult = result.getResponse().getContentAsString();
-    System.out.println(stringResult);
+        stringResult.contains("Spring REST Messenger Docs"));
   }
 }
