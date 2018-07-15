@@ -16,6 +16,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * {@link ApplicationConfig} class is used to setup Spring Context configuration for registry
+ * related tests.
+ *
+ * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
+ */
 @Configuration
 @ComponentScan
 public class ApplicationConfig {

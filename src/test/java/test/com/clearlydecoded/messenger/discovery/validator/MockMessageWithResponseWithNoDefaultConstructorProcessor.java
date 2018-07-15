@@ -2,9 +2,15 @@ package test.com.clearlydecoded.messenger.discovery.validator;
 
 import com.clearlydecoded.messenger.MessageProcessor;
 
-public class MockMessageWithResponseWithNoDefaultConstructorHandler implements
+/**
+ * {@link MockMessageWithResponseWithNoDefaultConstructorProcessor} class is used for testing
+ * processor validation.
+ *
+ * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
+ */
+public class MockMessageWithResponseWithNoDefaultConstructorProcessor implements
     MessageProcessor<MockMessageWithResponseWithNoDefaultConstructor,
-            MockResponseWithNoDefaultConstructor> {
+        MockResponseWithNoDefaultConstructor> {
 
   @Override
   public MockResponseWithNoDefaultConstructor process(

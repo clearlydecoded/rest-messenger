@@ -13,7 +13,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Message with no no-args constructor defined
+ * {@link MockMessageWithNoPublicConstructor} class is used for testing processor validation.
+ * Message with no no-args constructor defined.
+ *
+ * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
  */
 @Data
 @AllArgsConstructor

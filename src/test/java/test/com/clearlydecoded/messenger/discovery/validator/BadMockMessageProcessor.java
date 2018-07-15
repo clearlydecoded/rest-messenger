@@ -10,6 +10,11 @@ package test.com.clearlydecoded.messenger.discovery.validator;
 
 import com.clearlydecoded.messenger.MessageProcessor;
 
+/**
+ * {@link BadMockMessageProcessor} class is used for testing processor validation.
+ *
+ * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
+ */
 public class BadMockMessageProcessor implements
     MessageProcessor<BadMockMessage, MockMessageResponse> {
 

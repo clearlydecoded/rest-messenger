@@ -1,91 +1,366 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
 
+<!--
+Copyright 2018 Yaakov Chaikin (yaakov@ClearlyDecoded.com). Licensed under the Apache License,
+Version 2.0 (the "License"); you may not use this file except in compliance with the License. You
+may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0. Unless required
+by applicable law or agreed to in writing, software distributed under the License is distributed
+on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
+the License for the specific language governing permissions and limitations under the License.
+-->
+
+<!--/*@thymesVar id="endpointUri" type="java.lang.String"*/-->
+<!--/*@thymesVar id="docs" type="java.util.List<com.clearlydecoded.messenger.documentation.RestProcessorDocumentation>"*/-->
+<!--/*@thymesVar id="doc" type="com.clearlydecoded.messenger.documentation
+  .RestProcessorDocumentation"*/-->
+<!--/*@thymesVar id="appName" type="java.lang.String"*/-->
+
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Spring Rest Messenger Docs</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    .message {
-      display: flex;
-      flex-direction: column;
+    /** Basic CSS reset */
+    html {
+      box-sizing: border-box;
+      font-size: 16px;
+      font-family: sans-serif;
     }
-    .message-name {
-      font-size: 1.3em;
+    *, *:before, *:after {
+      box-sizing: inherit;
+    }
+    body, h1, h2, h3, h4, h5, h6, p, ol, ul {
+      margin: 0;
+      padding: 0;
+      font-weight: normal;
+      background-color: #ffffffbb;
+    }
+    /** end css reset */
+
+    header {
+      color: #3b4151;
+      background-color: #fafafa;
+      border-bottom: 1px solid #cececede;
+      padding: 1.875rem;
+    }
+    header div.title {
+      font-size: 2.25rem;
       font-weight: bold;
+      margin-bottom: 1.25rem;
+    }
+    header div.title span.version {
+      font-size: 0.75rem;
+      vertical-align: super;
+      background-color: #7d8492;
+      color: #fff;
+      padding: 0.2rem 0.3125rem;
+      border-radius: 10px;
+    }
+    header div.description {
+      margin-bottom: 0.5rem;
+    }
+    header div.app-name span {
+      font-weight: 500;
+    }
+    header div.description span.inline-uri {
+      font-family: monospace;
+      font-weight: 500;
+      background-color: #d4d4d473;
+      padding: 0.125rem 0.25rem;
+      border-radius: 4px;
+    }
+    header div.messenger-links {
+      margin-top: 1.25rem;
+      font-size: 0.9rem;
+    }
+    header div.messenger-links div {
+      margin-bottom: 0.25rem;
+    }
+    header div.messenger-links div a:link,
+    header div.messenger-links div a:visited {
+      color: #4990e2;
+    }
+    header div.messenger-links div a:hover,
+    header div.messenger-links div a:active {
+      color: #0760c5;
+    }
+    div.main {
+      padding: 1.875rem;
+      min-width: 30rem;
+    }
+    .monospace {
+      font-family: monospace;
+    }
+    div.uri-details {
+      line-height: 1.5625rem;
+    }
+    div.uri-details span.http-method, .message {
+      background-color: #39aa77;
+      border-radius: 3px;
+      color: #fff;
+      text-shadow: 0 0.0625rem 0 rgba(0,0,0,.3);
+      padding: 0.375rem 0.9375rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      min-width: 5rem;
+      text-align: center;
+      letter-spacing: 0.015rem;
+    }
+    div.uri-details span.inline-uri {
+      font-size: 1rem;
+      font-family: monospace;
+      font-weight: 600;
+      color: #3b4151;
+      margin-left: 0.5rem;
+    }
+    div.uri-details span.uri-description {
+      font-size: 0.875rem;
+      margin-left: 0.5rem;
+    }
+    div.docs {
+      margin: 1.875rem -0.625rem 0 -0.625rem;
+    }
+    div.doc {
+      margin-bottom: 0.9375rem;
+    }
+    div.doc-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      border: 1px solid #49cc90;
+      border-radius: 4px 4px 4px 4px;
+      padding: 0.625rem;
+      background: rgba(73,204,144,.1);
       cursor: pointer;
-      margin-bottom: 10px;
     }
-    .message-details {
-      display: flex;
-      background-color: rgb(60, 63, 65);
-      color: papayawhip;
+
+    /*noinspection CssUnusedSymbol*/
+    div.doc-header.bottom-square-corners {
+      border-radius: 4px 4px 0 0;
     }
-    .model-details {
-      margin-right: 40px;
-      margin-left: 10px;
-      margin-top: 15px;
-      display: flex;
-      flex-direction: column;
-    }
-    .model-details textarea {
-      margin-top: 10px;
-    }
-    .copy-button {
-      font-size: 20px;
-      height: 30px;
-      align-self: flex-end;
-      margin-top: 5px;
+    div.doc-header > div {
+      flex: 1 0 0;
       margin-bottom: 5px;
+      margin-top: 5px;
+    }
+    div.doc-header > div.right-arrow {
+      flex: 0;
+    }
+    div.doc .right-arrow {
+      font-size: 1.5rem;
+      margin-left: 0.625rem;
+
+    }
+    div.message-response-pill {
+      margin-left: 0.5rem;
+    }
+    div.pill-tag {
+      font-size: 0.7rem;
+      text-align: center;
+      font-family: monospace;
+      font-weight: 600;
+      color: #0c1225;
+      text-shadow: none;
+      letter-spacing: normal;
+    }
+    div.doc-body {
+      border-left: 1px solid #49cc90;
+      border-right: 1px solid #49cc90;
+      border-bottom: 1px solid #49cc90;
+      border-radius: 0 0 4px 4px;
+      padding: 0.625rem;
+      background: rgba(73,204,144,.1);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      transition: .1s ease-in;
+    }
+    div.doc-body.hide-model-details,
+    div.doc-body.hide-model-details * {
+      height: 0;
+      visibility: hidden;
+      opacity: 0;
+      padding: 0;
+    }
+    div.model-title {
+      font-size: 0.75rem;
+      font-family: sans-serif;
+      color: #3b4151;
+      font-weight: 700;
+      margin-bottom: 0.3125rem;
+      padding-left: 0.25rem;
+    }
+    div.model {
+      margin: 0.625rem 1.875rem 0.625rem 0;
+    }
+    div.model-body textarea {
+      display: block;
+      font-size: 0.75rem;
+      margin: 0;
+      padding: 0.625rem;
+      border-radius: 4px;
+      background: rgba(224, 224, 224, 0.5);
+      font-family: monospace;
+      font-weight: 600;
+      color: #3b4151;
+      height: 17.5rem;
+      width: 21.875rem;
+      overflow: auto;
+    }
+    div.model-body button {
+      cursor: pointer;
+      margin-top: 0.3125rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.3125rem 1.4375rem;
+      border: 2px solid gray;
+      border-radius: 4px;
+      background: transparent;
+      -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.1);
+      box-shadow: 0 1px 2px rgba(0,0,0,.1);
+      font-family: sans-serif;
+      color: #3b4151;
+      outline: none;
     }
   </style>
+  
+  <!--suppress JSUnusedLocalSymbols -->
   <script>
-  function toggleMessageDetails(messageDetailsId) {
-    var currentState = document.getElementById(messageDetailsId).style.display;
 
-    // If none, change to flex
-    if (currentState === 'none') {
-      document.getElementById(messageDetailsId).style.display = 'flex';
-    } else {
-      document.getElementById(messageDetailsId).style.display = 'none';
+    /**
+     * Toggle shows or hides the body of a message documentation. It also adjusts the border
+     * radius depending on the collapse/expand state of the message body.
+     *
+     * @param headerId ID of the header block of a message documentation.
+     * @param bodyId ID of the body block of a message documentation.
+     */
+    function toggleMessageDetails(headerId, bodyId) {
+      var header = document.getElementById(headerId);
+      var body = document.getElementById(bodyId);
+
+      if (body.classList.contains('hide-model-details')) {
+        body.classList.remove('hide-model-details');
+        header.classList.add('bottom-square-corners');
+      } else {
+        body.classList.add('hide-model-details');
+        header.classList.remove('bottom-square-corners');
+      }
     }
-  }
+
+    /**
+     * Copy to clipboard the text inside of the textarea tag with the provide ID attribute.
+     * @param textAreaId ID attribute of the textarea whose contents need to be copied.
+     */
+    function copy(textAreaId) {
+      var textArea = document.getElementById(textAreaId);
+      textArea.select();
+      document.execCommand('copy');
+    }
 
   </script>
 </head>
 
 <body>
-  <h1>Spring Rest Messenger Docs for CONTEXT-NAME</h1>
-  <h2>Issue a POST request to CONTEXT-NAME/process with one of these messages as payload</h2>
-
-  <div id="messages">
-    <div class="message">
-      <div class="message-name">
-        PersonMessage ---> PersonResponseResponse
+  <header>
+    <div class="title">
+      Spring REST Messenger Docs <span th:text="'@project.version@'" class="version">1.0.0</span>
+    </div>
+    <div class="description">
+      Auto-generated documentation for messages  along with their paired responses
+      that the <span class="inline-uri" th:text="'/' + ${endpointUri}">/process</span> 
+      endpoint supports.
+    </div>
+    <div class="app-name">
+        Host application name (specified by <span class="monospace">spring.application.name</span>):
+        <span th:text="${appName}">Application Name</span>
       </div>
-      <div class="message-details" id="PersonMessage" style="display: none;">
-        <div class="model-details">
-          <div>
-            Message Model
-          </div>
-          <textarea name="" cols="40" rows="20" disabled>
-          All kinds of bla bla here
-          </textarea>
-          <button class="copy-button">Copy</button>
-        </div>
-        <div class="model-details">
-          <div>
-            Message Response Model
-          </div>
-          <textarea name="" cols="40" rows="20" disabled>
-              All kinds of bla bla here
-          </textarea>
-          <button class="copy-button">Copy</button>
-        </div>
+    <div class="messenger-links">
+      <div>
+        <a href="https://github.com/clearlydecoded/rest-messenger#rest-messenger"
+           target="_blank">Getting Started with Spring REST Messenger</a>
+      </div>
+      <div>Found a bug in REST Messenger or have a feature suggestion? Please
+        <a href="https://github.com/clearlydecoded/rest-messenger/issues" 
+           target="_blank">file an issue</a>.
       </div>
     </div>
-  </div>
+  </header>
+
+  <div class="main">
+    <div class="uri-details">
+      <span class="http-method">POST</span>
+      <span class="inline-uri" th:text="${#servletContext.contextPath} + '/' + ${endpointUri}">
+        /process
+      </span>
+      <span class="uri-description">
+        Send message to be processed as part of the body of a <span class="monospace">POST</span> 
+        request, using one of the following message models.
+      </span>
+    </div>
+
+    <div class="docs">
+      <div class="doc" th:each="doc : ${docs}">
+        <div class="doc-header"
+             id="header"
+             title="Click to see message & response details"
+             onclick="toggleMessageDetails('header', 'body')"
+             th:id="${doc.id} + '-header'"
+             th:onclick="'toggleMessageDetails(\'' + ${doc.id} + '-header' + '\', \'' + ${doc.id} + '-body' + '\');'">
+          <div class="message-pill">
+            <div class="message">
+              <div th:text="${doc.messageShortClassName}">GetPersonMessage</div>
+              <div class="pill-tag">message</div>
+            </div>
+          </div>
+          <div class="right-arrow">&#8594;</div>
+          <div class="message-response-pill">
+            <div class="message">
+              <div th:text="${doc.messageResponseShortClassName}">GetPersonMessageResponse</div>
+              <div class="pill-tag">message response</div>
+            </div>
+          </div>
+        </div> <!-- end doc-header -->
+
+        <div class="doc-body hide-model-details" id="body" th:id="${doc.id} + '-body'">
+          <div class="model">
+            <div class="model-title">Message Model</div>
+            <div class="model-body">
+              <textarea
+                  id="message-textarea"
+                  title="Model for message"
+                  th:title="'Model for message ' + ${doc.messageShortClassName}"
+                  th:id="${doc.messageId} + '-textarea'"
+                  th:text="${doc.messageModel}">
+              </textarea>
+              <button
+                  onclick="copy('message-textarea')"
+                  th:onclick="'copy(\'' + ${doc.messageId} + '-textarea\')' ">copy
+              </button>
+            </div>
+          </div>
+          <div class="model">
+            <div class="model-title">Message Response Model</div>
+            <div class="model-body">
+              <textarea
+                  id="message-response-textarea"
+                  title="Model for message response"
+                  th:title="'Model for message response' + ${doc.messageResponseShortClassName}"
+                  th:id="${doc.messageResponseId} + '-textarea'"
+                  th:text="${doc.messageResponseModel}">
+              </textarea>
+              <button
+                  onclick="copy('message-response-textarea')"
+                  th:onclick="'copy(\'' + ${doc.messageResponseId} + '-textarea\')' ">copy
+              </button>
+            </div>
+          </div>
+        </div> <!-- end of doc-body -->
+      </div> <!-- end of doc-->
+    </div> <!-- end docs -->
+  </div> <!-- end main -->
+
 </body>
 
 </html>

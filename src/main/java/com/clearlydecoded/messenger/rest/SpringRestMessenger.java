@@ -13,8 +13,8 @@ import com.clearlydecoded.messenger.MessageProcessor;
 import com.clearlydecoded.messenger.MessageProcessorRegistry;
 import com.clearlydecoded.messenger.MessageResponse;
 import com.clearlydecoded.messenger.discovery.SpringMessageProcessorRegistryFactory;
-import com.clearlydecoded.messenger.documentation.RestMessageProcessorDocumentation;
-import com.clearlydecoded.messenger.documentation.RestMessageProcessorDocumentationGenerator;
+import com.clearlydecoded.messenger.documentation.RestProcessorDocumentation;
+import com.clearlydecoded.messenger.documentation.RestProcessorDocumentationGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -27,9 +27,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
@@ -43,6 +45,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
  *
  * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
  */
+@SuppressWarnings("SpringJavaAutowiredMembersInspection")
 @Log
 public class SpringRestMessenger {
 
@@ -73,7 +76,20 @@ public class SpringRestMessenger {
    * List of documentation classes that can be used to describe inputs/outputs of all the processors
    * registered in the system.
    */
-  private List<RestMessageProcessorDocumentation> processorDocs;
+  private List<RestProcessorDocumentation> processorDocs;
+
+  /**
+   * Application's context path as is registered by the servlet container.
+   */
+  @Value("#{servletContext.contextPath}")
+  private String servletContextPath;
+
+  /**
+   * Spring application name, possibly wired in by the 'spring.application.name' property.
+   * Defaults to an empty string.
+   */
+  @Value("${spring.application.name:}")
+  private String springApplicationName;
 
   /**
    * Constructor.
@@ -108,7 +124,7 @@ public class SpringRestMessenger {
     try {
       // Generate docs for message processors
       for (MessageProcessor messageProcessor : processorRegistry.getProcessors()) {
-        RestMessageProcessorDocumentation documentation = RestMessageProcessorDocumentationGenerator
+        RestProcessorDocumentation documentation = RestProcessorDocumentationGenerator
             .generateDocumentation(messageProcessor);
         processorDocs.add(documentation);
       }
@@ -120,6 +136,9 @@ public class SpringRestMessenger {
       log.severe(logMessage);
     }
   }
+
+  @Autowired
+  DispatcherServlet servlet;
 
   /**
    * Creates mapping for the <code>process</code> method with the <code>endpointUri</code>.
@@ -144,13 +163,15 @@ public class SpringRestMessenger {
         SpringRestMessenger.class.getDeclaredMethod("process", String.class));
 
     // Wire up request mapping for output of processor docs
-    //    RequestMappingInfo getProcessorDocsRequestMappingInfo = RequestMappingInfo
-    //        .paths(endpointUri)
-    //        .methods(RequestMethod.GET)
-    //        .produces(MediaType.TEXT_HTML_VALUE)
-    //        .build();
-    //    requestMappingHandlerMapping.registerMapping(getProcessorDocsRequestMappingInfo, this,
-    //        SpringRestMessenger.class.getDeclaredMethod("getProcessorDocs", Model.class));
+    RequestMappingInfo getProcessorDocsRequestMappingInfo = RequestMappingInfo
+        .paths(endpointUri)
+        .methods(RequestMethod.GET)
+        .produces(MediaType.TEXT_HTML_VALUE)
+        .mappingName("")
+        .build();
+    requestMappingHandlerMapping.registerMapping(getProcessorDocsRequestMappingInfo, this,
+        SpringRestMessenger.class.getDeclaredMethod("getProcessorDocs", Model.class));
+
   }
 
   /**
@@ -243,17 +264,21 @@ public class SpringRestMessenger {
     return response;
   }
 
-  //  /**
-  //   * Directs the request to the HTML page that displays all the documentation for the system
-  //   * discovered message processors.
-  //   *
-  //   * @param model Shared model with the view.
-  //   * @return ID of the page to serve to the client.
-  //   */
-  //  private String getProcessorDocs(Model model) {
-  //
-  //    // Store processor docs in the model and send control to documentation HTML page
-  //    model.addAttribute("docs", processorDocs);
-  //    return "SpringRestProcessorDocumentation";
-  //  }
+  /**
+   * Directs the request to the HTML page that displays all the documentation for the system
+   * discovered message processors.
+   *
+   * @param model Shared model with the view.
+   * @return ID of the page to serve to the client.
+   */
+  private String getProcessorDocs(Model model) {
+
+    model.addAttribute("docs", processorDocs);
+    model.addAttribute("endpointUri", endpointUri);
+
+    String appName = springApplicationName.trim();
+    model.addAttribute("appName", appName.equals("") ? "unspecified" : appName);
+
+    return "SpringRestProcessorDocumentation";
+  }
 }

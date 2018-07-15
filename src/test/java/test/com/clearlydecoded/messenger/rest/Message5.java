@@ -13,6 +13,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * {@link Message5} class is used for testing rest controller.
+ *
+ * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

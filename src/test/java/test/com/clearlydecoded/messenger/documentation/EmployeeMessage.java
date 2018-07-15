@@ -6,41 +6,32 @@
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
  */
-package com.clearlydecoded.messenger.documentation;
+package test.com.clearlydecoded.messenger.documentation;
 
-import com.clearlydecoded.messenger.MessageProcessor;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * {@link RestMessageProcessorDocumentation} class represents REST JSON documentation for a {@link
- * MessageProcessor}.
+ * {@link EmployeeMessage} class is used to test documentation generation when the class has
+ * inherited properties.
  *
  * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RestMessageProcessorDocumentation {
+@EqualsAndHashCode(callSuper = true)
+public class EmployeeMessage extends GetPersonMessage {
 
-  /**
-   * Single word concrete message class name.
-   */
-  private String messageShortClassName;
+  public static final String TYPE = "EmployeeMessage";
+  private final String type = TYPE;
 
-  /**
-   * Formatted JSON string representing the model of the message.
-   */
-  private String messageModel;
+  private String employeeNumber;
 
-  /**
-   * Single word concrete message response class name.
-   */
-  private String messageResponseShortClassName;
-
-  /**
-   * Formatted JSON string representing the model of the message response.
-   */
-  private String messageResponseModel;
+  @Override
+  public String getType() {
+    return type;
+  }
 }

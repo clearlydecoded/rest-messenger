@@ -12,6 +12,11 @@ import com.clearlydecoded.messenger.Message;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+/**
+ * {@link Message1} class is used for registry testing.
+ *
+ * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
+ */
 @Data
 @AllArgsConstructor
 public class Message1 implements Message<Message1Response> {

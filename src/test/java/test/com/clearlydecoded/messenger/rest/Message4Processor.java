@@ -11,6 +11,11 @@ package test.com.clearlydecoded.messenger.rest;
 import com.clearlydecoded.messenger.MessageProcessor;
 import org.springframework.stereotype.Service;
 
+/**
+ * {@link Message4Processor} class is used for testing the rest processor.
+ *
+ * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
+ */
 @Service
 public class Message4Processor implements MessageProcessor<Message4, Message4Response> {
 
