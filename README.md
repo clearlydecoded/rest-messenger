@@ -5,6 +5,9 @@ It's so easy to use, you can start implementing your APIs in under 5 minutes.
 
 Yes, really. Just see the [How](#how) section.
 
+## Releases
+See [releases](https://github.com/clearlydecoded/rest-messenger/releases) section for a list of features by release.
+
 ## Why?
 
 **If you don't care about philosophical blah blah, just skip this section. You've been warned. :-)**
