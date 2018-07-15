@@ -144,4 +144,23 @@ public class RestProcessorDocumentationGeneratorTest {
     assertEquals("Message response model should be correct.", expectedMessageResponseModel,
         docs.getMessageResponseModel());
   }
+
+  @Test
+  public void testGenerateProcessorDocumentationMessageEnumContainingMessage() throws Exception {
+
+    String expectedMessageModel = "{\n"
+        + "  \"type\": \"EnumMessage\",\n"
+        + "  \"status\": \"STARTED\" | \"FINISHED\",\n"
+        + "  \"singleValue\": \"SINGLE_VALUE\",\n"
+        + "  \"regularString\": \"string\"\n"
+        + "}";
+
+    EnumMessageProcessor processor = new EnumMessageProcessor();
+    RestProcessorDocumentation docs = RestProcessorDocumentationGenerator
+        .generateDocumentation(processor);
+
+    assertEquals("Message model with enums should be correct.", expectedMessageModel,
+        docs.getMessageModel());
+
+  }
 }
