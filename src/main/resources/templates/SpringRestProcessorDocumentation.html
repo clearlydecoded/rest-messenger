@@ -79,6 +79,7 @@
     }
     div.main {
       padding: 1.875rem;
+      min-width: 30rem;
     }
     .monospace {
       font-family: monospace;
@@ -117,6 +118,7 @@
     }
     div.doc-header {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       border: 1px solid #49cc90;
       border-radius: 4px 4px 4px 4px;
@@ -129,6 +131,8 @@
     }
     div.doc-header > div {
       flex: 1 0 0;
+      margin-bottom: 5px;
+      margin-top: 5px;
     }
     div.doc-header > div.right-arrow {
       flex: 0;
@@ -158,6 +162,7 @@
       padding: 0.625rem;
       background: rgba(73,204,144,.1);
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       transition: .1s ease-in;
     }
@@ -177,7 +182,7 @@
       padding-left: 0.25rem;
     }
     div.model {
-      margin-right: 1.875rem;
+      margin: 0.625rem 1.875rem 0.625rem 0;
     }
     div.model-body textarea {
       display: block;
