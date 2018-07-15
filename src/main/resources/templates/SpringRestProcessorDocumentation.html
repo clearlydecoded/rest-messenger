@@ -1,6 +1,15 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
 
+<!--
+Copyright 2018 Yaakov Chaikin (yaakov@ClearlyDecoded.com). Licensed under the Apache License,
+Version 2.0 (the "License"); you may not use this file except in compliance with the License. You
+may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0. Unless required
+by applicable law or agreed to in writing, software distributed under the License is distributed
+on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
+the License for the specific language governing permissions and limitations under the License.
+-->
+
 <!--/*@thymesVar id="endpointUri" type="java.lang.String"*/-->
 <!--/*@thymesVar id="docs" type="java.util.List<com.clearlydecoded.messenger.documentation.RestProcessorDocumentation>"*/-->
 <!--/*@thymesVar id="doc" type="com.clearlydecoded.messenger.documentation
@@ -219,9 +228,11 @@
   <script>
 
     /**
-     * Toggle shows or hides an area with the provided ID attribute.
+     * Toggle shows or hides the body of a message documentation. It also adjusts the border
+     * radius depending on the collapse/expand state of the message body.
      *
-     * @param messageDetailsId ID of the area to toggle show or hide.
+     * @param headerId ID of the header block of a message documentation.
+     * @param bodyId ID of the body block of a message documentation.
      */
     function toggleMessageDetails(headerId, bodyId) {
       var header = document.getElementById(headerId);
