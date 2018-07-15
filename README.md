@@ -34,12 +34,18 @@ Blah blah blah... Just tell me how to use it already!
 Ok, ok. If you are that impatient, just jump to the [How](#how) section.
 
 ## Features
+### v1.0.0
 * Single (and simple!) line of code to configure
 * (*at startup*) Automatic discovery of message processors in your system 
 * (*at startup*) Automatic validation that message processors are properly wired to support correct message routing to their strongly typed message processors 
 * Automatic conversion of JSON-based messages to a concrete message class defined in your system
 * Automatic routing of messages to their specific, strongly typed message processors
 * (*at startup*) Automatic validation of message and response POJOs' ability to correctly deserialize into JSON, letting you find out right away that something is wrong instead of much later into the application use when that particular message is received
+### v1.1.0
+* Easy to use *automatically* generated docs for your application messages & message responses
+  * Simply point your browser to the endpoint URI (by default `/process` or configured by you with `com.clearlydecoded.messenger.endpoint.uri` property) and an automatically generated docs page will display
+  * For example, something like this:
+  ![automatically generated docs screenshot](project-resources/docs.png)
 
 ## Dependecies
 * Java 8 and above
