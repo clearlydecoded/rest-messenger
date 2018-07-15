@@ -88,7 +88,7 @@ For example:
   <groupId>com.clearlydecoded</groupId>
   <artifactId>rest-messenger-demo</artifactId>
   <packaging>war</packaging>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
 
   <properties>
     <java.version>1.8</java.version>
