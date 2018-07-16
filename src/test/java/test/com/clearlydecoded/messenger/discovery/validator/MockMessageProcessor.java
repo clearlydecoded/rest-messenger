@@ -30,7 +30,7 @@ public class MockMessageProcessor implements MessageProcessor<MockMessage, MockM
   }
 
   @Override
-  public Class<MockMessage> getCompatibleMessage() {
+  public Class<MockMessage> getCompatibleMessageClassType() {
     return MockMessage.class;
   }
 

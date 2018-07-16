@@ -56,7 +56,7 @@ public interface MessageProcessor
    *
    * @return Class type of the message this processor is able to process.
    */
-  Class<MessageT> getCompatibleMessage();
+  Class<MessageT> getCompatibleMessageClassType();
 
   /**
    * Retrieves class type of the message response this processor is set to return.

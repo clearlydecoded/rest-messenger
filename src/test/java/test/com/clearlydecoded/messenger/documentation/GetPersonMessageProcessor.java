@@ -29,7 +29,7 @@ public class GetPersonMessageProcessor implements
   }
 
   @Override
-  public Class<GetPersonMessage> getCompatibleMessage() {
+  public Class<GetPersonMessage> getCompatibleMessageClassType() {
     return GetPersonMessage.class;
   }
 

@@ -30,7 +30,7 @@ public class Message4Processor implements MessageProcessor<Message4, Message4Res
   }
 
   @Override
-  public Class<Message4> getCompatibleMessage() {
+  public Class<Message4> getCompatibleMessageClassType() {
     return Message4.class;
   }
 

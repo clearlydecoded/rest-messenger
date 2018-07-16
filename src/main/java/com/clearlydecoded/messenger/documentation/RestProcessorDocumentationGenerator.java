@@ -65,7 +65,7 @@ public class RestProcessorDocumentationGenerator {
     RestProcessorDocumentation documentation = new RestProcessorDocumentation();
 
     // Extract message & message response classes
-    Class<? extends Message> messageClass = processor.getCompatibleMessage();
+    Class<? extends Message> messageClass = processor.getCompatibleMessageClassType();
     Class<? extends MessageResponse> messageResponseClass = processor
         .getCompatibleMessageResponseClassType();
 

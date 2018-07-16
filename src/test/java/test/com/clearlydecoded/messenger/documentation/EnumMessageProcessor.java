@@ -30,7 +30,7 @@ public class EnumMessageProcessor implements MessageProcessor<EnumMessage, EnumM
   }
 
   @Override
-  public Class<EnumMessage> getCompatibleMessage() {
+  public Class<EnumMessage> getCompatibleMessageClassType() {
     return EnumMessage.class;
   }
 
