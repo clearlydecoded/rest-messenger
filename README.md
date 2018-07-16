@@ -10,7 +10,7 @@ See [releases](https://github.com/clearlydecoded/rest-messenger/releases) sectio
 
 ## Why?
 
-**If you don't care about philosophical blah blah, just skip this section. You've been warned. :-)**
+**If you don't care about philosophical blah blah, just skip this section. You've been warned. 😀**
 
 It is very often the case that the standard REST conventions of providing separate endpoints for CRUD (**C**reate with `POST`, **R**ead with `GET`, etc.) don't fit some use cases. This is especially true when the API you are trying to create is for a microservice.
 
