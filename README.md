@@ -37,6 +37,8 @@ Blah blah blah... Just tell me how to use it already!
 Ok, ok. If you are that impatient, just jump to the [How](#how) section.
 
 ## Features
+See [releases](https://github.com/clearlydecoded/rest-messenger/releases) section for a list of features by release.
+
 ### v1.0.0
 * Single (and simple!) line of code to configure
 * (*at startup*) Automatic discovery of message processors in your system 
