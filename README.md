@@ -49,6 +49,15 @@ Ok, ok. If you are that impatient, just jump to the [How](#how) section.
   * Simply point your browser to the endpoint URI (by default `/process` or configured by you with `com.clearlydecoded.messenger.endpoint.uri` property) and an automatically generated docs page will display
   * For example, something like this:
   ![automatically generated docs screenshot](project-resources/docs.png)
+### v2.0.0 - breaking changes (very minor)
+* User can now simply extend the `AbstractMessageProcessor` class and not have to implement *any* of the boilerplate code.
+  * No more need to implement `MessageProcessor` unless you need more control over how things are wired (in most cases, you won't care)
+  * String type identifier will automatically pick up the message type string identifier.
+* Methods in the interface for getting class names have been made consistent. (**breaking change**)
+  * Minor because the name of one of the boilerplate methods changed slightly.
+* Stricter processor registration validation.
+  * Checks when registering processors that no other processors in the system are already registered with the same string-based type ID.
+  * If it finds another one already registered, throws IllegalStateException, thus preventing quiet overriding of existing processor.
 
 ## Dependecies
 * Java 8 and above
@@ -237,20 +246,20 @@ public class GreetMeMessage implements Message<GreetMeMessageResponse> {
 
 **Step 3**: Define message processor class.
 
-The processor class must implement the `com.clearlydecoded.messenger.MessageProcessor` interface, be annotated with either `@Service`, `@Component`, etc. for Spring to discover it, and be generically typed with the previously defined message and message response POJO classes. In this case, `GreetMeMessage` and `GreetMeMessageResponse`.
+The processor class must extend the `com.clearlydecoded.messenger.AbstractMessageProcessor` abstract class, be annotated with either `@Service`, `@Component`, etc. for Spring to discover it, and be generically typed with the previously defined message and message response POJO classes. In this case, `GreetMeMessage` and `GreetMeMessageResponse`.
 
 For example:
 ```java
 package com.clearlydecoded.messenger.demo.processor;
 
-import com.clearlydecoded.messenger.MessageProcessor;
+import com.clearlydecoded.messenger.AbstractMessageProcessor;
 import com.clearlydecoded.messenger.demo.message.GreetMeMessage;
 import com.clearlydecoded.messenger.demo.message.GreetMeMessageResponse;
 import org.springframework.stereotype.Service;
 
 @Service // Must have this annotation for Spring to discover the class
-public class GreetMeMessageProcessor implements
-    MessageProcessor<GreetMeMessage, GreetMeMessageResponse> {
+public class GreetMeMessageProcessor extends
+    AbstractMessageProcessor<GreetMeMessage, GreetMeMessageResponse> {
 
   @Override
   public GreetMeMessageResponse process(GreetMeMessage message) {
@@ -258,28 +267,10 @@ public class GreetMeMessageProcessor implements
     // This is where you write the actual business logic
     return new GreetMeMessageResponse("Hello " + message.getMyName());
   }
-
-  @Override
-  public String getCompatibleMessageType() {
-    // SEE! Defining that TYPE as public static final paid off!
-    // You certainly CAN just hardcode a string here, but this is more robust.
-    // Don't worry, if you mess this up, the validation at startup will catch it
-    return GreetMeMessage.TYPE;
-  }
-
-  @Override
-  public Class<GreetMeMessage> getCompatibleMessage() {
-    return GreetMeMessage.class; // not possible to mess up here
-  }
-
-  @Override
-  public Class<GreetMeMessageResponse> getCompatibleMessageResponseClassType() {
-    return GreetMeMessageResponse.class; // not possible to mess up here
-  }
 }
 ```
 
-👉 TIP! Once you type in `implements MessageProcessor<GreetMeMessage, GreetMeMessageResponse>`, have your IDE generate the interface-required methods for you automatically.
+👉 TIP! Once you type in `extends AbstractMessageProcessor<GreetMeMessage, GreetMeMessageResponse>`, have your IDE generate the unimplemented method for you automatically.
 
 Now, *"rinse and repeat"* as you expand your API.
 
@@ -327,6 +318,9 @@ To see full source code of an application using rest-messenger for demo purposes
 * **Q**: Can the POJO code be even cleaner? <br>
   **A**: YES! check out [Project Lombok](https://projectlombok.org/). You'll never write another getter/setter by hand again. The code is SO much cleaner looking. For an example, take a look at [`MaxSugarOrder.java`](https://github.com/clearlydecoded/rest-messenger-demo/blob/master/src/main/java/com/clearlydecoded/messenger/demo/message/MaxSugarOrder.java) and [`MaxSugerOrderResponse.java`](https://github.com/clearlydecoded/rest-messenger-demo/blob/master/src/main/java/com/clearlydecoded/messenger/demo/message/MaxSugarOrderResponse.java) in the [rest-messenger-demo](https://github.com/clearlydecoded/rest-messenger-demo) repository.
   
+* **Q**: How do I version my API? <br>
+  **A**: At the moment, the only way to version the API is to provide a different string-based type identifier in your message POJO. For example, if you had `GreetMeMessage` as the string-based type identifier and your POJO needs to change to a different version of the message, create another message class and identify it with `GreetMeMessagev2`.
+
 * **Q**: So, what's the disadvange of using this pattern and framework? <br>
   **A**: 3 classes are required to accomplish *each* request-process-response. Luckily, these are simple classes and a significantly larger number of Java files in your project isn't a problem, especially if you neatly organize them into some `mesage`, `response`, and `processor` packages. You can always organize those even further, of course. You should also be able to easily tell what the message is going to accomplish by simply looking at the Java file name. In other words, `message/UpdateIndex.java` should give you a strong hint as to what it does.
   
