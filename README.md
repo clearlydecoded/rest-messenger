@@ -57,7 +57,7 @@ Ok, ok. If you are that impatient, just jump to the [How](#how) section.
   * Minor because the name of one of the boilerplate methods changed slightly.
 * Stricter processor registration validation.
   * Checks when registering processors that no other processors in the system are already registered with the same string-based type ID.
-  * If it finds another one already registered, throws IllegalStateException, thus preventing quiet overriding of existing processor.
+  * If it finds another one already registered, throws `IllegalStateException`, thus preventing quiet overriding of existing processor.
 
 ## Dependecies
 * Java 8 and above
