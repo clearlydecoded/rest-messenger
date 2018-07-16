@@ -275,6 +275,7 @@ public class SpringRestMessenger {
 
     model.addAttribute("docs", processorDocs);
     model.addAttribute("endpointUri", endpointUri);
+    model.addAttribute("servletContextPath", servletContextPath);
 
     String appName = springApplicationName.trim();
     model.addAttribute("appName", appName.equals("") ? "unspecified" : appName);
