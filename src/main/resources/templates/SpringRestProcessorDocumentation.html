@@ -15,12 +15,13 @@ the License for the specific language governing permissions and limitations unde
 <!--/*@thymesVar id="doc" type="com.clearlydecoded.messenger.documentation
   .RestProcessorDocumentation"*/-->
 <!--/*@thymesVar id="appName" type="java.lang.String"*/-->
+<!--/*@thymesVar id="servletContextPath" type="java.lang.String"*/-->
 
 <head>
   <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Spring Rest Messenger Docs</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     /** Basic CSS reset */
     html {
@@ -291,7 +292,7 @@ the License for the specific language governing permissions and limitations unde
   <div class="main">
     <div class="uri-details">
       <span class="http-method">POST</span>
-      <span class="inline-uri" th:text="${#servletContext.contextPath} + '/' + ${endpointUri}">
+      <span class="inline-uri" th:text="${servletContextPath} + '/' + ${endpointUri}">
         /process
       </span>
       <span class="uri-description">
@@ -304,7 +305,7 @@ the License for the specific language governing permissions and limitations unde
       <div class="doc" th:each="doc : ${docs}">
         <div class="doc-header"
              id="header"
-             title="Click to see message & response details"
+             title="Click to see message &amp; response details"
              onclick="toggleMessageDetails('header', 'body')"
              th:id="${doc.id} + '-header'"
              th:onclick="'toggleMessageDetails(\'' + ${doc.id} + '-header' + '\', \'' + ${doc.id} + '-body' + '\');'">
