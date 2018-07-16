@@ -39,27 +39,17 @@ Ok, ok. If you are that impatient, just jump to the [How](#how) section.
 ## Features
 See [releases](https://github.com/clearlydecoded/rest-messenger/releases) section for a list of features by release.
 
-### v1.0.0
 * Single (and simple!) line of code to configure
 * (*at startup*) Automatic discovery of message processors in your system 
 * (*at startup*) Automatic validation that message processors are properly wired to support correct message routing to their strongly typed message processors 
 * Automatic conversion of JSON-based messages to a concrete message class defined in your system
 * Automatic routing of messages to their specific, strongly typed message processors
 * (*at startup*) Automatic validation of message and response POJOs' ability to correctly deserialize into JSON, letting you find out right away that something is wrong instead of much later into the application use when that particular message is received
-### v1.1.0
 * Easy to use *automatically* generated docs for your application messages & message responses
   * Simply point your browser to the endpoint URI (by default `/process` or configured by you with `com.clearlydecoded.messenger.endpoint.uri` property) and an automatically generated docs page will display
   * For example, something like this:
   ![automatically generated docs screenshot](project-resources/docs.png)
-### v2.0.0 - breaking changes (very minor)
-* Users can now simply extend the `AbstractMessageProcessor` class and not have to implement *any* of the boilerplate code.
-  * No more need to implement `MessageProcessor` unless you need more control over how things are wired (in most cases, you won't care)
-  * String type identifier will automatically pick up the message type string identifier.
-* Methods in the interface for getting class names have been made consistent. (**breaking change**)
-  * Minor because the name of one of the boilerplate methods changed slightly.
-* Stricter processor registration validation.
-  * Checks when registering processors that no other processors in the system are already registered with the same string-based type ID.
-  * If it finds another one already registered, throws `IllegalStateException`, thus preventing quiet overriding of existing processor.
+* Zero boilerplate code to write
 
 ## Dependecies
 * Java 8 and above
@@ -99,7 +89,7 @@ For example:
   <groupId>com.clearlydecoded</groupId>
   <artifactId>rest-messenger-demo</artifactId>
   <packaging>war</packaging>
-  <version>1.1.0</version>
+  <version>2.0.1</version>
 
   <properties>
     <java.version>1.8</java.version>
@@ -115,7 +105,7 @@ For example:
     <dependency>
       <groupId>com.clearlydecoded</groupId>
       <artifactId>rest-messenger</artifactId>
-      <version>1.1.0</version>
+      <version>2.0.1</version>
     </dependency>
 
   <build>
