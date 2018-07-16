@@ -50,7 +50,7 @@ Ok, ok. If you are that impatient, just jump to the [How](#how) section.
   * For example, something like this:
   ![automatically generated docs screenshot](project-resources/docs.png)
 ### v2.0.0 - breaking changes (very minor)
-* User can now simply extend the `AbstractMessageProcessor` class and not have to implement *any* of the boilerplate code.
+* Users can now simply extend the `AbstractMessageProcessor` class and not have to implement *any* of the boilerplate code.
   * No more need to implement `MessageProcessor` unless you need more control over how things are wired (in most cases, you won't care)
   * String type identifier will automatically pick up the message type string identifier.
 * Methods in the interface for getting class names have been made consistent. (**breaking change**)
