@@ -49,7 +49,7 @@ See [releases](https://github.com/clearlydecoded/rest-messenger/releases) sectio
 * Easy to use *automatically* generated docs for your application messages & message responses
   * Simply point your browser to the endpoint URI (by default `/process` or configured by you with `com.clearlydecoded.messenger.endpoint.uri` property) and an automatically generated docs page will display
   * For example, something like this:
-  ![automatically generated docs screenshot](project-resources/docs.png)
+  ![automatically generated docs screenshot](project-resources/docs-2.0.1.png)
 
 ## Dependecies
 * Java 8 and above
