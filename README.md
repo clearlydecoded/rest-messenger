@@ -45,11 +45,11 @@ See [releases](https://github.com/clearlydecoded/rest-messenger/releases) sectio
 * Automatic conversion of JSON-based messages to a concrete message class defined in your system
 * Automatic routing of messages to their specific, strongly typed message processors
 * (*at startup*) Automatic validation of message and response POJOs' ability to correctly deserialize into JSON, letting you find out right away that something is wrong instead of much later into the application use when that particular message is received
+* Zero boilerplate code to write
 * Easy to use *automatically* generated docs for your application messages & message responses
   * Simply point your browser to the endpoint URI (by default `/process` or configured by you with `com.clearlydecoded.messenger.endpoint.uri` property) and an automatically generated docs page will display
   * For example, something like this:
   ![automatically generated docs screenshot](project-resources/docs.png)
-* Zero boilerplate code to write
 
 ## Dependecies
 * Java 8 and above
