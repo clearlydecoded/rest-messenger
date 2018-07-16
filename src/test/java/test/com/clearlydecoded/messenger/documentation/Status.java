@@ -8,33 +8,12 @@
  */
 package test.com.clearlydecoded.messenger.documentation;
 
-import com.clearlydecoded.messenger.MessageProcessor;
-
 /**
- * {@link GetPersonMessageProcessor} class is used to test generation of documentation.
+ * {@link Status} is an enum to test choice documentation generation.
  *
  * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
  */
-public class GetPersonMessageProcessor implements
-    MessageProcessor<GetPersonMessage, GetPersonMessageResponse> {
-
-  @Override
-  public GetPersonMessageResponse process(GetPersonMessage message) {
-    return null;
-  }
-
-  @Override
-  public String getCompatibleMessageType() {
-    return GetPersonMessage.TYPE;
-  }
-
-  @Override
-  public Class<GetPersonMessage> getCompatibleMessageClassType() {
-    return GetPersonMessage.class;
-  }
-
-  @Override
-  public Class<GetPersonMessageResponse> getCompatibleMessageResponseClassType() {
-    return GetPersonMessageResponse.class;
-  }
+public enum Status {
+  STARTED,
+  FINISHED
 }

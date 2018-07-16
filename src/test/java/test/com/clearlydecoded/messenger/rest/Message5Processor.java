@@ -38,7 +38,7 @@ public class Message5Processor implements MessageProcessor<Message5, Message5Res
   }
 
   @Override
-  public Class<Message5> getCompatibleMessage() {
+  public Class<Message5> getCompatibleMessageClassType() {
     return Message5.class;
   }
 

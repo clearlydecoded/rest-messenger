@@ -23,6 +23,7 @@ import com.fasterxml.jackson.module.jsonSchema.types.NumberSchema;
 import com.fasterxml.jackson.module.jsonSchema.types.ObjectSchema;
 import com.fasterxml.jackson.module.jsonSchema.types.ReferenceSchema;
 import com.fasterxml.jackson.module.jsonSchema.types.StringSchema;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -64,7 +65,7 @@ public class RestProcessorDocumentationGenerator {
     RestProcessorDocumentation documentation = new RestProcessorDocumentation();
 
     // Extract message & message response classes
-    Class<? extends Message> messageClass = processor.getCompatibleMessage();
+    Class<? extends Message> messageClass = processor.getCompatibleMessageClassType();
     Class<? extends MessageResponse> messageResponseClass = processor
         .getCompatibleMessageResponseClassType();
 
@@ -444,14 +445,34 @@ public class RestProcessorDocumentationGenerator {
   private static String getJsonEntry(String propName, StringSchema stringSchema,
       String currentPadding, boolean insertLeadingComma) {
 
+    StringBuilder type = new StringBuilder();
+
+    // Check if this is an enum
+    List<String> enumTypes = new ArrayList<>(stringSchema.getEnums());
+    if (enumTypes.size() != 0) {
+      for (int i = 0; i < enumTypes.size(); i++) {
+        String enumType = enumTypes.get(i);
+
+        // If not first in the list, append separator
+        if (i != 0) {
+          type.append(" | ");
+        }
+
+        type.append("\"").append(enumType).append("\"");
+      }
+    } else {
+      // Regular non-enum string type
+      type.append("\"string\"");
+    }
+
     // Insert comma if indicated
     String possibleComma = insertLeadingComma ? "," : "";
 
     // If propName is null, assume schema inside of an array - no propName needed
     if (propName == null) {
-      return possibleComma + "\n" + currentPadding + "\"string\"";
+      return possibleComma + "\n" + currentPadding + type.toString();
     } else {
-      return possibleComma + "\n" + currentPadding + "\"" + propName + "\": \"string\"";
+      return possibleComma + "\n" + currentPadding + "\"" + propName + "\": " + type.toString();
     }
   }
 }

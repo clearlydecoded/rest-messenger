@@ -29,7 +29,7 @@ public class WontBeDiscoveredProcessor implements MessageProcessor<Message2, Mes
   }
 
   @Override
-  public Class<Message2> getCompatibleMessage() {
+  public Class<Message2> getCompatibleMessageClassType() {
     return null;
   }
 

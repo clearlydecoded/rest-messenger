@@ -8,33 +8,37 @@
  */
 package test.com.clearlydecoded.messenger.documentation;
 
-import com.clearlydecoded.messenger.MessageProcessor;
+import com.clearlydecoded.messenger.Message;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- * {@link GetPersonMessageProcessor} class is used to test generation of documentation.
+ * {@link EnumMessage} class is an enum containing message. This class is used to test generation of
+ * docs for a pojo that contains an enum, i.e., showing the options of the enum.
  *
  * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
  */
-public class GetPersonMessageProcessor implements
-    MessageProcessor<GetPersonMessage, GetPersonMessageResponse> {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class EnumMessage implements Message<EnumMessageResponse> {
+
+  public static final String TYPE = "EnumMessage";
+
+  private final String type = TYPE;
+
+  /**
+   * Enum to test for choice generation.
+   */
+  private Status status;
+
+  private SingleEnumValueType singleValue;
+
+  private String regularString;
 
   @Override
-  public GetPersonMessageResponse process(GetPersonMessage message) {
-    return null;
-  }
-
-  @Override
-  public String getCompatibleMessageType() {
-    return GetPersonMessage.TYPE;
-  }
-
-  @Override
-  public Class<GetPersonMessage> getCompatibleMessageClassType() {
-    return GetPersonMessage.class;
-  }
-
-  @Override
-  public Class<GetPersonMessageResponse> getCompatibleMessageResponseClassType() {
-    return GetPersonMessageResponse.class;
+  public String getType() {
+    return type;
   }
 }

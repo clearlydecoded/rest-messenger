@@ -6,37 +6,21 @@
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
  */
-package test.com.clearlydecoded.messenger.discovery.registry;
+package test.com.clearlydecoded.messenger.discovery.samemessagetype;
 
-import com.clearlydecoded.messenger.MessageProcessor;
+import com.clearlydecoded.messenger.AbstractMessageProcessor;
 import org.springframework.stereotype.Service;
 
 /**
- * {@link Message2Processor} class is used for registry testing.
+ * Class for testing multiple messages with the same type id.
  *
  * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
  */
 @Service
-public class Message2Processor implements MessageProcessor<Message2, Message2Response> {
+public class MyMessage1Processor extends AbstractMessageProcessor<MyMessage1, MyResponse> {
 
   @Override
-  public Message2Response process(Message2 message) {
-    // do nothing. just for testing.
+  public MyResponse process(MyMessage1 message) {
     return null;
-  }
-
-  @Override
-  public String getCompatibleMessageType() {
-    return Message2.TYPE;
-  }
-
-  @Override
-  public Class<Message2> getCompatibleMessageClassType() {
-    return Message2.class;
-  }
-
-  @Override
-  public Class<Message2Response> getCompatibleMessageResponseClassType() {
-    return Message2Response.class;
   }
 }

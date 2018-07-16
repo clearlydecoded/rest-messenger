@@ -30,7 +30,7 @@ public class MockMessageWithNoPublicConstructorProcessor implements
   }
 
   @Override
-  public Class<MockMessageWithNoPublicConstructor> getCompatibleMessage() {
+  public Class<MockMessageWithNoPublicConstructor> getCompatibleMessageClassType() {
     return MockMessageWithNoPublicConstructor.class;
   }
 

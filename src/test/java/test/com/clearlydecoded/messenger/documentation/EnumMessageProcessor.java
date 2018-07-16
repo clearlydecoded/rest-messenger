@@ -9,35 +9,33 @@
 package test.com.clearlydecoded.messenger.documentation;
 
 import com.clearlydecoded.messenger.MessageProcessor;
-import org.springframework.stereotype.Service;
 
 /**
- * {@link EmployeeMessageProcessor} class is used to test generation of documentation when the
- * message has inherited properties.
+ * {@link EnumMessageProcessor} class is a processor for an enum containing message. This class is
+ * used to test generation of docs for a pojo that contains an enum, i.e., showing the options of
+ * the enum.
  *
  * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
  */
-@Service
-public class EmployeeMessageProcessor implements
-    MessageProcessor<EmployeeMessage, GetPersonMessageResponse> {
+public class EnumMessageProcessor implements MessageProcessor<EnumMessage, EnumMessageResponse> {
 
   @Override
-  public GetPersonMessageResponse process(EmployeeMessage message) {
+  public EnumMessageResponse process(EnumMessage message) {
     return null;
   }
 
   @Override
   public String getCompatibleMessageType() {
-    return EmployeeMessage.TYPE;
+    return EnumMessage.TYPE;
   }
 
   @Override
-  public Class<EmployeeMessage> getCompatibleMessageClassType() {
-    return EmployeeMessage.class;
+  public Class<EnumMessage> getCompatibleMessageClassType() {
+    return EnumMessage.class;
   }
 
   @Override
-  public Class<GetPersonMessageResponse> getCompatibleMessageResponseClassType() {
-    return GetPersonMessageResponse.class;
+  public Class<EnumMessageResponse> getCompatibleMessageResponseClassType() {
+    return EnumMessageResponse.class;
   }
 }

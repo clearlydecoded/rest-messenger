@@ -62,7 +62,7 @@ public class MessageProcessorValidator {
 
     // Retrieve Java class message type and string-based message type
     Class<? extends Message<? extends MessageResponse>> processorMessageClassType =
-        processor.getCompatibleMessage();
+        processor.getCompatibleMessageClassType();
     String processorMessageStringType = processor.getCompatibleMessageType();
 
     try {

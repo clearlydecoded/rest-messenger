@@ -224,7 +224,7 @@ public class SpringRestMessenger {
 
     // Retrieve message processor's message class type
     Class<MessageT> processorMessageClassType = messageProcessor
-        .getCompatibleMessage();
+        .getCompatibleMessageClassType();
 
     // Attempt to deserialize string message using message processor's message class type
     MessageT javaTypedMessage;

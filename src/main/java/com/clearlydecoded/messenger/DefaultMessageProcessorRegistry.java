@@ -40,12 +40,15 @@ public class DefaultMessageProcessorRegistry implements MessageProcessorRegistry
     // Verify string and Java-based types are compatible in the message processor
     validateMessageProcessor(processor);
 
+    // Verify no processor for the same string-based type ID is already registered
+    validateNoDuplicateTypeIdProcessor(processor);
+
     // Place message processor into map, keyed by string-based message type identifier
     String processorStringType = processor.getCompatibleMessageType();
     processorMap.put(processorStringType, processor);
 
     // Log registration
-    Class<?> processedMessage = processor.getCompatibleMessage();
+    Class<?> processedMessage = processor.getCompatibleMessageClassType();
     String logTemplate = "Registered [{0}] to process messages of type [{1}] identified by [{2}]";
 
     if (log.isLoggable(Level.INFO)) {
@@ -101,5 +104,36 @@ public class DefaultMessageProcessorRegistry implements MessageProcessorRegistry
   public List<MessageProcessor<? extends Message<? extends MessageResponse>,
       ? extends MessageResponse>> getProcessors() {
     return new ArrayList<>(processorMap.values());
+  }
+
+  /**
+   * Validates that the <code>processor</code> about to be added has a unique string-based type ID.
+   * If a processor with the same string-based type ID already exists in the map of processors,
+   * throw {@link IllegalStateException}.
+   *
+   * @param processor Processor to validate.
+   * @throws IllegalStateException If a processor with the same string-based type ID already exists
+   * in the map of processors
+   */
+  private void validateNoDuplicateTypeIdProcessor(
+      MessageProcessor<? extends Message<? extends MessageResponse>,
+          ? extends MessageResponse> processor) throws IllegalStateException {
+
+    // Retrieve possibly existing processor
+    MessageProcessor<? extends Message<? extends MessageResponse>, ? extends MessageResponse>
+        existingProcessor = getProcessorFor(processor.getCompatibleMessageType());
+
+    // If processor for that type already exists, throw exception
+    if (existingProcessor != null) {
+      String logMessage = "Unable to register [{0}] to process messages of type [{1}] identified"
+          + " by [{2}]. Another message processor [{3}] already identifies itself as the processor"
+          + " of the same message type with string identifier [{4}].";
+      String message = MessageFormat.format(logMessage, processor.getClass().getName(),
+          processor.getCompatibleMessageClassType().getName(),
+          processor.getCompatibleMessageType(), existingProcessor.getClass().getName(),
+          existingProcessor.getCompatibleMessageType());
+
+      throw new IllegalStateException(message);
+    }
   }
 }
