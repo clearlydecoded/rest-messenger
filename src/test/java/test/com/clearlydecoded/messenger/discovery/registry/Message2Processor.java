@@ -31,7 +31,7 @@ public class Message2Processor implements MessageProcessor<Message2, Message2Res
   }
 
   @Override
-  public Class<Message2> getCompatibleMessage() {
+  public Class<Message2> getCompatibleMessageClassType() {
     return Message2.class;
   }
 

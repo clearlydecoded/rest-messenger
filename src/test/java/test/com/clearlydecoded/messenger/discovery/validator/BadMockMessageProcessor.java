@@ -29,7 +29,7 @@ public class BadMockMessageProcessor implements
   }
 
   @Override
-  public Class<BadMockMessage> getCompatibleMessage() {
+  public Class<BadMockMessage> getCompatibleMessageClassType() {
     return BadMockMessage.class;
   }
 

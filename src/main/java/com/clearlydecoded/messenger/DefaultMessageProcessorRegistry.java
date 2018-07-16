@@ -45,7 +45,7 @@ public class DefaultMessageProcessorRegistry implements MessageProcessorRegistry
     processorMap.put(processorStringType, processor);
 
     // Log registration
-    Class<?> processedMessage = processor.getCompatibleMessage();
+    Class<?> processedMessage = processor.getCompatibleMessageClassType();
     String logTemplate = "Registered [{0}] to process messages of type [{1}] identified by [{2}]";
 
     if (log.isLoggable(Level.INFO)) {

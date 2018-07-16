@@ -24,7 +24,7 @@ public class MockMessageWithResponseWithNoDefaultConstructorProcessor implements
   }
 
   @Override
-  public Class<MockMessageWithResponseWithNoDefaultConstructor> getCompatibleMessage() {
+  public Class<MockMessageWithResponseWithNoDefaultConstructor> getCompatibleMessageClassType() {
     return MockMessageWithResponseWithNoDefaultConstructor.class;
   }
 

@@ -32,7 +32,7 @@ public class EmployeeMessageProcessor implements
   }
 
   @Override
-  public Class<EmployeeMessage> getCompatibleMessage() {
+  public Class<EmployeeMessage> getCompatibleMessageClassType() {
     return EmployeeMessage.class;
   }
 
