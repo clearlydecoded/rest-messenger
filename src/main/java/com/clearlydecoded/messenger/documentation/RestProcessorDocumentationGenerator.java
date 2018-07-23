@@ -38,16 +38,6 @@ import java.util.stream.Collectors;
 public class RestProcessorDocumentationGenerator {
 
   /**
-   * Jackson object mapper to use for JSON schema generation.
-   */
-  private static ObjectMapper mapper = new ObjectMapper();
-
-  /**
-   * JSON module schema parser.
-   */
-  private static JsonSchemaGenerator schemaGenerator = new JsonSchemaGenerator(mapper);
-
-  /**
    * Space padding to use for indentation to make pretty print output.
    */
   private static String spacePadding = "  ";
@@ -92,6 +82,12 @@ public class RestProcessorDocumentationGenerator {
   private static String generateMessageDocumentation(Class<? extends Message> messageClass)
       throws Exception {
 
+    // Jackson object mapper to use for JSON schema generation.
+    ObjectMapper mapper = new ObjectMapper();
+
+    // JSON module schema parser.
+    JsonSchemaGenerator schemaGenerator = new JsonSchemaGenerator(mapper);
+
     StringBuilder model = new StringBuilder();
 
     // Start with {
@@ -131,6 +127,12 @@ public class RestProcessorDocumentationGenerator {
    */
   private static String generateMessageResponseDocumentation(
       Class<? extends MessageResponse> messageResponseClass) throws Exception {
+
+    // Jackson object mapper to use for JSON schema generation.
+    ObjectMapper mapper = new ObjectMapper();
+
+    // JSON module schema parser.
+    JsonSchemaGenerator schemaGenerator = new JsonSchemaGenerator(mapper);
 
     StringBuilder model = new StringBuilder();
 
