@@ -9,6 +9,7 @@
 package test.com.clearlydecoded.messenger.rest;
 
 import com.clearlydecoded.messenger.MessageProcessor;
+import javax.validation.Valid;
 import org.springframework.stereotype.Service;
 
 /**
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Service;
 public class Message4Processor implements MessageProcessor<Message4, Message4Response> {
 
   @Override
-  public Message4Response process(Message4 message) {
+  public Message4Response process(@Valid Message4 message) {
     return new Message4Response("Echo of " + message.getGreeting());
   }
 

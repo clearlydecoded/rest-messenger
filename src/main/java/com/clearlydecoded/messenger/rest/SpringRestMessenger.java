@@ -18,6 +18,8 @@ import com.clearlydecoded.messenger.documentation.RestProcessorDocumentationGene
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -226,6 +228,9 @@ public class SpringRestMessenger {
     Class<MessageT> processorMessageClassType = messageProcessor
         .getCompatibleMessageClassType();
 
+    // Validate message if declared with @Valid
+    validateMessage(messageProcessor, processorMessageClassType);
+
     // Attempt to deserialize string message using message processor's message class type
     MessageT javaTypedMessage;
     try {
@@ -281,5 +286,34 @@ public class SpringRestMessenger {
     model.addAttribute("appName", appName.equals("") ? "unspecified" : appName);
 
     return "SpringRestProcessorDocumentation";
+  }
+
+  //  private <MessageT extends Message<MessageResponseT>,
+  //      MessageResponseT extends MessageResponse> void validateMessage(
+  //      MessageProcessor<MessageT, MessageResponseT> messageProcessor, String message) {
+  //
+  ////    messageProcessor.getClass().getDeclaredMethod("process", m)
+  //  }
+
+  private <MessageT extends Message<MessageResponseT>,
+      MessageResponseT extends MessageResponse> void validateMessage(
+      MessageProcessor<MessageT, MessageResponseT> messageProcessor,
+      Class<MessageT> processorMessageClassType) {
+
+    try {
+      Method method = messageProcessor.getClass()
+          .getDeclaredMethod("process", processorMessageClassType);
+
+      Annotation[][] annotations = method.getParameterAnnotations();
+      for (Annotation[] annotation: annotations) {
+        for (Annotation annotation1: annotation) {
+          System.out.println(annotation1);
+        }
+      }
+
+
+    } catch (NoSuchMethodException e) {
+      e.printStackTrace();
+    }
   }
 }
