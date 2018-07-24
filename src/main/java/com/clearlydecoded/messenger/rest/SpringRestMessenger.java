@@ -182,7 +182,7 @@ public class SpringRestMessenger {
     requestMappingHandlerMapping.registerMapping(getProcessorDocsRequestMappingInfo, this,
         SpringRestMessenger.class.getDeclaredMethod("getProcessorDocs", Model.class));
 
-    // Wire up request mapping for output of processor docs through an HTML page
+    // Wire up request mapping for output of processor docs through REST endpoint
     RequestMappingInfo getJsonProcessorDocsRequestMappingInfo = RequestMappingInfo
         .paths(endpointUri)
         .methods(RequestMethod.GET)
@@ -191,6 +191,16 @@ public class SpringRestMessenger {
         .build();
     requestMappingHandlerMapping.registerMapping(getJsonProcessorDocsRequestMappingInfo, this,
         SpringRestMessenger.class.getDeclaredMethod("getJsonProcessorDocs"));
+
+    // Wire up request mapping for output of processor docs through REST endpoint
+    // Should be able to request directly in browser
+    RequestMappingInfo getBrowserJsonProcessorDocsRequestMappingInfo = RequestMappingInfo
+        .paths(endpointUri + ".json")
+        .methods(RequestMethod.GET)
+        .produces(MediaType.APPLICATION_JSON_VALUE)
+        .build();
+    requestMappingHandlerMapping.registerMapping(getBrowserJsonProcessorDocsRequestMappingInfo,
+        this, SpringRestMessenger.class.getDeclaredMethod("getJsonProcessorDocs"));
   }
 
   /**
