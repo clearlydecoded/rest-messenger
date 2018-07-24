@@ -178,7 +178,6 @@ public class SpringRestMessenger {
         .paths(endpointUri)
         .methods(RequestMethod.GET)
         .produces(MediaType.TEXT_HTML_VALUE)
-        .mappingName("")
         .build();
     requestMappingHandlerMapping.registerMapping(getProcessorDocsRequestMappingInfo, this,
         SpringRestMessenger.class.getDeclaredMethod("getProcessorDocs", Model.class));
