@@ -54,20 +54,24 @@ public class RestProcessorDocumentationGenerator {
       throws Exception {
     RestProcessorDocumentation documentation = new RestProcessorDocumentation();
 
-    // Extract message & message response classes
+    // Extract message & message response classes and string-based type ID
     Class<? extends Message> messageClass = processor.getCompatibleMessageClassType();
     Class<? extends MessageResponse> messageResponseClass = processor
         .getCompatibleMessageResponseClassType();
+    String compatibleMessageType = processor.getCompatibleMessageType();
 
     // Generate documentation for message and message response
     String messageDocs = generateMessageDocumentation(messageClass);
     String messageResponseDocs = generateMessageResponseDocumentation(messageResponseClass);
 
     // Set up the message processor documentation object
+    documentation.setCompatibleMessageType(compatibleMessageType);
     documentation.setMessageModel(messageDocs);
     documentation.setMessageShortClassName(messageClass.getSimpleName());
+    documentation.setMessageFullClassName(messageClass.getName());
     documentation.setMessageResponseModel(messageResponseDocs);
     documentation.setMessageResponseShortClassName(messageResponseClass.getSimpleName());
+    documentation.setMessageResponseFullClassName(messageResponseClass.getName());
 
     return documentation;
   }
