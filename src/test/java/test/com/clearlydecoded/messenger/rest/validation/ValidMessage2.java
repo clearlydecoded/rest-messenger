@@ -16,16 +16,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * {@link ValidMessage1} class is used for testing rest controller validation.
+ * {@link ValidMessage2} class is used for testing rest controller validation.
  *
  * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ValidMessage1 implements Message<Response> {
+public class ValidMessage2 implements Message<Response> {
 
-  private final String type = "ValidMessage1";
+  private final String type = "ValidMessage2";
 
   @NotNull(message = "'greeting' must not be blank")
   @Size(min = 1, message = "'greeting' must not be blank")

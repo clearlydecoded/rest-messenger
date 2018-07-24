@@ -306,16 +306,10 @@ public class SpringRestMessenger {
    *
    * @param messageProcessor Message processor whose message to potentially validate.
    * @param messageObject Message object to potentially validate.
-   * @param <MessageT> Generic message type.
-   * @param <MessageResponseT> Generic message response type.
    * @throws RuntimeException If validation is triggered and fails. All of the validation messages
    * will be comma-separated in the exception message.
    */
-  private <MessageT extends Message<MessageResponseT>,
-      MessageResponseT extends MessageResponse> void validateMessage(
-      MessageProcessor<MessageT, MessageResponseT> messageProcessor,
-      Object messageObject) {
-
+  private void validateMessage(MessageProcessor messageProcessor, Object messageObject) {
     try {
       Method method = messageProcessor.getClass()
           .getDeclaredMethod("process", messageProcessor.getCompatibleMessageClassType());
@@ -327,16 +321,14 @@ public class SpringRestMessenger {
       Arrays.stream(messageAnnotations)
           .filter(Valid.class::isInstance)
           .findAny()
-          .ifPresent(annotation -> {
-            validator.validate(messageObject).stream()
-                .map(ConstraintViolation::getMessage)
-                .reduce((violationMessages, violationMessage) -> String
-                    .format("%s, %s", violationMessages, violationMessage))
-                .ifPresent(violationsMessages -> {
-                  log.severe("Invalid message received: " + violationsMessages);
-                  throw new RuntimeException("Invalid message received: " + violationsMessages);
-                });
-          });
+          .ifPresent(annotation -> validator.validate(messageObject).stream()
+              .map(ConstraintViolation::getMessage)
+              .reduce((violationMessages, violationMessage) -> String
+                  .format("%s, %s", violationMessages, violationMessage))
+              .ifPresent(violationsMessages -> {
+                log.severe("Invalid message received: " + violationsMessages);
+                throw new RuntimeException("Invalid message received: " + violationsMessages);
+              }));
 
     } catch (NoSuchMethodException e) {
       String message = "Unable to execute validation.";
