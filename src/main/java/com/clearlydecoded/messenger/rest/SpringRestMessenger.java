@@ -173,7 +173,7 @@ public class SpringRestMessenger {
     requestMappingHandlerMapping.registerMapping(messageProcessingRequestMappingInfo, this,
         SpringRestMessenger.class.getDeclaredMethod("process", String.class));
 
-    // Wire up request mapping for output of processor docs
+    // Wire up request mapping for output of processor docs through an HTML page
     RequestMappingInfo getProcessorDocsRequestMappingInfo = RequestMappingInfo
         .paths(endpointUri)
         .methods(RequestMethod.GET)
@@ -181,6 +181,16 @@ public class SpringRestMessenger {
         .build();
     requestMappingHandlerMapping.registerMapping(getProcessorDocsRequestMappingInfo, this,
         SpringRestMessenger.class.getDeclaredMethod("getProcessorDocs", Model.class));
+
+    // Wire up request mapping for output of processor docs through an HTML page
+    RequestMappingInfo getJsonProcessorDocsRequestMappingInfo = RequestMappingInfo
+        .paths(endpointUri)
+        .methods(RequestMethod.GET)
+        .consumes(MediaType.APPLICATION_JSON_VALUE)
+        .produces(MediaType.APPLICATION_JSON_VALUE)
+        .build();
+    requestMappingHandlerMapping.registerMapping(getJsonProcessorDocsRequestMappingInfo, this,
+        SpringRestMessenger.class.getDeclaredMethod("getJsonProcessorDocs"));
   }
 
   /**
@@ -219,6 +229,34 @@ public class SpringRestMessenger {
     log.fine("Full message response string to be sent: " + response);
 
     return response;
+  }
+
+  /**
+   * Directs the request to the HTML page that displays all the documentation for the system
+   * discovered message processors.
+   *
+   * @param model Shared model with the view.
+   * @return ID of the page to serve to the client.
+   */
+  private String getProcessorDocs(Model model) {
+
+    model.addAttribute("docs", processorDocs);
+    model.addAttribute("endpointUri", endpointUri);
+    model.addAttribute("servletContextPath", servletContextPath);
+
+    String appName = springApplicationName.trim();
+    model.addAttribute("appName", appName.equals("") ? "unspecified" : appName);
+
+    return "SpringRestProcessorDocumentation";
+  }
+
+  /**
+   * @return List of {@link RestProcessorDocumentation}s as a REST endpoint, i.e., returns docs as
+   * JSON.
+   */
+  @ResponseBody
+  private List<RestProcessorDocumentation> getJsonProcessorDocs() {
+    return processorDocs;
   }
 
   /**
@@ -272,25 +310,6 @@ public class SpringRestMessenger {
       log.severe(logMessage);
       throw new IllegalArgumentException(logMessage, e);
     }
-  }
-
-  /**
-   * Directs the request to the HTML page that displays all the documentation for the system
-   * discovered message processors.
-   *
-   * @param model Shared model with the view.
-   * @return ID of the page to serve to the client.
-   */
-  private String getProcessorDocs(Model model) {
-
-    model.addAttribute("docs", processorDocs);
-    model.addAttribute("endpointUri", endpointUri);
-    model.addAttribute("servletContextPath", servletContextPath);
-
-    String appName = springApplicationName.trim();
-    model.addAttribute("appName", appName.equals("") ? "unspecified" : appName);
-
-    return "SpringRestProcessorDocumentation";
   }
 
   /**

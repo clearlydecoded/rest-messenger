@@ -41,9 +41,19 @@ public class RestProcessorDocumentation {
   private final String messageResponseId = UUID.randomUUID().toString();
 
   /**
+   * String-based type ID of this processor.
+   */
+  private String compatibleMessageType;
+
+  /**
    * Single word concrete message class name.
    */
   private String messageShortClassName;
+
+  /**
+   * Fully qualified concrete message class name.
+   */
+  private String messageFullClassName;
 
   /**
    * Formatted JSON string representing the model of the message.
@@ -54,6 +64,11 @@ public class RestProcessorDocumentation {
    * Single word concrete message response class name.
    */
   private String messageResponseShortClassName;
+
+  /**
+   * Fully qualified concrete message response class name.
+   */
+  private String messageResponseFullClassName;
 
   /**
    * Formatted JSON string representing the model of the message response.

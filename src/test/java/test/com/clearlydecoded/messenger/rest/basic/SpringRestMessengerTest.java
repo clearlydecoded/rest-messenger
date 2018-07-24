@@ -104,4 +104,20 @@ public class SpringRestMessengerTest {
     assertTrue("Response should at least contain snippet of HTML page.",
         stringResult.contains("Spring REST Messenger Docs"));
   }
+
+  @Test
+  public void testGetAvailableMessagesJsonDocs() throws Exception {
+    MvcResult result = mvc.perform(get("/process").contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8"))
+        .andReturn();
+
+    String stringResult = result.getResponse().getContentAsString();
+    assertTrue("Response should contain correct messageShortClassName.",
+        stringResult.contains("\"messageShortClassName\":\"Message5\""));
+    assertTrue("Response should contain correct compatibleMessageType.",
+        stringResult.contains("\"compatibleMessageType\":\"Message-5\""));
+
+    System.out.println(stringResult);
+  }
 }
