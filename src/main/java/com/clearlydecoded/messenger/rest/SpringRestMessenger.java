@@ -21,8 +21,12 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.validation.ConstraintViolation;
+import javax.validation.Valid;
+import javax.validation.Validator;
 import lombok.Setter;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +83,13 @@ public class SpringRestMessenger {
    * registered in the system.
    */
   private List<RestProcessorDocumentation> processorDocs;
+
+  /**
+   * String framework provided validator for JSR-380 validation.
+   */
+  @Autowired
+  @Setter
+  private Validator validator;
 
   /**
    * Application's context path as is registered by the servlet container.
@@ -228,9 +239,6 @@ public class SpringRestMessenger {
     Class<MessageT> processorMessageClassType = messageProcessor
         .getCompatibleMessageClassType();
 
-    // Validate message if declared with @Valid
-    validateMessage(messageProcessor, processorMessageClassType);
-
     // Attempt to deserialize string message using message processor's message class type
     MessageT javaTypedMessage;
     try {
@@ -250,6 +258,9 @@ public class SpringRestMessenger {
     }
 
     log.fine("Message about to be processed: " + javaTypedMessage);
+
+    // Validate message if declared with @Valid
+    validateMessage(messageProcessor, javaTypedMessage);
 
     // Execute de-serialized message
     MessageResponseT messageResponse = messageProcessor.process(javaTypedMessage);
@@ -288,32 +299,49 @@ public class SpringRestMessenger {
     return "SpringRestProcessorDocumentation";
   }
 
-  //  private <MessageT extends Message<MessageResponseT>,
-  //      MessageResponseT extends MessageResponse> void validateMessage(
-  //      MessageProcessor<MessageT, MessageResponseT> messageProcessor, String message) {
-  //
-  ////    messageProcessor.getClass().getDeclaredMethod("process", m)
-  //  }
 
+  /**
+   * Validates processor received message according to the JSR-380 if the message is annotated with
+   * {@link Valid}.
+   *
+   * @param messageProcessor Message processor whose message to potentially validate.
+   * @param messageObject Message object to potentially validate.
+   * @param <MessageT> Generic message type.
+   * @param <MessageResponseT> Generic message response type.
+   * @throws RuntimeException If validation is triggered and fails. All of the validation messages
+   * will be comma-separated in the exception message.
+   */
   private <MessageT extends Message<MessageResponseT>,
       MessageResponseT extends MessageResponse> void validateMessage(
       MessageProcessor<MessageT, MessageResponseT> messageProcessor,
-      Class<MessageT> processorMessageClassType) {
+      Object messageObject) {
 
     try {
       Method method = messageProcessor.getClass()
-          .getDeclaredMethod("process", processorMessageClassType);
+          .getDeclaredMethod("process", messageProcessor.getCompatibleMessageClassType());
 
-      Annotation[][] annotations = method.getParameterAnnotations();
-      for (Annotation[] annotation: annotations) {
-        for (Annotation annotation1: annotation) {
-          System.out.println(annotation1);
-        }
-      }
+      // Extract annotations for the 1st and only parameter
+      Annotation[] messageAnnotations = method.getParameterAnnotations()[0];
 
+      // If @Valid is present, invoke validation
+      Arrays.stream(messageAnnotations)
+          .filter(Valid.class::isInstance)
+          .findAny()
+          .ifPresent(annotation -> {
+            validator.validate(messageObject).stream()
+                .map(ConstraintViolation::getMessage)
+                .reduce((violationMessages, violationMessage) -> String
+                    .format("%s, %s", violationMessages, violationMessage))
+                .ifPresent(violationsMessages -> {
+                  log.severe("Invalid message received: " + violationsMessages);
+                  throw new RuntimeException("Invalid message received: " + violationsMessages);
+                });
+          });
 
     } catch (NoSuchMethodException e) {
-      e.printStackTrace();
+      String message = "Unable to execute validation.";
+      log.severe(message + ": " + e);
+      throw new RuntimeException(message, e);
     }
   }
 }

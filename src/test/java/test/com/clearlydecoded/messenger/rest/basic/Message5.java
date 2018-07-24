@@ -6,23 +6,31 @@
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
  */
-package test.com.clearlydecoded.messenger.rest;
+package test.com.clearlydecoded.messenger.rest.basic;
 
-import com.clearlydecoded.messenger.MessageResponse;
+import com.clearlydecoded.messenger.Message;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * {@link Message4Response} class is used for testing the rest controller.
+ * {@link Message5} class is used for testing rest controller.
  *
  * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Message4Response implements MessageResponse {
+public class Message5 implements Message<Message5Response> {
 
-  private String greetingEcho;
+  public static final String TYPE = "Message-5";
 
+  private final String type = TYPE;
+
+  private String greeting;
+
+  @Override
+  public String getType() {
+    return type;
+  }
 }

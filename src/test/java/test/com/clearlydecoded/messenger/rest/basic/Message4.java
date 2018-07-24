@@ -6,25 +6,33 @@
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
  */
-package test.com.clearlydecoded.messenger.rest;
+package test.com.clearlydecoded.messenger.rest.basic;
 
-import java.io.Serializable;
+import com.clearlydecoded.messenger.Message;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * {@link Person} class is used for testing the rest controller.
+ * {@link Message4} class is used for testing the rest controller.
  *
  * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Person implements Serializable {
+public class Message4 implements Message<Message4Response> {
 
-  private String firstName;
+  public static final String TYPE = "Message-4";
 
-  private String lastName;
+  private final String type = TYPE;
 
+  private String greeting;
+
+  private Person person;
+
+  @Override
+  public String getType() {
+    return type;
+  }
 }
