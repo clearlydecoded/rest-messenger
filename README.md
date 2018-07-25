@@ -72,7 +72,7 @@ Add the following dependency to your maven `pom.xml` file:
 <dependency>
   <groupId>com.clearlydecoded</groupId>
   <artifactId>rest-messenger</artifactId>
-  <version>1.1.0</version>
+  <version>2.1.0</version>
 </dependency>
 ```
 
