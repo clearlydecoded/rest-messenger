@@ -409,8 +409,8 @@ public class SpringRestMessenger {
           .findAny()
           .ifPresent(annotation -> validator.validate(messageObject).stream()
               .map(ConstraintViolation::getMessage)
-              .reduce((violationMessages, violationMessage) -> String
-                  .format("%s, %s", violationMessages, violationMessage))
+              .reduce((violationMessages, violationMessage) ->
+                  String.format("%s, %s", violationMessages, violationMessage))
               .ifPresent(violationsMessages -> {
                 log.severe("Invalid message received: " + violationsMessages);
                 throw new RuntimeException("Invalid message received: " + violationsMessages);
