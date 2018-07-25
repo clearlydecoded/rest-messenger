@@ -49,7 +49,7 @@ See [releases](https://github.com/clearlydecoded/rest-messenger/releases) sectio
 * [JSR-380](https://beanvalidation.org/) message validation support
   * Simply annotate the message bean (e.g., `@Min`, `@Size`, etc.) and annotate message argument in the `process` method with `@Valid`
 * Retrieve JSON Schema (v3) of the message and message response through the same endpoint (e.g., `GET /process` or `/process.json` directly in the browser) as regular JSON
-  * Allow clients of your applications to create messages dynamically
+  * Allows clients of your applications to create messages dynamically based on JSON Schema (v3)
 * Easy to use *automatically* generated docs for your application messages & message responses
   * Simply point your browser to the endpoint URI (by default `/process` or configured by you with `com.clearlydecoded.messenger.endpoint.uri` property) and an automatically generated docs page will display
   * For example, something like this:
