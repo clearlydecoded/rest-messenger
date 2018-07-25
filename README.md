@@ -48,8 +48,9 @@ See [releases](https://github.com/clearlydecoded/rest-messenger/releases) sectio
 * Zero boilerplate code to write
 * [JSR-380](https://beanvalidation.org/) message validation support
   * Simply annotate the message bean (e.g., `@Min`, `@Size`, etc.) and annotate message argument in the `process` method with `@Valid`
+  * For an example, see [`GreetMeMessage.java`](https://github.com/clearlydecoded/rest-messenger-demo/blob/master/src/main/java/com/clearlydecoded/messenger/demo/message/GreetMeMessage.java) and [`GreetMeMessageProcessor.java`](https://github.com/clearlydecoded/rest-messenger-demo/blob/master/src/main/java/com/clearlydecoded/messenger/demo/processor/GreetMeMessageProcessor.java) in the [rest-messenger-demo](https://github.com/clearlydecoded/rest-messenger-demo) repo
 * Retrieve JSON Schema (v3) of the message and message response through the same endpoint (e.g., `GET /process` or `/process.json` directly in the browser) as regular JSON
-  * Allow clients of your applications to create messages dynamically
+  * Allows clients of your applications to dynamically create HTML user forms that can produce valid messages to send to the processors' endpoint
 * Easy to use *automatically* generated docs for your application messages & message responses
   * Simply point your browser to the endpoint URI (by default `/process` or configured by you with `com.clearlydecoded.messenger.endpoint.uri` property) and an automatically generated docs page will display
   * For example, something like this:
@@ -71,7 +72,7 @@ Add the following dependency to your maven `pom.xml` file:
 <dependency>
   <groupId>com.clearlydecoded</groupId>
   <artifactId>rest-messenger</artifactId>
-  <version>1.1.0</version>
+  <version>2.1.0</version>
 </dependency>
 ```
 
