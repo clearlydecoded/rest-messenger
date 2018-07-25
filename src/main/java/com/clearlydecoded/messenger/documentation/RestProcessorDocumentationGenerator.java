@@ -11,6 +11,7 @@ package com.clearlydecoded.messenger.documentation;
 import com.clearlydecoded.messenger.Message;
 import com.clearlydecoded.messenger.MessageProcessor;
 import com.clearlydecoded.messenger.MessageResponse;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes;
 import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
@@ -64,16 +65,39 @@ public class RestProcessorDocumentationGenerator {
     String messageDocs = generateMessageDocumentation(messageClass);
     String messageResponseDocs = generateMessageResponseDocumentation(messageResponseClass);
 
+    // Generate JSON schemas for message and message response
+    JsonSchema messageSchema = generateJsonSchema(messageClass);
+    JsonSchema messageResponseSchema = generateJsonSchema(messageClass);
+
     // Set up the message processor documentation object
     documentation.setCompatibleMessageType(compatibleMessageType);
     documentation.setMessageModel(messageDocs);
-    documentation.setMessageShortClassName(messageClass.getSimpleName());
-    documentation.setMessageFullClassName(messageClass.getName());
     documentation.setMessageResponseModel(messageResponseDocs);
+    documentation.setMessageShortClassName(messageClass.getSimpleName());
     documentation.setMessageResponseShortClassName(messageResponseClass.getSimpleName());
+    documentation.setMessageFullClassName(messageClass.getName());
     documentation.setMessageResponseFullClassName(messageResponseClass.getName());
+    documentation.setMessageSchema(messageSchema);
+    documentation.setMessageResponseSchema(messageResponseSchema);
 
     return documentation;
+  }
+
+  /**
+   * @param classType Class type whose JSON Schema to generate.
+   * @return Java-based representation of the JSON Schema (v3) of the provided
+   * <code>classType</code>.
+   */
+  private static JsonSchema generateJsonSchema(Class<? extends Object> classType)
+      throws JsonMappingException {
+    // Jackson object mapper to use for JSON schema generation.
+    ObjectMapper mapper = new ObjectMapper();
+
+    // JSON module schema parser.
+    JsonSchemaGenerator schemaGenerator = new JsonSchemaGenerator(mapper);
+
+    // Return generated JSON schema
+    return schemaGenerator.generateSchema(classType);
   }
 
   /**
@@ -86,12 +110,6 @@ public class RestProcessorDocumentationGenerator {
   private static String generateMessageDocumentation(Class<? extends Message> messageClass)
       throws Exception {
 
-    // Jackson object mapper to use for JSON schema generation.
-    ObjectMapper mapper = new ObjectMapper();
-
-    // JSON module schema parser.
-    JsonSchemaGenerator schemaGenerator = new JsonSchemaGenerator(mapper);
-
     StringBuilder model = new StringBuilder();
 
     // Start with {
@@ -101,7 +119,7 @@ public class RestProcessorDocumentationGenerator {
     model.append(getMessageType(messageClass));
 
     // Generate message object schema
-    ObjectSchema messageSchema = schemaGenerator.generateSchema(messageClass).asObjectSchema();
+    ObjectSchema messageSchema = generateJsonSchema(messageClass).asObjectSchema();
 
     // Loop over all properties of message object, skipping 'type' property
     Map<String, JsonSchema> propertiesMap = messageSchema.getProperties();
@@ -132,23 +150,17 @@ public class RestProcessorDocumentationGenerator {
   private static String generateMessageResponseDocumentation(
       Class<? extends MessageResponse> messageResponseClass) throws Exception {
 
-    // Jackson object mapper to use for JSON schema generation.
-    ObjectMapper mapper = new ObjectMapper();
-
-    // JSON module schema parser.
-    JsonSchemaGenerator schemaGenerator = new JsonSchemaGenerator(mapper);
-
     StringBuilder model = new StringBuilder();
 
     // Start with {
     model.append("{");
 
     // If any schema, i.e., empty, skip the rest of model generation
-    JsonSchema schema = schemaGenerator.generateSchema(messageResponseClass);
+    JsonSchema schema = generateJsonSchema(messageResponseClass);
     if (!(schema instanceof AnySchema)) {
 
       // Generate message response object schema
-      ObjectSchema messageResponseSchema = schemaGenerator.generateSchema(messageResponseClass)
+      ObjectSchema messageResponseSchema = generateJsonSchema(messageResponseClass)
           .asObjectSchema();
 
       // Generate object model
