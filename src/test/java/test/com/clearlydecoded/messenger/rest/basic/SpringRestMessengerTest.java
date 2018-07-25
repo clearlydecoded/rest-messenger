@@ -117,7 +117,10 @@ public class SpringRestMessengerTest {
         stringResult.contains("\"messageShortClassName\":\"Message5\""));
     assertTrue("Response should contain correct compatibleMessageType.",
         stringResult.contains("\"compatibleMessageType\":\"Message-5\""));
-
-    System.out.println(stringResult);
+    assertTrue("Response should contain correct schema id for message",
+        stringResult.contains("\"messageSchema\":{\"type\":\"object\",\"id\":\"urn:jsonschema"));
+    assertTrue("Response should contain corect properties schema for message", stringResult
+        .contains(
+            "\"properties\":{\"type\":{\"type\":\"string\"},\"greeting\":{\"type\":\"string\"}}}}"));
   }
 }
