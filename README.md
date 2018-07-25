@@ -46,6 +46,10 @@ See [releases](https://github.com/clearlydecoded/rest-messenger/releases) sectio
 * Automatic routing of messages to their specific, strongly typed message processors
 * (*at startup*) Automatic validation of message and response POJOs' ability to correctly deserialize into JSON, letting you find out right away that something is wrong instead of much later into the application use when that particular message is received
 * Zero boilerplate code to write
+* [JSR-380](https://beanvalidation.org/) message validation support
+  * Simply annotate the message bean (e.g., `@Min`, `@Size`, etc.) and annotate message argument in the `process` method with `@Valid`
+* Retrieve JSON Schema (v3) of the message and message response through the same endpoint (e.g., `GET /process` or `/process.json` directly in the browser) as regular JSON
+  * Allow clients of your applications to create messages dynamically
 * Easy to use *automatically* generated docs for your application messages & message responses
   * Simply point your browser to the endpoint URI (by default `/process` or configured by you with `com.clearlydecoded.messenger.endpoint.uri` property) and an automatically generated docs page will display
   * For example, something like this:
@@ -89,7 +93,7 @@ For example:
   <groupId>com.clearlydecoded</groupId>
   <artifactId>rest-messenger-demo</artifactId>
   <packaging>war</packaging>
-  <version>2.0.1</version>
+  <version>2.1.0</version>
 
   <properties>
     <java.version>1.8</java.version>
@@ -105,7 +109,7 @@ For example:
     <dependency>
       <groupId>com.clearlydecoded</groupId>
       <artifactId>rest-messenger</artifactId>
-      <version>2.0.1</version>
+      <version>2.1.0</version>
     </dependency>
 
   <build>
@@ -200,15 +204,15 @@ import java.util.Objects;
 public class GreetMeMessage implements Message<GreetMeMessageResponse> {
 
   /**
-   * Set up the required message type identifier like so.
-   * There are other ways to define it, but this approach is nice.
+   * String-based type identifier of this message that is unique system-wide.
    */
-  public static final String TYPE = "GreetMe";
-  private final String type = TYPE;
+  private final String type = "GreetMe";
 
   /**
    * The actual data we want to pass to the processor.
    */
+  @NotNull(message = "'myName' can't be null")
+  @Size(min = 2, message = "'myName' has to be at least 2 characters long")
   private String myName;
 
   /**
@@ -254,7 +258,7 @@ public class GreetMeMessageProcessor extends
     AbstractMessageProcessor<GreetMeMessage, GreetMeMessageResponse> {
 
   @Override
-  public GreetMeMessageResponse process(GreetMeMessage message) {
+  public GreetMeMessageResponse process(@Valid GreetMeMessage message) {
 
     // This is where you write the actual business logic
     return new GreetMeMessageResponse("Hello " + message.getMyName());
