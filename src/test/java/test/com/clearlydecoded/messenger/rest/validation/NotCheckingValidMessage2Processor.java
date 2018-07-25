@@ -6,23 +6,25 @@
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
  */
-package test.com.clearlydecoded.messenger.rest;
+package test.com.clearlydecoded.messenger.rest.validation;
 
-import com.clearlydecoded.messenger.MessageResponse;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.clearlydecoded.messenger.AbstractMessageProcessor;
+import org.springframework.stereotype.Service;
 
 /**
- * {@link Message4Response} class is used for testing the rest controller.
+ * {@link NotCheckingValidMessage2Processor} class is used for testing rest controller validation.
  *
  * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
  */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class Message4Response implements MessageResponse {
+@Service
+public class NotCheckingValidMessage2Processor extends
+    AbstractMessageProcessor<ValidMessage2, Response> {
 
-  private String greetingEcho;
-
+  /**
+   * Process method WITHOUT @Valid on the message argument.
+   */
+  @Override
+  public Response process(ValidMessage2 message) {
+    return new Response("dummy response");
+  }
 }

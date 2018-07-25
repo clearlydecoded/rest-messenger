@@ -11,6 +11,7 @@ package com.clearlydecoded.messenger.documentation;
 import com.clearlydecoded.messenger.Message;
 import com.clearlydecoded.messenger.MessageProcessor;
 import com.clearlydecoded.messenger.MessageResponse;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes;
 import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
@@ -54,22 +55,48 @@ public class RestProcessorDocumentationGenerator {
       throws Exception {
     RestProcessorDocumentation documentation = new RestProcessorDocumentation();
 
-    // Extract message & message response classes
+    // Extract message & message response classes and string-based type ID
     Class<? extends Message> messageClass = processor.getCompatibleMessageClassType();
     Class<? extends MessageResponse> messageResponseClass = processor
         .getCompatibleMessageResponseClassType();
+    String compatibleMessageType = processor.getCompatibleMessageType();
 
     // Generate documentation for message and message response
     String messageDocs = generateMessageDocumentation(messageClass);
     String messageResponseDocs = generateMessageResponseDocumentation(messageResponseClass);
 
+    // Generate JSON schemas for message and message response
+    JsonSchema messageSchema = generateJsonSchema(messageClass);
+    JsonSchema messageResponseSchema = generateJsonSchema(messageClass);
+
     // Set up the message processor documentation object
+    documentation.setCompatibleMessageType(compatibleMessageType);
     documentation.setMessageModel(messageDocs);
-    documentation.setMessageShortClassName(messageClass.getSimpleName());
     documentation.setMessageResponseModel(messageResponseDocs);
+    documentation.setMessageShortClassName(messageClass.getSimpleName());
     documentation.setMessageResponseShortClassName(messageResponseClass.getSimpleName());
+    documentation.setMessageFullClassName(messageClass.getName());
+    documentation.setMessageResponseFullClassName(messageResponseClass.getName());
+    documentation.setMessageSchema(messageSchema);
+    documentation.setMessageResponseSchema(messageResponseSchema);
 
     return documentation;
+  }
+
+  /**
+   * @param classType Class type whose JSON Schema to generate.
+   * @return Java-based JSON Schema (v3) representation of the provided <code>classType</code>.
+   */
+  private static JsonSchema generateJsonSchema(Class<?> classType)
+      throws JsonMappingException {
+    // Jackson object mapper to use for JSON schema generation.
+    ObjectMapper mapper = new ObjectMapper();
+
+    // JSON module schema parser.
+    JsonSchemaGenerator schemaGenerator = new JsonSchemaGenerator(mapper);
+
+    // Return generated JSON schema
+    return schemaGenerator.generateSchema(classType);
   }
 
   /**
@@ -82,12 +109,6 @@ public class RestProcessorDocumentationGenerator {
   private static String generateMessageDocumentation(Class<? extends Message> messageClass)
       throws Exception {
 
-    // Jackson object mapper to use for JSON schema generation.
-    ObjectMapper mapper = new ObjectMapper();
-
-    // JSON module schema parser.
-    JsonSchemaGenerator schemaGenerator = new JsonSchemaGenerator(mapper);
-
     StringBuilder model = new StringBuilder();
 
     // Start with {
@@ -97,20 +118,20 @@ public class RestProcessorDocumentationGenerator {
     model.append(getMessageType(messageClass));
 
     // Generate message object schema
-    ObjectSchema messageSchema = schemaGenerator.generateSchema(messageClass).asObjectSchema();
+    ObjectSchema messageSchema = generateJsonSchema(messageClass).asObjectSchema();
 
     // Loop over all properties of message object, skipping 'type' property
     Map<String, JsonSchema> propertiesMap = messageSchema.getProperties();
     Set<String> propNames = propertiesMap.keySet();
     propNames.remove("type");
-    List<String> jsonEntries = propNames.stream().map(propName -> {
+    propNames.stream()
+        .map(propName -> {
+          JsonSchema propSchema = propertiesMap.get(propName);
+          return getJsonEntry(propName, propSchema, spacePadding, true);
+        })
+        .collect(Collectors.toList())
+        .forEach(model::append);
 
-      JsonSchema propSchema = propertiesMap.get(propName);
-      return getJsonEntry(propName, propSchema, spacePadding, true);
-
-    }).collect(Collectors.toList());
-
-    jsonEntries.forEach(model::append);
     model.append("\n}");
 
     return model.toString();
@@ -128,28 +149,21 @@ public class RestProcessorDocumentationGenerator {
   private static String generateMessageResponseDocumentation(
       Class<? extends MessageResponse> messageResponseClass) throws Exception {
 
-    // Jackson object mapper to use for JSON schema generation.
-    ObjectMapper mapper = new ObjectMapper();
-
-    // JSON module schema parser.
-    JsonSchemaGenerator schemaGenerator = new JsonSchemaGenerator(mapper);
-
     StringBuilder model = new StringBuilder();
 
     // Start with {
     model.append("{");
 
     // If any schema, i.e., empty, skip the rest of model generation
-    JsonSchema schema = schemaGenerator.generateSchema(messageResponseClass);
+    JsonSchema schema = generateJsonSchema(messageResponseClass);
     if (!(schema instanceof AnySchema)) {
 
       // Generate message response object schema
-      ObjectSchema messageResponseSchema = schemaGenerator.generateSchema(messageResponseClass)
+      ObjectSchema messageResponseSchema = generateJsonSchema(messageResponseClass)
           .asObjectSchema();
 
-      // Generate object model
-      Map<String, JsonSchema> propertiesMap = messageResponseSchema.getProperties();
-      model.append(generateObjectModel(propertiesMap, false, spacePadding));
+      // Append message response object properties schema
+      model.append(generateObjectModel(messageResponseSchema.getProperties(), spacePadding));
     }
 
     model.append("\n}");
@@ -160,17 +174,14 @@ public class RestProcessorDocumentationGenerator {
   /**
    * Generates model of the properties of an object represented by the <code>propertiesMap</code>.
    *
-   * @param firstPropertyAlreadyGenerated Indicates the object being modeled already has 1 or more
-   * properties inserted into its model. If false, that means that the first property inserted into
-   * the model should not have a leading comma.
    * @param spacePadding Leading space to maintain for each property in the object.
    * @return Model of the object represented by the <code>propertiesMap</code>.
    */
   private static StringBuilder generateObjectModel(Map<String, JsonSchema> propertiesMap,
-      boolean firstPropertyAlreadyGenerated, String spacePadding) {
+      String spacePadding) {
 
-    // Skip first property's leading comma if first properties has NOT been generated
-    boolean skipLeadingComma = !firstPropertyAlreadyGenerated;
+    // Skip first property's leading comma for the first property of the object
+    boolean skipLeadingComma = true;
 
     // Loop over properties and generate model
     StringBuilder model = new StringBuilder();
@@ -339,9 +350,8 @@ public class RestProcessorDocumentationGenerator {
     // Increase spacing for subsequent properties
     String newSpacePadding = currentPadding + spacePadding;
 
-    // Loop over all properties object and append to output
-    Map<String, JsonSchema> propertiesMap = objectSchema.getProperties();
-    StringBuilder model = generateObjectModel(propertiesMap, false, newSpacePadding);
+    // Generate model for JSON entry's properties
+    StringBuilder model = generateObjectModel(objectSchema.getProperties(), newSpacePadding);
     output += model.toString();
 
     // Append } at the same level as the object property name

@@ -6,7 +6,7 @@
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
  */
-package test.com.clearlydecoded.messenger.rest;
+package test.com.clearlydecoded.messenger.rest.validation;
 
 import com.clearlydecoded.messenger.rest.SpringRestMessenger;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -16,8 +16,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * {@link ApplicationConfig} class is a Spring Context configuration class for testing the rest
- * controller.
+ * {@link ApplicationConfig} class is a Spring Context configuration class for testing the
+ * validation of the rest controller.
  *
  * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
  */
@@ -28,8 +28,7 @@ public class ApplicationConfig {
 
   /**
    * Use the Spring-based message processor registry factory to create the registry with
-   * automatically
-   * discovered message handlers and expose it as a Bean into the Spring Context.
+   * automatically discovered message handlers and expose it as a Bean into the Spring Context.
    */
   @Bean
   public SpringRestMessenger createSpringRestCommander(ApplicationContext springContext) {

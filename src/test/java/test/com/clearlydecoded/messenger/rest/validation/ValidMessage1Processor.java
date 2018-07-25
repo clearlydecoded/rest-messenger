@@ -6,25 +6,22 @@
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
  */
-package test.com.clearlydecoded.messenger.rest;
+package test.com.clearlydecoded.messenger.rest.validation;
 
-import com.clearlydecoded.messenger.Message;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import com.clearlydecoded.messenger.AbstractMessageProcessor;
+import javax.validation.Valid;
+import org.springframework.stereotype.Service;
 
 /**
- * {@link UnsupportedMessage} class is used for testing rest controller.
+ * {@link ValidMessage1Processor} class is used for testing rest controller validation.
  *
  * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
  */
-@Data
-@AllArgsConstructor
-public class UnsupportedMessage implements Message {
-
-  private final String type = "Unknown-Message";
+@Service
+public class ValidMessage1Processor extends AbstractMessageProcessor<ValidMessage1, Response> {
 
   @Override
-  public String getType() {
-    return type;
+  public Response process(@Valid ValidMessage1 message) {
+    return new Response("dummy response");
   }
 }

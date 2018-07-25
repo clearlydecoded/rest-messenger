@@ -6,23 +6,37 @@
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
  */
-package test.com.clearlydecoded.messenger.rest;
+package test.com.clearlydecoded.messenger.rest.validation;
 
-import com.clearlydecoded.messenger.MessageResponse;
+import com.clearlydecoded.messenger.Message;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * {@link Message5Response} class is used for testing the rest controller.
+ * {@link ValidMessage1} class is used for testing rest controller validation.
  *
  * @author Yaakov Chaikin (yaakov@ClearlyDecoded.com)
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class Message5Response implements MessageResponse {
+@AllArgsConstructor
+public class ValidMessage1 implements Message<Response> {
 
-  private String greetingResponse;
+  private final String type = "ValidMessage1";
 
+  @NotNull(message = "'greeting' must not be blank")
+  @Size(min = 1, message = "'greeting' must not be blank")
+  private String greeting;
+
+  @NotNull(message = "'name' must not be null")
+  @Size(min = 2, message = "'name' must be at least 2 characters")
+  private String name;
+
+  @Override
+  public String getType() {
+    return type;
+  }
 }

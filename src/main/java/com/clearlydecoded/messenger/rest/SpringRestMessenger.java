@@ -18,9 +18,15 @@ import com.clearlydecoded.messenger.documentation.RestProcessorDocumentationGene
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.validation.ConstraintViolation;
+import javax.validation.Valid;
+import javax.validation.Validator;
 import lombok.Setter;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +37,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
@@ -79,6 +84,13 @@ public class SpringRestMessenger {
   private List<RestProcessorDocumentation> processorDocs;
 
   /**
+   * String framework provided validator for JSR-380 validation.
+   */
+  @Autowired
+  @Setter
+  private Validator validator;
+
+  /**
    * Application's context path as is registered by the servlet container.
    */
   @Value("#{servletContext.contextPath}")
@@ -93,6 +105,7 @@ public class SpringRestMessenger {
 
   /**
    * Constructor.
+   *
    * <p>Use this constructor unless your application needs direct access to the {@link
    * MessageProcessorRegistry}. (Hint: in majority of cases, you don't need {@link
    * MessageProcessorRegistry} to be available directly in the Spring Context.</p>
@@ -106,6 +119,7 @@ public class SpringRestMessenger {
 
   /**
    * Constructor.
+   *
    * <p>Use this constructor if you manually created {@link MessageProcessorRegistry}. Usually, you
    * would want to do this if you manually injected {@link MessageProcessorRegistry} into Spring
    * Context for some reason (e.g., you want to look up registered message processors in your own
@@ -137,9 +151,6 @@ public class SpringRestMessenger {
     }
   }
 
-  @Autowired
-  DispatcherServlet servlet;
-
   /**
    * Creates mapping for the <code>process</code> method with the <code>endpointUri</code>.
    *
@@ -162,16 +173,34 @@ public class SpringRestMessenger {
     requestMappingHandlerMapping.registerMapping(messageProcessingRequestMappingInfo, this,
         SpringRestMessenger.class.getDeclaredMethod("process", String.class));
 
-    // Wire up request mapping for output of processor docs
+    // Wire up request mapping for output of processor docs through an HTML page
     RequestMappingInfo getProcessorDocsRequestMappingInfo = RequestMappingInfo
         .paths(endpointUri)
         .methods(RequestMethod.GET)
         .produces(MediaType.TEXT_HTML_VALUE)
-        .mappingName("")
         .build();
     requestMappingHandlerMapping.registerMapping(getProcessorDocsRequestMappingInfo, this,
         SpringRestMessenger.class.getDeclaredMethod("getProcessorDocs", Model.class));
 
+    // Wire up request mapping for output of processor docs through REST endpoint
+    RequestMappingInfo getJsonProcessorDocsRequestMappingInfo = RequestMappingInfo
+        .paths(endpointUri)
+        .methods(RequestMethod.GET)
+        .consumes(MediaType.APPLICATION_JSON_VALUE)
+        .produces(MediaType.APPLICATION_JSON_VALUE)
+        .build();
+    requestMappingHandlerMapping.registerMapping(getJsonProcessorDocsRequestMappingInfo, this,
+        SpringRestMessenger.class.getDeclaredMethod("getJsonProcessorDocs"));
+
+    // Wire up request mapping for output of processor docs through REST endpoint
+    // Should be able to request directly in browser
+    RequestMappingInfo getBrowserJsonProcessorDocsRequestMappingInfo = RequestMappingInfo
+        .paths(endpointUri + ".json")
+        .methods(RequestMethod.GET)
+        .produces(MediaType.APPLICATION_JSON_VALUE)
+        .build();
+    requestMappingHandlerMapping.registerMapping(getBrowserJsonProcessorDocsRequestMappingInfo,
+        this, SpringRestMessenger.class.getDeclaredMethod("getJsonProcessorDocs"));
   }
 
   /**
@@ -187,78 +216,26 @@ public class SpringRestMessenger {
 
     log.fine("Full message string received: " + message);
 
-    // Create Jackson JSON/Object mapper
-    ObjectMapper mapper = new ObjectMapper();
-
-    // Deserialize message just to find out the type identifier
-    MessageWithJustType messageWithJustType;
-    try {
-      messageWithJustType = mapper.readValue(message, MessageWithJustType.class);
-    } catch (IOException e) {
-      String logMessage = "Error deserializing message type identifier from JSON: " + message
-          + ". Please verify that the message being sent contains the [type] property and that"
-          + " the message is valid JSON.";
-      log.severe(logMessage);
-      throw new IllegalArgumentException(logMessage, e);
-    }
-    String messageType = messageWithJustType.getType();
+    // Extract type ID of the message
+    String messageType = extractMessageType(message);
     log.fine("Identified message with type identifier: [" + messageType + "].");
 
     // Look up message processor for this message type identifier
-    MessageProcessor<MessageT, MessageResponseT> messageProcessor =
-        (MessageProcessor<MessageT, MessageResponseT>) processorRegistry
-            .getProcessorFor(messageType);
+    MessageProcessor<MessageT, MessageResponseT> messageProcessor = lookupMessageProcessor(
+        messageType);
 
-    // Throw exception if no such message processor is found
-    if (messageProcessor == null) {
-      String logMessage = "No registered message processor found for message type [" + messageType
-          + "]. If you think you have a MessageProcessor class implemented for this message type,"
-          + " check that your message processor class is injected into the Spring Context either"
-          + " by manually injecting it (in an @Configuration class) or by having the message"
-          + " processor class annotated with either @Service, @Component, etc.";
-      log.severe(logMessage);
-
-      throw new IllegalArgumentException(
-          "Message with type [" + messageType + "] is not supported.");
-    }
-
-    // Retrieve message processor's message class type
-    Class<MessageT> processorMessageClassType = messageProcessor
-        .getCompatibleMessageClassType();
-
-    // Attempt to deserialize string message using message processor's message class type
-    MessageT javaTypedMessage;
-    try {
-      javaTypedMessage = mapper.readValue(message, processorMessageClassType);
-    } catch (IOException e) {
-      String errorMessage = "Error deserializing " + message + " to " + processorMessageClassType
-          + ". Please verify that the message is valid JSON, no unrelated properties are included,"
-          + " and that the required message properties are present.";
-
-      // Add to the log message a hint for server-side developers
-      String logMessage = " Also, verify that the [" + processorMessageClassType + "] contains"
-          + " correct Jackson annotations for properties that can be ignored and properties that"
-          + " are required.";
-      log.severe(errorMessage + logMessage);
-
-      throw new IllegalArgumentException(errorMessage, e);
-    }
-
+    // Extract concretely typed message object
+    MessageT javaTypedMessage = extractConcreteMessage(message, messageProcessor);
     log.fine("Message about to be processed: " + javaTypedMessage);
+
+    // Validate message if declared with @Valid
+    validateMessage(messageProcessor, javaTypedMessage);
 
     // Execute de-serialized message
     MessageResponseT messageResponse = messageProcessor.process(javaTypedMessage);
 
-    // Generate raw JSON from message response
-    String response;
-    try {
-      response = mapper.writeValueAsString(messageResponse);
-    } catch (JsonProcessingException e) {
-      String logMessage = "Error serializing " + messageResponse + " to JSON";
-      log.severe(logMessage);
-      throw new IllegalArgumentException(logMessage, e);
-    }
-
+    // Generate JSON string as a response
+    String response = generateStringResponse(messageResponse);
     log.fine("Full message response string to be sent: " + response);
 
     return response;
@@ -281,5 +258,168 @@ public class SpringRestMessenger {
     model.addAttribute("appName", appName.equals("") ? "unspecified" : appName);
 
     return "SpringRestProcessorDocumentation";
+  }
+
+  /**
+   * @return List of {@link RestProcessorDocumentation}s as a REST endpoint, i.e., returns docs as
+   * JSON.
+   */
+  @ResponseBody
+  private List<RestProcessorDocumentation> getJsonProcessorDocs() {
+    return processorDocs;
+  }
+
+  /**
+   * @param messageType String-based message type ID that uniquely identifies message processor.
+   * @param <MessageT> Message type.
+   * @param <MessageResponseT> Message response type.
+   * @return Concretely typed message processor that handles messages with string-based type ID
+   * provided by <code>messageType</code>.
+   * @throws IllegalArgumentException If message processor for the provided <code>messageType</code>
+   * is not found.
+   */
+  @SuppressWarnings("unchecked")
+  private <MessageT extends Message<MessageResponseT>, MessageResponseT extends MessageResponse>
+  MessageProcessor<MessageT, MessageResponseT> lookupMessageProcessor(String messageType) {
+
+    // Look up processor by message type
+    MessageProcessor<MessageT, MessageResponseT> messageProcessor =
+        (MessageProcessor<MessageT, MessageResponseT>) processorRegistry
+            .getProcessorFor(messageType);
+
+    // Throw exception if no such message processor is found
+    if (messageProcessor == null) {
+      String logMessage = "No registered message processor found for message type [" + messageType
+          + "]. If you think you have a MessageProcessor class implemented for this message type,"
+          + " check that your message processor class is injected into the Spring Context either"
+          + " by manually injecting it (in an @Configuration class) or by having the message"
+          + " processor class annotated with either @Service, @Component, etc.";
+      log.severe(logMessage);
+
+      throw new IllegalArgumentException(
+          "Message with type [" + messageType + "] is not supported.");
+    }
+
+    return messageProcessor;
+  }
+
+  /**
+   * @param messageResponse Concretely typed response message to convert to JSON string.
+   * @param <MessageResponseT> Message response type.
+   * @return JSON string representing the response message.
+   */
+  private <MessageResponseT extends MessageResponse> String generateStringResponse(
+      MessageResponseT messageResponse) {
+
+    ObjectMapper mapper = new ObjectMapper();
+
+    try {
+      return mapper.writeValueAsString(messageResponse);
+    } catch (JsonProcessingException e) {
+      String logMessage = "Error serializing " + messageResponse + " to JSON";
+      log.severe(logMessage);
+      throw new IllegalArgumentException(logMessage, e);
+    }
+  }
+
+  /**
+   * @param message String-based message to extract message object with just the type property.
+   * @return Message object with just the type property de-serialized.
+   * @throws IllegalArgumentException If anything goes wrong during de-serialization.
+   */
+  private String extractMessageType(String message) {
+    // Create Jackson JSON/Object mapper
+    ObjectMapper mapper = new ObjectMapper();
+
+    try {
+      // Deserialize message just to find out the type identifier
+      MessageWithJustType messageWithJustType = mapper
+          .readValue(message, MessageWithJustType.class);
+
+      return messageWithJustType.getType();
+
+    } catch (IOException e) {
+      String logMessage = "Error deserializing message type identifier from JSON: " + message
+          + ". Please verify that the message being sent contains the [type] property and that"
+          + " the message is valid JSON.";
+      log.severe(logMessage);
+      throw new IllegalArgumentException(logMessage, e);
+    }
+  }
+
+  /**
+   * @param message String-based message to extract the complete concrete object from based on
+   * processor's compatible message type.
+   * @param messageProcessor Message processor compatible with message (by its string type ID).
+   * @param <MessageT> Concrete message type.
+   * @param <MessageResponseT> Concrete message response type.
+   * @return Object of concrete MessageT type, de-serialized from the string-based message.
+   * @throws IllegalArgumentException If anything goes wrong during de-serialization.
+   */
+  private <MessageT extends Message<MessageResponseT>,
+      MessageResponseT extends MessageResponse> MessageT extractConcreteMessage(
+      String message,
+      MessageProcessor<MessageT, MessageResponseT> messageProcessor) {
+
+    ObjectMapper mapper = new ObjectMapper();
+
+    // Retrieve message processor's message class type
+    Class<MessageT> processorMessageClassType = messageProcessor.getCompatibleMessageClassType();
+
+    try {
+
+      // Attempt to deserialize string message using message processor's message class type
+      return mapper.readValue(message, processorMessageClassType);
+
+    } catch (IOException e) {
+      String errorMessage = "Error deserializing " + message + " to " + processorMessageClassType
+          + ". Please verify that the message is valid JSON, no unrelated properties are included,"
+          + " and that the required message properties are present.";
+
+      // Add to the log message a hint for server-side developers
+      String logMessage = " Also, verify that the [" + processorMessageClassType + "] contains"
+          + " correct Jackson annotations for properties that can be ignored and properties that"
+          + " are required.";
+      log.severe(errorMessage + logMessage);
+
+      throw new IllegalArgumentException(errorMessage, e);
+    }
+  }
+
+  /**
+   * Validates processor received message according to the JSR-380 if the message is annotated with
+   * {@link Valid}.
+   *
+   * @param messageProcessor Message processor whose message to potentially validate.
+   * @param messageObject Message object to potentially validate.
+   * @throws RuntimeException If validation is triggered and fails. All of the validation messages
+   * will be comma-separated in the exception message.
+   */
+  private void validateMessage(MessageProcessor messageProcessor, Object messageObject) {
+    try {
+      Method method = messageProcessor.getClass()
+          .getDeclaredMethod("process", messageProcessor.getCompatibleMessageClassType());
+
+      // Extract annotations for the 1st and only parameter
+      Annotation[] messageAnnotations = method.getParameterAnnotations()[0];
+
+      // If @Valid is present, invoke validation
+      Arrays.stream(messageAnnotations)
+          .filter(Valid.class::isInstance)
+          .findAny()
+          .ifPresent(annotation -> validator.validate(messageObject).stream()
+              .map(ConstraintViolation::getMessage)
+              .reduce((violationMessages, violationMessage) ->
+                  String.format("%s, %s", violationMessages, violationMessage))
+              .ifPresent(violationsMessages -> {
+                log.severe("Invalid message received: " + violationsMessages);
+                throw new RuntimeException("Invalid message received: " + violationsMessages);
+              }));
+
+    } catch (NoSuchMethodException e) {
+      String message = "Unable to execute validation.";
+      log.severe(message + ": " + e);
+      throw new RuntimeException(message, e);
+    }
   }
 }

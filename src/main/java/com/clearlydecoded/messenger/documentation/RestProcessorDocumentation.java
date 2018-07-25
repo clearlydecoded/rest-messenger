@@ -9,6 +9,7 @@
 package com.clearlydecoded.messenger.documentation;
 
 import com.clearlydecoded.messenger.MessageProcessor;
+import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -41,14 +42,14 @@ public class RestProcessorDocumentation {
   private final String messageResponseId = UUID.randomUUID().toString();
 
   /**
+   * String-based type ID of this processor.
+   */
+  private String compatibleMessageType;
+
+  /**
    * Single word concrete message class name.
    */
   private String messageShortClassName;
-
-  /**
-   * Formatted JSON string representing the model of the message.
-   */
-  private String messageModel;
 
   /**
    * Single word concrete message response class name.
@@ -56,7 +57,32 @@ public class RestProcessorDocumentation {
   private String messageResponseShortClassName;
 
   /**
+   * Fully qualified concrete message class name.
+   */
+  private String messageFullClassName;
+
+  /**
+   * Fully qualified concrete message response class name.
+   */
+  private String messageResponseFullClassName;
+
+  /**
+   * Formatted JSON string representing the model of the message.
+   */
+  private String messageModel;
+
+  /**
    * Formatted JSON string representing the model of the message response.
    */
   private String messageResponseModel;
+
+  /**
+   * JSON schema representation of the message type.
+   */
+  private JsonSchema messageSchema;
+
+  /**
+   * JSON schema representation of the message response type.
+   */
+  private JsonSchema messageResponseSchema;
 }

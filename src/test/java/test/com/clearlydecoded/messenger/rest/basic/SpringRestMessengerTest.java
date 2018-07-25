@@ -6,7 +6,7 @@
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
  */
-package test.com.clearlydecoded.messenger.rest;
+package test.com.clearlydecoded.messenger.rest.basic;
 
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -103,5 +103,24 @@ public class SpringRestMessengerTest {
     String stringResult = result.getResponse().getContentAsString();
     assertTrue("Response should at least contain snippet of HTML page.",
         stringResult.contains("Spring REST Messenger Docs"));
+  }
+
+  @Test
+  public void testGetAvailableMessagesJsonDocs() throws Exception {
+    MvcResult result = mvc.perform(get("/process").contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8"))
+        .andReturn();
+
+    String stringResult = result.getResponse().getContentAsString();
+    assertTrue("Response should contain correct messageShortClassName.",
+        stringResult.contains("\"messageShortClassName\":\"Message5\""));
+    assertTrue("Response should contain correct compatibleMessageType.",
+        stringResult.contains("\"compatibleMessageType\":\"Message-5\""));
+    assertTrue("Response should contain correct schema id for message",
+        stringResult.contains("\"messageSchema\":{\"type\":\"object\",\"id\":\"urn:jsonschema"));
+    assertTrue("Response should contain corect properties schema for message", stringResult
+        .contains(
+            "\"properties\":{\"type\":{\"type\":\"string\"},\"greeting\":{\"type\":\"string\"}}}}"));
   }
 }
