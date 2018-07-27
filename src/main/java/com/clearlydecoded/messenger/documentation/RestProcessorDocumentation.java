@@ -29,17 +29,17 @@ public class RestProcessorDocumentation {
   /**
    * Unique id of this documentation.
    */
-  private final String id = UUID.randomUUID().toString();
+  private String id;
 
   /**
    * Unique id of the message of this documentation.
    */
-  private final String messageId = UUID.randomUUID().toString();
+  private String messageId;
 
   /**
    * Unique id of the message response of this documentation.
    */
-  private final String messageResponseId = UUID.randomUUID().toString();
+  private String messageResponseId;
 
   /**
    * String-based type ID of this processor.
@@ -85,4 +85,16 @@ public class RestProcessorDocumentation {
    * JSON schema representation of the message response type.
    */
   private JsonSchema messageResponseSchema;
+
+  public String getId() {
+    return compatibleMessageType + "-docId";
+  }
+
+  public String getMessageId() {
+    return compatibleMessageType + "-messageId";
+  }
+
+  public String getMessageResponseId() {
+    return compatibleMessageType + "-messageResponseId";
+  }
 }
