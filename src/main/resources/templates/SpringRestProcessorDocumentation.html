@@ -266,7 +266,8 @@ the License for the specific language governing permissions and limitations unde
       color: #3b4151;
       outline: none;
     }
-    div.model-body div.button-row {
+    div.model-body div.button-row,
+    div.model-title div.button-row {
       display: flex;
       justify-content: space-between;
     }
@@ -511,14 +512,11 @@ the License for the specific language governing permissions and limitations unde
      */
     function wrapText(messageId) {
       var responseTextarea = document.getElementById(messageId + '-response-textarea');
-      var wrapButtonElem = document.getElementById(messageId + '-wrap-button');
       
       if (responseTextarea.classList.contains('wrap')) {
         responseTextarea.classList.remove('wrap');
-        wrapButtonElem.innerText = "wrap text";
       } else {
         responseTextarea.classList.add('wrap');
-        wrapButtonElem.innerText = "unwrap text";
       }
     }
   </script>
@@ -631,11 +629,24 @@ the License for the specific language governing permissions and limitations unde
 
           <div class="model response">
             <div class="model-title">
-              Response
-              <span class="response-code" th:id="${doc.messageId} + '-response-code'">200</span>
-              <div
-                th:id="${doc.messageId} + '-processing'" 
-                class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+              <div class="button-row">
+                <div>
+                  Response
+                  <span class="response-code" th:id="${doc.messageId} + '-response-code'">200</span>
+                  <div
+                    th:id="${doc.messageId} + '-processing'" 
+                    class="lds-ellipsis"><div></div><div></div><div></div><div></div>
+                  </div>
+                </div>
+                <div>
+                  <input 
+                    type="checkbox"  
+                    name="wrapText"
+                    onclick="wrapText('messageId-response')"
+                    th:onclick="'wrapText(\'' + ${doc.messageId} + '\')' " />
+                  <label for="wrapText">wrap text</label>
+                </div>
+              </div>
             </div>
             <div class="model-body">
               <textarea
@@ -652,12 +663,6 @@ the License for the specific language governing permissions and limitations unde
                   onclick="clearResponse('messageId-response')"
                   th:onclick="'clearResponse(\'' + ${doc.messageId} + '\')' ">clear
               </button>
-              <button
-                  id="messageId-wrap-button"
-                  th:id="${doc.messageId} + '-wrap-button'"
-                  onclick="wrapText('messageId-response')"
-                  th:onclick="'wrapText(\'' + ${doc.messageId} + '\')' ">wrap text
-              </button> 
             </div>
           </div>
         </div> <!-- end of doc-body -->
