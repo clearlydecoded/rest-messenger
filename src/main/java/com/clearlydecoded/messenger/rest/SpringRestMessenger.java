@@ -23,6 +23,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
@@ -253,11 +255,22 @@ public class SpringRestMessenger {
     model.addAttribute("docs", processorDocs);
     model.addAttribute("endpointUri", endpointUri);
     model.addAttribute("servletContextPath", servletContextPath);
+    model.addAttribute("messageMappedModels", generateMessageMappedModels());
 
     String appName = springApplicationName.trim();
     model.addAttribute("appName", appName.equals("") ? "unspecified" : appName);
 
     return "SpringRestProcessorDocumentation";
+  }
+
+  /**
+   * @return Map where the key is the <code>compatibleMessageType</code> and the value is the
+   * message model string.
+   */
+  private Map<String, String> generateMessageMappedModels() {
+    return processorDocs.stream().collect(Collectors
+        .toMap(RestProcessorDocumentation::getMessageId,
+            RestProcessorDocumentation::getMessageModel));
   }
 
   /**
