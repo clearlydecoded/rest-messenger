@@ -53,8 +53,9 @@ See [releases](https://github.com/clearlydecoded/rest-messenger/releases) sectio
   * Allows clients of your applications to dynamically create HTML user forms that can produce valid messages to send to the processors' endpoint
 * Easy to use *automatically* generated docs for your application messages & message responses
   * Simply point your browser to the endpoint URI (by default `/process` or configured by you with `com.clearlydecoded.messenger.endpoint.uri` property) and an automatically generated docs page will display
+  * Send messages directly from the docs page and see the response live, recall last message sent (remembers message values on reload of the page)
   * For example, something like this:
-  ![automatically generated docs screenshot](project-resources/docs-2.1.0.png)
+  ![automatically generated docs screenshot](project-resources/docs-2.2.0.png)
 
 ## Dependecies
 * Java 8 and above
@@ -72,7 +73,7 @@ Add the following dependency to your maven `pom.xml` file:
 <dependency>
   <groupId>com.clearlydecoded</groupId>
   <artifactId>rest-messenger</artifactId>
-  <version>2.1.0</version>
+  <version>2.2.0</version>
 </dependency>
 ```
 
@@ -94,7 +95,7 @@ For example:
   <groupId>com.clearlydecoded</groupId>
   <artifactId>rest-messenger-demo</artifactId>
   <packaging>war</packaging>
-  <version>2.1.0</version>
+  <version>2.2.0</version>
 
   <properties>
     <java.version>1.8</java.version>
@@ -110,7 +111,7 @@ For example:
     <dependency>
       <groupId>com.clearlydecoded</groupId>
       <artifactId>rest-messenger</artifactId>
-      <version>2.1.0</version>
+      <version>2.2.0</version>
     </dependency>
 
   <build>
@@ -301,6 +302,44 @@ The server will respond with:
 {"greeting":"Hello Yaakov"}
 ```
 
+If you send an unknown message type, e.g.:
+```json
+{
+  "type": "GreetMe-Not",
+  "myName": "Yaakov"
+}
+```
+
+The sever will respond with:
+```json
+{
+  "timestamp": "2018-07-31T05:10:14.490+0000",
+  "status": 404,
+  "error": "Not Found",
+  "message": "Message with type [GreetMe-Not] is not supported.",
+  "path": "/process"
+}
+```
+
+If you send an invalid message, e.g.:
+```json
+{
+  "type": "GreetMe",
+  "myName": "Y"
+}
+```
+
+The server will respond with:
+```json
+{
+  "timestamp": "2018-07-31T05:11:46.293+0000",
+  "status": 400,
+  "error": "Bad Request",
+  "message": "'myName' has to be at least 2 characters long",
+  "path": "/process"
+}
+```
+
 ## Fully Functional Demo Application
 To see full source code of an application using rest-messenger for demo purposes, see the [rest-messenger-demo](https://github.com/clearlydecoded/rest-messenger-demo) repository.
 
@@ -314,6 +353,10 @@ To see full source code of an application using rest-messenger for demo purposes
   
 * **Q**: Can the POJO code be even cleaner? <br>
   **A**: YES! check out [Project Lombok](https://projectlombok.org/). You'll never write another getter/setter by hand again. The code is SO much cleaner looking. For an example, take a look at [`MaxSugarOrder.java`](https://github.com/clearlydecoded/rest-messenger-demo/blob/master/src/main/java/com/clearlydecoded/messenger/demo/message/MaxSugarOrder.java) and [`MaxSugerOrderResponse.java`](https://github.com/clearlydecoded/rest-messenger-demo/blob/master/src/main/java/com/clearlydecoded/messenger/demo/message/MaxSugarOrderResponse.java) in the [rest-messenger-demo](https://github.com/clearlydecoded/rest-messenger-demo) repository.
+  
+* **Q**: Is there a way to get richer JSON when validation fails? <br>
+  **A**: YES! In your host application (e.g., rest-messenger-demo) intercept `com.clearlydecoded.messenger.exception.ValidationException` and extract names of individual fields that failed validation as well as validation error
+  message for each field. (The `ValidationException` contains a list of `ValidationErrorInfo` objects). Spring Framework has several methods of intercepting exceptions (e.g., `@ControllerAdvice`). See a concise article on the subject [here](http://www.baeldung.com/exception-handling-for-rest-with-spring).
   
 * **Q**: How do I version my API? <br>
   **A**: At the moment, the only way to version the API is to provide a different string-based type identifier in your message POJO. For example, if you had `GreetMeMessage` as the string-based type identifier and your POJO needs to change to a different version of the message, create another message class and identify it with `GreetMeMessagev2`.
