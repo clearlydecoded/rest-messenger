@@ -193,8 +193,49 @@ the License for the specific language governing permissions and limitations unde
       margin-bottom: 0.3125rem;
       padding-left: 0.25rem;
     }
+    div.model-title span.response-code {
+      display: none;
+      color: #fff;
+      padding: 0.2rem;
+      margin-left: 0.4rem;
+      border-radius: 4px;
+    }
+    /*noinspection CssUnusedSymbol*/
+    div.model-title span.response-code.show-error, 
+    div.model-title span.response-code.show-success {
+      display: inline;
+    }
+
+    /*noinspection CssUnusedSymbol*/
+    .show-error {
+      background-color: red;
+    }
+    /*noinspection CssUnusedSymbol*/
+    .show-success {
+      background-color: #39aa77;
+    }
+    /*noinspection CssUnusedSymbol*/
+    .show-border-error {
+      border-color: red;
+    }
+    /*noinspection CssUnusedSymbol*/
+    .show-border-success {
+      border-color: #39aa77;
+    }
     div.model {
       margin: 0.625rem 1.875rem 0.625rem 0;
+    }
+    @media (min-width: 1262px) {
+    div.model.response {
+      margin-left: 3.75rem;
+    }
+    }
+    div.model.response div.model-body textarea {
+      white-space: nowrap;
+    }
+    /*noinspection CssUnusedSymbol*/
+    div.model.response div.model-body textarea.wrap {
+      white-space: normal;
     }
     div.model-body textarea {
       display: block;
@@ -225,10 +266,93 @@ the License for the specific language governing permissions and limitations unde
       color: #3b4151;
       outline: none;
     }
+    div.model-body button[disabled] {
+      color:#7d8492;
+    }
+    div.model-body div.button-row,
+    div.model-title div.button-row {
+      display: flex;
+      justify-content: space-between;
+    }
+    div.model-body button.wide-button {
+      width: 5.625rem;
+    }
+
+    /* loading */
+    /*noinspection CssUnusedSymbol*/
+    .lds-ellipsis.display-loading {
+      display: inline-block;
+    }
+    .lds-ellipsis {
+      display: none;
+      position: relative;
+      width: 10px;
+      height: 10px;
+    }
+    .lds-ellipsis div {
+      position: absolute;
+      top: 0;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #3b4151;
+      animation-timing-function: cubic-bezier(0, 1, 1, 0);
+    }
+    .lds-ellipsis div:nth-child(1) {
+      left: 6px;
+      animation: lds-ellipsis1 0.6s infinite;
+    }
+    .lds-ellipsis div:nth-child(2) {
+      left: 6px;
+      animation: lds-ellipsis2 0.6s infinite;
+    }
+    .lds-ellipsis div:nth-child(3) {
+      left: 26px;
+      animation: lds-ellipsis2 0.6s infinite;
+    }
+    .lds-ellipsis div:nth-child(4) {
+      left: 45px;
+      animation: lds-ellipsis3 0.6s infinite;
+    }
+    @keyframes lds-ellipsis1 {
+      0% {
+        transform: scale(0);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    @keyframes lds-ellipsis3 {
+      0% {
+        transform: scale(1);
+      }
+      100% {
+        transform: scale(0);
+      }
+    }
+    @keyframes lds-ellipsis2 {
+      0% {
+        transform: translate(0, 0);
+      }
+      100% {
+        transform: translate(19px, 0);
+      }
+    }
+
   </style>
   
   <!--suppress JSUnusedLocalSymbols -->
-  <script>
+  <script th:inline="javascript">
+
+    /*<![CDATA[*/
+    var messageMappedModels = /*[[${messageMappedModels}]]*/ null;
+    /*]]>*/
+
+    /**
+     * Global map of currently running requests. This info is held in order to be able to cancel it.
+     * Map consists of 'messageId-request': requestObject
+     */
+    var messageRequestsInProgress = {};
 
     /**
      * Toggle shows or hides the body of a message documentation. It also adjusts the border
@@ -251,15 +375,239 @@ the License for the specific language governing permissions and limitations unde
     }
 
     /**
-     * Copy to clipboard the text inside of the textarea tag with the provide ID attribute.
-     * @param textAreaId ID attribute of the textarea whose contents need to be copied.
-     */
+      * Copy to clipboard the text inside of the textarea tag with the provide ID attribute.
+      * @param textAreaId ID attribute of the textarea whose contents need to be copied.
+      */
     function copy(textAreaId) {
       var textArea = document.getElementById(textAreaId);
       textArea.select();
       document.execCommand('copy');
     }
 
+    /**
+     * @return XMLHttpRequest object to make Ajax calls with.
+     */
+    function getRequestObject() {
+      if (XMLHttpRequest) {
+        return (new XMLHttpRequest());
+      } 
+      else if (ActiveXObject) {
+        // For very old IE browsers (optional)
+        return (new ActiveXObject('Microsoft.XMLHTTP'));
+      } 
+      else {
+        alert('Ajax is not supported!');
+        return(null); 
+      }
+    }
+
+    /**
+     * Sends message to endpoint, with the payload of the textarea with the provided messageId-textarea.
+     */
+    function send(messageId) {
+
+      // If button is 'cancel', cancel request and return
+      var sendButtonElem = document.getElementById(messageId + '-send-button');
+      if (sendButtonElem.innerText === 'cancel') {
+        var requestToCancel = messageRequestsInProgress[messageId + 'request'];
+        requestToCancel.abort();
+        messageRequestsInProgress[messageId + 'request'] = null;
+        
+        sendButtonElem.innerText = 'send';
+        return;
+      }
+
+      // Store message for later recall
+      storeMessage(messageId);
+
+      // Clear previous values
+      clearResponse(messageId);
+
+      var messageBody = document.getElementById(messageId + '-textarea').value;
+      var processingElem = document.getElementById(messageId + '-processing');
+      
+      // Show loading spinner
+      if (!processingElem.classList.contains('display-loading')) {
+        processingElem.classList.add('display-loading');
+      }
+
+      // Obtain request object and store it in global map
+      var request = getRequestObject();
+      messageRequestsInProgress[messageId + 'request'] = request;
+
+      // Change Send to Cancel
+      sendButtonElem.innerText = 'cancel';
+
+      // Set up callback
+      request.onreadystatechange = 
+        function() { 
+          handleResponse(request, messageId); 
+        };
+      
+      request.open('POST', document.location.href, true);
+      request.setRequestHeader('Content-Type', 'application/json');
+      request.send(messageBody);
+    }
+
+    /**
+     * Handles response from the Ajax call.
+     * @param request Request object containing the Ajax response.
+     * @param messageId Message ID of the message that was sent.
+     */
+    function handleResponse(request, messageId) {
+      if (request.readyState === 4) {
+
+        // Reset button to send and clear out request from map of current requests
+        var sendButtonElem = document.getElementById(messageId + '-send-button');
+        sendButtonElem.innerText = 'send';
+        messageRequestsInProgress[messageId + 'request'] = null;
+
+        // Turn off loading spinner
+        var processingElem = document.getElementById(messageId + '-processing');
+        processingElem.classList.remove('display-loading');
+
+        var responseTextarea = document.getElementById(messageId + '-response-textarea');
+        var responseCodeElem = document.getElementById(messageId + '-response-code');
+
+        responseTextarea.value = prettyPrintJson(request.responseText);
+        responseCodeElem.innerText = request.status;
+        showResponseCode(messageId, request.status === 200)
+      }
+    }
+
+    /**
+     * Pretty prints JSON string.
+     */
+    function prettyPrintJson(jsonString) {
+      var jsonObj = JSON.parse(jsonString);
+      return JSON.stringify(jsonObj, null, 2);
+    }
+
+    /**
+    * Shows response code in different colors, depending if successful or not.
+    */
+    function showResponseCode(messageId, success) {
+      var responseTextarea = document.getElementById(messageId + '-response-textarea');
+      var responseCodeElem = document.getElementById(messageId + '-response-code');
+
+      // Remove success or error to reset
+      responseTextarea.classList.remove('show-border-error');
+      responseTextarea.classList.remove('show-border-success');
+      responseCodeElem.classList.remove('show-error');
+      responseCodeElem.classList.remove('show-success');
+
+      if (success) {
+        responseTextarea.classList.add('show-border-success');
+        responseCodeElem.classList.add('show-success');
+      } else {
+        responseTextarea.classList.add('show-border-error');
+        responseCodeElem.classList.add('show-error');
+      }
+    }
+
+    /**
+     * Clears response code and contents of response for messageId.
+     */
+    function clearResponse(messageId) {
+      var responseTextarea = document.getElementById(messageId + '-response-textarea');
+      var responseCodeElem = document.getElementById(messageId + '-response-code');
+
+      // Remove success or error to reset
+      responseTextarea.classList.remove('show-border-error');
+      responseTextarea.classList.remove('show-border-success');
+      responseTextarea.value = '';
+      responseCodeElem.classList.remove('show-error');
+      responseCodeElem.classList.remove('show-success');
+    }
+
+    /**
+     * Wrap text in the response textarea.
+     */
+    function wrapText(messageId) {
+      var responseTextarea = document.getElementById(messageId + '-response-textarea');
+      
+      if (responseTextarea.classList.contains('wrap')) {
+        responseTextarea.classList.remove('wrap');
+      } else {
+        responseTextarea.classList.add('wrap');
+      }
+    }
+
+    /**
+     * Updates local storage with the message mapped to the messageId if the associated textarea
+     * has a value that's different from the default model of the message.
+     */
+    function storeMessage(messageId) {
+      var currentMessageValue = document.getElementById(messageId + '-textarea').value;
+      var originalMessageValue = messageMappedModels[messageId];
+
+      if (currentMessageValue !== originalMessageValue) {
+        localStorage.setItem(document.location.href + '-' + messageId, currentMessageValue);
+        var resetLastButtonElem = document.getElementById(messageId + '-reset-last');
+        resetLastButtonElem.disabled = false;
+      }
+    }
+
+    /**
+     * @param messageId Message ID for which to get the current model value.
+     * @return string message model value that was last stored in localStorage or regular model
+     * if nothing is stored in the localStorage associated with the messageId.
+     */
+    function getCurrentModel(messageId) {
+      var modelInStorage = localStorage.getItem(document.location.href + '-' + messageId);
+      if (modelInStorage) {
+        return modelInStorage;
+      } else {
+        return messageMappedModels[messageId];
+      }
+    }
+
+    /**
+     * Resets textarea of the model associated with the messageId to its original, unmodified
+     * message model.
+     * @param messageId Message ID of the model textarea to reset to original message model.
+     */
+    function resetLast(messageId) {
+      var resetLastButtonElem = document.getElementById(messageId + '-reset-last');
+      var messageModelTextarea = document.getElementById(messageId + '-textarea');
+
+      if (resetLastButtonElem.innerText === 'reset') {
+        messageModelTextarea.value = messageMappedModels[messageId];
+        resetLastButtonElem.innerText = 'last';
+      } else {
+        messageModelTextarea.value = localStorage.getItem(document.location.href + '-' + messageId);
+        resetLastButtonElem.innerText = 'reset';
+      }
+    }
+
+    /**
+     * @param messageId Message ID that is associated with the last stored value.
+     * @return boolean true if there is a value stored in the localStorage associated with the
+     * messageId, false otherwise.
+     */
+    function isLastStored(messageId) {
+      var modelInStorage = localStorage.getItem(document.location.href + '-' + messageId);
+      return !!modelInStorage;
+    }
+
+    // Fill in message after whole document loads
+    document.addEventListener("DOMContentLoaded",
+      function (event) {
+
+        Object.keys(messageMappedModels).forEach(function(messageId) {
+          // Update textarea with the message model
+          var currentModel = getCurrentModel(messageId);
+          var messageModelTextarea = document.getElementById(messageId + '-textarea');
+          messageModelTextarea.value = currentModel;
+
+          // Make last button into reset if showing last stored
+          var resetLastButtonElem = document.getElementById(messageId + '-reset-last');
+          resetLastButtonElem.innerText = 'reset';
+          resetLastButtonElem.disabled = !isLastStored(messageId);
+        });
+        
+      }
+    );
   </script>
 </head>
 
@@ -332,13 +680,32 @@ the License for the specific language governing permissions and limitations unde
                   id="message-textarea"
                   title="Model for message"
                   th:title="'Model for message ' + ${doc.messageShortClassName}"
-                  th:id="${doc.messageId} + '-textarea'"
-                  th:text="${doc.messageModel}">
+                  th:id="${doc.messageId} + '-textarea'">
               </textarea>
-              <button
-                  onclick="copy('message-textarea')"
-                  th:onclick="'copy(\'' + ${doc.messageId} + '-textarea\')' ">copy
-              </button>
+              <div class="button-row">
+                <div>
+                  <button
+                      onclick="copy('message-textarea')"
+                      th:onclick="'copy(\'' + ${doc.messageId} + '-textarea\')'">copy
+                  </button>
+                  <button
+                      class="wide-button"
+                      id="messageId-reset-last"
+                      th:id="${doc.messageId} + '-reset-last'"
+                      onclick="resetLast('messageId')"
+                      th:onclick="'resetLast(\'' + ${doc.messageId} + '\')'">reset
+                  </button>
+                </div>
+                <span class="right-buttons">
+                  <button
+                    class="wide-button"
+                    id="message-send-button"
+                    th:id="${doc.messageId} + '-send-button'"
+                    onclick="send('message-textarea')"
+                    th:onclick="'send(\'' + ${doc.messageId} + '\')'">send
+                  </button>
+                </span>
+              </div>
             </div>
           </div>
           <div class="model">
@@ -353,7 +720,49 @@ the License for the specific language governing permissions and limitations unde
               </textarea>
               <button
                   onclick="copy('message-response-textarea')"
-                  th:onclick="'copy(\'' + ${doc.messageResponseId} + '-textarea\')' ">copy
+                  th:onclick="'copy(\'' + ${doc.messageResponseId} + '-textarea\')'">copy
+              </button>
+            </div>
+          </div>
+
+          <div class="model response">
+            <div class="model-title">
+              <div class="button-row">
+                <div>
+                  Response
+                  <span class="response-code" th:id="${doc.messageId} + '-response-code'">200</span>
+                  <div
+                    th:id="${doc.messageId} + '-processing'" 
+                    class="lds-ellipsis"><div></div><div></div><div></div><div></div>
+                  </div>
+                </div>
+                <div>
+                  <input 
+                    type="checkbox"
+                    id="messageId-wrap-checkbox"
+                    th:id="${doc.messageId} + '-wrap-checkbox'"
+                    onclick="wrapText('messageId-response')"
+                    th:onclick="'wrapText(\'' + ${doc.messageId} + '\')'" />
+                  <label
+                      for="messageId-wrap-checkbox"
+                      th:for="${doc.messageId} + '-wrap-checkbox'">wrap</label>
+                </div>
+              </div>
+            </div>
+            <div class="model-body">
+              <textarea
+                  id="messageId-response-textarea"
+                  title="Model for message response"
+                  th:title="'Model for message response' + ${doc.messageResponseShortClassName}"
+                  th:id="${doc.messageId} + '-response-textarea'">
+              </textarea>
+              <button
+                  onclick="copy('messageId-response-textarea')"
+                  th:onclick="'copy(\'' + ${doc.messageId} + '-response-textarea\')'">copy
+              </button>
+              <button
+                  onclick="clearResponse('messageId-response')"
+                  th:onclick="'clearResponse(\'' + ${doc.messageId} + '\')'">clear
               </button>
             </div>
           </div>

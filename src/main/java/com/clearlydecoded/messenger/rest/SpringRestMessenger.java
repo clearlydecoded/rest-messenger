@@ -15,6 +15,10 @@ import com.clearlydecoded.messenger.MessageResponse;
 import com.clearlydecoded.messenger.discovery.SpringMessageProcessorRegistryFactory;
 import com.clearlydecoded.messenger.documentation.RestProcessorDocumentation;
 import com.clearlydecoded.messenger.documentation.RestProcessorDocumentationGenerator;
+import com.clearlydecoded.messenger.exception.BadMessageFormatException;
+import com.clearlydecoded.messenger.exception.MessageTypeNotSupportedException;
+import com.clearlydecoded.messenger.exception.ValidationErrorInfo;
+import com.clearlydecoded.messenger.exception.ValidationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -23,6 +27,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
@@ -253,11 +260,22 @@ public class SpringRestMessenger {
     model.addAttribute("docs", processorDocs);
     model.addAttribute("endpointUri", endpointUri);
     model.addAttribute("servletContextPath", servletContextPath);
+    model.addAttribute("messageMappedModels", generateMessageMappedModels());
 
     String appName = springApplicationName.trim();
     model.addAttribute("appName", appName.equals("") ? "unspecified" : appName);
 
     return "SpringRestProcessorDocumentation";
+  }
+
+  /**
+   * @return Map where the key is the <code>compatibleMessageType</code> and the value is the
+   * message model string.
+   */
+  private Map<String, String> generateMessageMappedModels() {
+    return processorDocs.stream().collect(Collectors
+        .toMap(RestProcessorDocumentation::getMessageId,
+            RestProcessorDocumentation::getMessageModel));
   }
 
   /**
@@ -296,7 +314,7 @@ public class SpringRestMessenger {
           + " processor class annotated with either @Service, @Component, etc.";
       log.severe(logMessage);
 
-      throw new IllegalArgumentException(
+      throw new MessageTypeNotSupportedException(
           "Message with type [" + messageType + "] is not supported.");
     }
 
@@ -325,7 +343,7 @@ public class SpringRestMessenger {
   /**
    * @param message String-based message to extract message object with just the type property.
    * @return Message object with just the type property de-serialized.
-   * @throws IllegalArgumentException If anything goes wrong during de-serialization.
+   * @throws BadMessageFormatException If anything goes wrong during de-serialization.
    */
   private String extractMessageType(String message) {
     // Create Jackson JSON/Object mapper
@@ -343,7 +361,7 @@ public class SpringRestMessenger {
           + ". Please verify that the message being sent contains the [type] property and that"
           + " the message is valid JSON.";
       log.severe(logMessage);
-      throw new IllegalArgumentException(logMessage, e);
+      throw new BadMessageFormatException(logMessage, e);
     }
   }
 
@@ -354,7 +372,7 @@ public class SpringRestMessenger {
    * @param <MessageT> Concrete message type.
    * @param <MessageResponseT> Concrete message response type.
    * @return Object of concrete MessageT type, de-serialized from the string-based message.
-   * @throws IllegalArgumentException If anything goes wrong during de-serialization.
+   * @throws BadMessageFormatException If anything goes wrong during de-serialization.
    */
   private <MessageT extends Message<MessageResponseT>,
       MessageResponseT extends MessageResponse> MessageT extractConcreteMessage(
@@ -382,7 +400,7 @@ public class SpringRestMessenger {
           + " are required.";
       log.severe(errorMessage + logMessage);
 
-      throw new IllegalArgumentException(errorMessage, e);
+      throw new BadMessageFormatException(errorMessage, e);
     }
   }
 
@@ -392,8 +410,9 @@ public class SpringRestMessenger {
    *
    * @param messageProcessor Message processor whose message to potentially validate.
    * @param messageObject Message object to potentially validate.
-   * @throws RuntimeException If validation is triggered and fails. All of the validation messages
-   * will be comma-separated in the exception message.
+   * @throws ValidationException If validation is triggered and fails. All of the validation
+   * messages will be comma-separated in the exception message. Additional information about the
+   * fields that failed validation is contained in this exception instance as well.
    */
   private void validateMessage(MessageProcessor messageProcessor, Object messageObject) {
     try {
@@ -403,19 +422,38 @@ public class SpringRestMessenger {
       // Extract annotations for the 1st and only parameter
       Annotation[] messageAnnotations = method.getParameterAnnotations()[0];
 
-      // If @Valid is present, invoke validation
+      // Validate if @Valid is one of the annotations
+      final List<ValidationErrorInfo> validationErrors = new ArrayList<>();
       Arrays.stream(messageAnnotations)
           .filter(Valid.class::isInstance)
           .findAny()
-          .ifPresent(annotation -> validator.validate(messageObject).stream()
-              .map(ConstraintViolation::getMessage)
-              .reduce((violationMessages, violationMessage) ->
-                  String.format("%s, %s", violationMessages, violationMessage))
-              .ifPresent(violationsMessages -> {
-                log.severe("Invalid message received: " + violationsMessages);
-                throw new RuntimeException("Invalid message received: " + violationsMessages);
-              }));
+          .ifPresent(annotation -> {
 
+            // Execute validation on the message object
+            Set<ConstraintViolation<Object>> violations = validator.validate(messageObject);
+
+            // Extract custom validation error info from each violation
+            for (ConstraintViolation<Object> violation : violations) {
+              ValidationErrorInfo validationError = new ValidationErrorInfo(
+                  violation.getPropertyPath().toString(),
+                  violation.getMessage());
+              validationErrors.add(validationError);
+            }
+
+            // Create exception object and combine all validation error messages together
+            final ValidationException validationException = new ValidationException();
+            validationException.setErrors(validationErrors);
+            validationErrors.stream()
+                .map(ValidationErrorInfo::getDefaultMessage)
+                .reduce((violationMessages, violationMessage) ->
+                    String.format("%s, %s", violationMessages, violationMessage))
+                .ifPresent(validationException::setMessage);
+
+            // If at least 1 validation error, throw exception
+            if (validationErrors.size() > 0) {
+              throw validationException;
+            }
+          });
     } catch (NoSuchMethodException e) {
       String message = "Unable to execute validation.";
       log.severe(message + ": " + e);

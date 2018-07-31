@@ -25,7 +25,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.web.util.NestedServletException;
 
 /**
  * {@link SpringRestMessengerTest} class tests the rest controller.
@@ -82,14 +81,16 @@ public class SpringRestMessengerTest {
         .andExpect(content().string(expectedResponseString));
   }
 
-  @Test(expected = NestedServletException.class)
+  @Test
   public void testSendingUnknownMessage() throws Exception {
     UnsupportedMessage unsupportedMessage = new UnsupportedMessage();
     ObjectMapper mapper = new ObjectMapper();
     String unsupportedMessageString = mapper.writeValueAsString(unsupportedMessage);
     mvc.perform(
-        post("/process").accept(MediaType.APPLICATION_JSON).content(unsupportedMessageString)
-            .contentType(MediaType.APPLICATION_JSON));
+        post("/process").accept(MediaType.APPLICATION_JSON)
+            .content(unsupportedMessageString)
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound());
   }
 
   @Test
