@@ -73,7 +73,7 @@ Add the following dependency to your maven `pom.xml` file:
 <dependency>
   <groupId>com.clearlydecoded</groupId>
   <artifactId>rest-messenger</artifactId>
-  <version>2.2.0</version>
+  <version>2.2.2</version>
 </dependency>
 ```
 
@@ -95,7 +95,7 @@ For example:
   <groupId>com.clearlydecoded</groupId>
   <artifactId>rest-messenger-demo</artifactId>
   <packaging>war</packaging>
-  <version>2.2.0</version>
+  <version>2.2.2</version>
 
   <properties>
     <java.version>1.8</java.version>
@@ -111,7 +111,7 @@ For example:
     <dependency>
       <groupId>com.clearlydecoded</groupId>
       <artifactId>rest-messenger</artifactId>
-      <version>2.2.0</version>
+      <version>2.2.2</version>
     </dependency>
 
   <build>
