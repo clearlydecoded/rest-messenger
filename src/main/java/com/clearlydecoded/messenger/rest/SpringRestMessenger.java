@@ -174,8 +174,8 @@ public class SpringRestMessenger {
     RequestMappingInfo messageProcessingRequestMappingInfo = RequestMappingInfo
         .paths(endpointUri)
         .methods(RequestMethod.POST)
-        .consumes(MediaType.APPLICATION_JSON_VALUE)
-        .produces(MediaType.APPLICATION_JSON_VALUE)
+        .consumes(MediaType.APPLICATION_JSON_UTF8_VALUE)
+        .produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
         .build();
     requestMappingHandlerMapping.registerMapping(messageProcessingRequestMappingInfo, this,
         SpringRestMessenger.class.getDeclaredMethod("process", String.class));
@@ -193,8 +193,8 @@ public class SpringRestMessenger {
     RequestMappingInfo getJsonProcessorDocsRequestMappingInfo = RequestMappingInfo
         .paths(endpointUri)
         .methods(RequestMethod.GET)
-        .consumes(MediaType.APPLICATION_JSON_VALUE)
-        .produces(MediaType.APPLICATION_JSON_VALUE)
+        .consumes(MediaType.APPLICATION_JSON_UTF8_VALUE)
+        .produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
         .build();
     requestMappingHandlerMapping.registerMapping(getJsonProcessorDocsRequestMappingInfo, this,
         SpringRestMessenger.class.getDeclaredMethod("getJsonProcessorDocs"));
@@ -204,7 +204,7 @@ public class SpringRestMessenger {
     RequestMappingInfo getBrowserJsonProcessorDocsRequestMappingInfo = RequestMappingInfo
         .paths(endpointUri + ".json")
         .methods(RequestMethod.GET)
-        .produces(MediaType.APPLICATION_JSON_VALUE)
+        .produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
         .build();
     requestMappingHandlerMapping.registerMapping(getBrowserJsonProcessorDocsRequestMappingInfo,
         this, SpringRestMessenger.class.getDeclaredMethod("getJsonProcessorDocs"));
