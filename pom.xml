@@ -16,7 +16,6 @@
   <artifactId>rest-messenger</artifactId>
   <packaging>jar</packaging>
   <version>2.2.2-SNAPSHOT</version>
-
   <name>rest-messenger</name>
   <description>
     Easily create and expose a Spring REST-based API implementation, without losing strong Java
