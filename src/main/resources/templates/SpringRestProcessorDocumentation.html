@@ -718,7 +718,7 @@ the License for the specific language governing permissions and limitations unde
              title="Click to see message &amp; response details"
              onclick="toggleMessageDetails('header', 'body')"
              th:id="${doc.id} + '-header'"
-             th:onclick="'toggleMessageDetails(\'' + ${doc.id} + '-header' + '\', \'' + ${doc.id} + '-body' + '\');'">
+             th:onclick="'toggleMessageDetails(\'' + [[${doc.id}]] + '-header' + '\', \'' + [[${doc.id}]] + '-body' + '\');'">
           <div class="message-pill">
             <div class="message">
               <div th:text="${doc.messageShortClassName}">GetPersonMessage</div>
@@ -748,14 +748,14 @@ the License for the specific language governing permissions and limitations unde
                 <div>
                   <button
                       onclick="copy('message-textarea')"
-                      th:onclick="'copy(\'' + ${doc.messageId} + '-textarea\')'">copy
+                      th:onclick="'copy(\'' + [[${doc.messageId}]] + '-textarea\')'">copy
                   </button>
                   <button
                       class="wide-button"
                       id="messageId-reset-last"
                       th:id="${doc.messageId} + '-reset-last'"
                       onclick="resetLast('messageId')"
-                      th:onclick="'resetLast(\'' + ${doc.messageId} + '\')'">reset
+                      th:onclick="'resetLast(\'' + [[${doc.messageId}]] + '\')'">reset
                   </button>
                 </div>
                 <span class="right-buttons">
@@ -764,7 +764,7 @@ the License for the specific language governing permissions and limitations unde
                     id="message-send-button"
                     th:id="${doc.messageId} + '-send-button'"
                     onclick="send('message-textarea')"
-                    th:onclick="'send(\'' + ${doc.messageId} + '\')'">send
+                    th:onclick="'send(\'' + [[${doc.messageId}]] + '\')'">send
                   </button>
                 </span>
               </div>
@@ -782,7 +782,7 @@ the License for the specific language governing permissions and limitations unde
               </textarea>
               <button
                   onclick="copy('message-response-textarea')"
-                  th:onclick="'copy(\'' + ${doc.messageResponseId} + '-textarea\')'">copy
+                  th:onclick="'copy(\'' + [[${doc.messageResponseId}]] + '-textarea\')'">copy
               </button>
             </div>
           </div>
@@ -804,7 +804,7 @@ the License for the specific language governing permissions and limitations unde
                     id="messageId-wrap-checkbox"
                     th:id="${doc.messageId} + '-wrap-checkbox'"
                     onclick="wrapText('messageId-response')"
-                    th:onclick="'wrapText(\'' + ${doc.messageId} + '\')'" />
+                    th:onclick="'wrapText(\'' + [[${doc.messageId}]] + '\')'" />
                   <label
                       for="messageId-wrap-checkbox"
                       th:for="${doc.messageId} + '-wrap-checkbox'">wrap</label>
@@ -820,11 +820,11 @@ the License for the specific language governing permissions and limitations unde
               </textarea>
               <button
                   onclick="copy('messageId-response-textarea')"
-                  th:onclick="'copy(\'' + ${doc.messageId} + '-response-textarea\')'">copy
+                  th:onclick="'copy(\'' + [[${doc.messageId}]] + '-response-textarea\')'">copy
               </button>
               <button
                   onclick="clearResponse('messageId-response')"
-                  th:onclick="'clearResponse(\'' + ${doc.messageId} + '\')'">clear
+                  th:onclick="'clearResponse(\'' + [[${doc.messageId}]] + '\')'">clear
               </button>
             </div>
           </div>
